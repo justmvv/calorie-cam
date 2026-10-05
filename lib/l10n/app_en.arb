@@ -1,0 +1,163 @@
+{
+  "@@locale": "en",
+  "appTitle": "Calorie Cam",
+  "today": "Today",
+  "yesterday": "Yesterday",
+  "calendar": "Calendar",
+  "settings": "Settings",
+  "takePhoto": "Take a photo",
+  "fromGallery": "From gallery",
+  "withoutPhoto": "Without photo",
+  "addedKcal": "Added: {kcal}",
+  "@addedKcal": {
+    "placeholders": {
+      "kcal": {
+        "type": "String"
+      }
+    }
+  },
+  "dailyGoal": "Daily goal",
+  "cancel": "Cancel",
+  "save": "Save",
+  "add": "Add",
+  "undo": "Undo",
+  "kcalValue": "{value} kcal",
+  "@kcalValue": {
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "kcalUnit": "kcal",
+  "gramsValue": "{value} g",
+  "@gramsValue": {
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "gramsUnit": "g",
+  "macros": "P {protein} · F {fat} · C {carbs}",
+  "@macros": {
+    "placeholders": {
+      "protein": {
+        "type": "int"
+      },
+      "fat": {
+        "type": "int"
+      },
+      "carbs": {
+        "type": "int"
+      }
+    },
+    "description": "Protein, fat, carbohydrates in grams"
+  },
+  "nothingLogged": "Nothing logged yet",
+  "kcalLeft": "{kcal} left · {macros}",
+  "@kcalLeft": {
+    "placeholders": {
+      "kcal": {
+        "type": "String"
+      },
+      "macros": {
+        "type": "String"
+      }
+    }
+  },
+  "kcalOver": "{kcal} over goal · {macros}",
+  "@kcalOver": {
+    "placeholders": {
+      "kcal": {
+        "type": "String"
+      },
+      "macros": {
+        "type": "String"
+      }
+    }
+  },
+  "mealDeleted": "“{name}” deleted",
+  "@mealDeleted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "portion": "Portion",
+  "dishSearchHint": "Dish or product",
+  "nothingFound": "Nothing found",
+  "per100g": "{kcal} per 100 g",
+  "@per100g": {
+    "placeholders": {
+      "kcal": {
+        "type": "String"
+      }
+    }
+  },
+  "addManually": "Add manually",
+  "whatsInPhoto": "What's in the photo",
+  "searchCatalog": "Search the catalog",
+  "mealTime": "Meal time",
+  "chooseDish": "Choose a dish",
+  "addToDiary": "Add to diary · {kcal}",
+  "@addToDiary": {
+    "placeholders": {
+      "kcal": {
+        "type": "String"
+      }
+    }
+  },
+  "recognitionFailed": "Couldn't recognize the photo",
+  "chooseManually": "Choose the dish manually.\n{error}",
+  "@chooseManually": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "recognizing": "Recognizing… The first run downloads the model (~23 MB).",
+  "looksLike": "Looks like:",
+  "remove": "Remove",
+  "saveFailed": "Couldn't save: {error}",
+  "@saveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "goalLabel": "goal {goal}",
+  "@goalLabel": {
+    "placeholders": {
+      "goal": {
+        "type": "int"
+      }
+    }
+  },
+  "noEntriesThisMonth": "No entries this month",
+  "statAvgKcal": "avg kcal\nper day",
+  "statDaysLogged": "days\nlogged",
+  "statDaysOver": "days\nover goal",
+  "updateAvailable": "A new version is available",
+  "update": "Update",
+  "language": "Language",
+  "languageSystem": "System",
+  "dailyGoalHint": "The calendar heatmap is colored relative to this value.",
+  "categorySoup": "Soups",
+  "categoryMain": "Mains",
+  "categoryBakery": "Pastry",
+  "categoryFastFood": "Fast food",
+  "categoryAsian": "Asian",
+  "categorySalad": "Salads",
+  "categoryBreakfast": "Breakfast",
+  "categorySide": "Sides",
+  "categoryBread": "Bread",
+  "categoryDessert": "Desserts",
+  "categoryFruit": "Fruit",
+  "categorySnack": "Snacks",
+  "categoryVegetable": "Vegetables",
+  "categoryDrink": "Drinks"
+}

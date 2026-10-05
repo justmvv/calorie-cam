@@ -1,0 +1,223 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
+import 'app_localizations.dart';
+
+// ignore_for_file: type=lint
+
+/// The translations for English (`en`).
+class AppLocalizationsEn extends AppLocalizations {
+  AppLocalizationsEn([String locale = 'en']) : super(locale);
+
+  @override
+  String get appTitle => 'Calorie Cam';
+
+  @override
+  String get today => 'Today';
+
+  @override
+  String get yesterday => 'Yesterday';
+
+  @override
+  String get calendar => 'Calendar';
+
+  @override
+  String get settings => 'Settings';
+
+  @override
+  String get takePhoto => 'Take a photo';
+
+  @override
+  String get fromGallery => 'From gallery';
+
+  @override
+  String get withoutPhoto => 'Without photo';
+
+  @override
+  String addedKcal(String kcal) {
+    return 'Added: $kcal';
+  }
+
+  @override
+  String get dailyGoal => 'Daily goal';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get add => 'Add';
+
+  @override
+  String get undo => 'Undo';
+
+  @override
+  String kcalValue(int value) {
+    return '$value kcal';
+  }
+
+  @override
+  String get kcalUnit => 'kcal';
+
+  @override
+  String gramsValue(int value) {
+    return '$value g';
+  }
+
+  @override
+  String get gramsUnit => 'g';
+
+  @override
+  String macros(int protein, int fat, int carbs) {
+    return 'P $protein · F $fat · C $carbs';
+  }
+
+  @override
+  String get nothingLogged => 'Nothing logged yet';
+
+  @override
+  String kcalLeft(String kcal, String macros) {
+    return '$kcal left · $macros';
+  }
+
+  @override
+  String kcalOver(String kcal, String macros) {
+    return '$kcal over goal · $macros';
+  }
+
+  @override
+  String mealDeleted(String name) {
+    return '“$name” deleted';
+  }
+
+  @override
+  String get portion => 'Portion';
+
+  @override
+  String get dishSearchHint => 'Dish or product';
+
+  @override
+  String get nothingFound => 'Nothing found';
+
+  @override
+  String per100g(String kcal) {
+    return '$kcal per 100 g';
+  }
+
+  @override
+  String get addManually => 'Add manually';
+
+  @override
+  String get whatsInPhoto => 'What\'s in the photo';
+
+  @override
+  String get searchCatalog => 'Search the catalog';
+
+  @override
+  String get mealTime => 'Meal time';
+
+  @override
+  String get chooseDish => 'Choose a dish';
+
+  @override
+  String addToDiary(String kcal) {
+    return 'Add to diary · $kcal';
+  }
+
+  @override
+  String get recognitionFailed => 'Couldn\'t recognize the photo';
+
+  @override
+  String chooseManually(String error) {
+    return 'Choose the dish manually.\n$error';
+  }
+
+  @override
+  String get recognizing => 'Recognizing… The first run downloads the model (~23 MB).';
+
+  @override
+  String get looksLike => 'Looks like:';
+
+  @override
+  String get remove => 'Remove';
+
+  @override
+  String saveFailed(String error) {
+    return 'Couldn\'t save: $error';
+  }
+
+  @override
+  String goalLabel(int goal) {
+    return 'goal $goal';
+  }
+
+  @override
+  String get noEntriesThisMonth => 'No entries this month';
+
+  @override
+  String get statAvgKcal => 'avg kcal\nper day';
+
+  @override
+  String get statDaysLogged => 'days\nlogged';
+
+  @override
+  String get statDaysOver => 'days\nover goal';
+
+  @override
+  String get updateAvailable => 'A new version is available';
+
+  @override
+  String get update => 'Update';
+
+  @override
+  String get language => 'Language';
+
+  @override
+  String get languageSystem => 'System';
+
+  @override
+  String get dailyGoalHint => 'The calendar heatmap is colored relative to this value.';
+
+  @override
+  String get categorySoup => 'Soups';
+
+  @override
+  String get categoryMain => 'Mains';
+
+  @override
+  String get categoryBakery => 'Pastry';
+
+  @override
+  String get categoryFastFood => 'Fast food';
+
+  @override
+  String get categoryAsian => 'Asian';
+
+  @override
+  String get categorySalad => 'Salads';
+
+  @override
+  String get categoryBreakfast => 'Breakfast';
+
+  @override
+  String get categorySide => 'Sides';
+
+  @override
+  String get categoryBread => 'Bread';
+
+  @override
+  String get categoryDessert => 'Desserts';
+
+  @override
+  String get categoryFruit => 'Fruit';
+
+  @override
+  String get categorySnack => 'Snacks';
+
+  @override
+  String get categoryVegetable => 'Vegetables';
+
+  @override
+  String get categoryDrink => 'Drinks';
+}
