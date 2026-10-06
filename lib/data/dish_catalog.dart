@@ -8,8 +8,7 @@ import 'package:flutter/services.dart';
 class Dish {
   const Dish({
     required this.id,
-    required this.nameRu,
-    required this.nameEn,
+    required this.names,
     required this.kcal,
     required this.protein,
     required this.fat,
@@ -19,8 +18,9 @@ class Dish {
   });
 
   final String id;
-  final String nameRu;
-  final String nameEn;
+
+  /// Display names by language code (en, ru, es, nl, …): the name_<code> columns of the catalog.
+  final Map<String, String> names;
   final double kcal;
   final double protein;
   final double fat;
@@ -31,6 +31,9 @@ class Dish {
 
   /// Category id (soup, main, …); translated in the UI.
   final String category;
+
+  /// Name in [language], falling back to English.
+  String name(String language) => names[language] ?? names['en']!;
 }
 
 class DishMatch {
@@ -59,7 +62,11 @@ class DishCatalog {
     final lines = const LineSplitter().convert(tsv).where((l) => l.trim().isNotEmpty && !l.startsWith('#')).toList();
     final header = lines.first.split('\t');
     int col(String name) => header.indexOf(name);
-    final dishes = [for (final line in lines.skip(1)) _parse(line.split('\t'), col)];
+    final nameColumns = {
+      for (final (i, h) in header.indexed)
+        if (h.startsWith('name_')) h.substring('name_'.length): i,
+    };
+    final dishes = [for (final line in lines.skip(1)) _parse(line.split('\t'), col, nameColumns)];
 
     final meta = jsonDecode(await rootBundle.loadString('assets/dish_embeddings.json'));
     final bin = await rootBundle.load('assets/dish_embeddings.bin');
@@ -74,10 +81,9 @@ class DishCatalog {
     );
   }
 
-  static Dish _parse(List<String> f, int Function(String) col) => Dish(
+  static Dish _parse(List<String> f, int Function(String) col, Map<String, int> nameColumns) => Dish(
     id: f[col('id')],
-    nameRu: f[col('name_ru')],
-    nameEn: f[col('name_en')],
+    names: {for (final MapEntry(key: lang, value: i) in nameColumns.entries) lang: f[i]},
     kcal: double.parse(f[col('kcal')]),
     protein: double.parse(f[col('protein')]),
     fat: double.parse(f[col('fat')]),
@@ -109,11 +115,34 @@ class DishCatalog {
     ];
   }
 
-  /// Search by name in either language (case-insensitive substring; ё and е are equivalent).
+  /// Search by name in any language (case-insensitive substring; accents are ignored
+  /// and ё matches е, so "jamon" finds "jamón" and "тушеная" finds "тушёная").
   List<Dish> search(String query) {
-    String norm(String s) => s.toLowerCase().replaceAll('ё', 'е');
-    final q = norm(query.trim());
+    final q = _fold(query.trim());
     if (q.isEmpty) return dishes;
-    return dishes.where((d) => norm(d.nameRu).contains(q) || norm(d.nameEn).contains(q)).toList();
+    return dishes.where((d) => d.names.values.any((n) => _fold(n).contains(q))).toList();
   }
+
+  static const _accents = {
+    'á': 'a',
+    'à': 'a',
+    'â': 'a',
+    'ä': 'a',
+    'é': 'e',
+    'è': 'e',
+    'ê': 'e',
+    'ë': 'e',
+    'í': 'i',
+    'ï': 'i',
+    'ó': 'o',
+    'ö': 'o',
+    'ô': 'o',
+    'ú': 'u',
+    'ü': 'u',
+    'ñ': 'n',
+    'ç': 'c',
+    'ё': 'е',
+  };
+
+  static String _fold(String s) => s.toLowerCase().split('').map((c) => _accents[c] ?? c).join();
 }

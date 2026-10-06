@@ -1,202 +1,252 @@
 # Dish catalog. Values are per 100 g (per 100 ml for drinks): averaged reference-table data.
+# name_<lang> — display name per UI language (ru, en, es, nl).
 # prompt   — English description used by the recognition model (MobileCLIP); not shown in the UI.
 # category — id, translated in the UI (lib/l10n/).
 # After editing: cd tools && node build_embeddings.mjs
-id	name_ru	name_en	prompt	kcal	protein	fat	carbs	portion	category
-borscht	Борщ	Borscht	borscht, red beet soup with sour cream	49	1.1	2.2	6.7	300	soup
-shchi	Щи	Shchi (cabbage soup)	shchi, russian cabbage soup	35	1.5	1.8	3.4	300	soup
-solyanka	Солянка мясная	Solyanka	solyanka, meat soup with olives and lemon slice	69	4.6	4.1	3.3	300	soup
-ukha	Уха	Ukha (fish soup)	ukha, clear fish soup with potatoes	46	4.4	1.5	3.6	300	soup
-okroshka	Окрошка на кефире	Okroshka (kefir)	okroshka, cold kefir soup with chopped vegetables and egg	60	3.5	3.0	5.0	300	soup
-chicken_noodle_soup	Куриный суп с лапшой	Chicken noodle soup	chicken noodle soup	40	3.0	1.3	4.5	300	soup
-pea_soup	Гороховый суп	Split pea soup	split pea soup	66	4.4	2.5	6.8	300	soup
-rassolnik	Рассольник	Rassolnik (pickle soup)	rassolnik, pickle soup with pearl barley	42	1.5	2.0	4.6	300	soup
-mushroom_soup	Грибной суп	Mushroom soup	mushroom soup with potatoes	30	1.0	1.5	3.5	300	soup
-cream_mushroom_soup	Крем-суп грибной	Cream of mushroom soup	cream of mushroom soup	75	2.0	5.0	5.5	250	soup
-pumpkin_soup	Тыквенный крем-суп	Pumpkin cream soup	pumpkin cream soup	55	1.2	2.8	6.5	250	soup
-tom_yum	Том ям	Tom yum	tom yum soup with shrimp	45	4.0	2.0	3.0	300	soup
-ramen	Рамен	Ramen	ramen noodle soup with egg and pork	85	4.5	3.0	10.0	450	soup
-pho	Фо бо	Pho bo	pho, vietnamese beef noodle soup	60	4.5	1.5	7.0	450	soup
-minestrone	Минестроне	Minestrone	minestrone vegetable soup	35	1.5	1.0	5.0	300	soup
-miso_soup	Мисо-суп	Miso soup	miso soup with tofu and seaweed	25	2.0	0.9	2.5	250	soup
-lagman	Лагман	Lagman	lagman, thick noodle soup with meat and vegetables	90	5.0	3.5	10.0	350	soup
-kharcho	Харчо	Kharcho	kharcho, georgian beef and rice soup	70	4.5	3.5	5.0	300	soup
-gazpacho	Гаспачо	Gazpacho	gazpacho, cold tomato soup	30	0.9	1.5	3.5	250	soup
-onion_soup	Луковый суп	French onion soup	french onion soup with cheese crouton	60	2.5	2.5	6.5	300	soup
-pelmeni	Пельмени	Pelmeni	pelmeni, russian meat dumplings with sour cream	275	11.9	12.4	29.0	250	main
-vareniki_potato	Вареники с картошкой	Vareniki with potato	vareniki, boiled dumplings with potato filling and fried onion	150	3.7	3.5	26.0	250	main
-vareniki_cherry	Вареники с вишней	Vareniki with cherry	vareniki, sweet dumplings with cherry	190	4.0	2.0	38.0	200	main
-vareniki_cottage	Вареники с творогом	Vareniki with cottage cheese	vareniki with cottage cheese filling	200	10.0	5.0	28.0	220	main
-khinkali	Хинкали	Khinkali	khinkali, large georgian twisted dumplings	220	10.0	9.0	25.0	300	main
-manti	Манты	Manti	manti, large steamed meat dumplings	210	10.0	10.0	20.0	300	main
-golubtsy	Голубцы	Golubtsy (cabbage rolls)	golubtsy, cabbage rolls stuffed with meat and rice in tomato sauce	110	6.0	6.0	7.0	300	main
-kotleta	Котлета мясная	Meat cutlet	pan-fried minced meat cutlet patty	240	14.0	17.0	9.0	100	main
-kotleta_chicken	Котлета куриная	Chicken cutlet	chicken cutlet patty	190	16.0	10.0	8.0	100	main
-beef_stroganoff	Бефстроганов	Beef stroganoff	beef stroganoff, beef strips in creamy sauce	190	15.0	13.0	3.5	200	main
-plov	Плов	Plov (pilaf)	plov, pilaf rice with meat and carrots	190	7.0	9.0	20.0	300	main
-shashlik_pork	Шашлык из свинины	Pork shashlik	pork shashlik, grilled meat chunks on skewers	260	18.0	20.0	1.0	200	main
-shashlik_chicken	Шашлык куриный	Chicken skewers	grilled chicken skewers	165	20.0	9.0	1.0	200	main
-lula_kebab	Люля-кебаб	Lula kebab	lula kebab, grilled minced meat on skewer	270	17.0	21.0	3.0	200	main
-zharkoe	Жаркое с картофелем	Pot roast with potatoes	roasted meat stew with potatoes in a pot	140	8.0	7.0	11.0	300	main
-goulash	Гуляш	Goulash	goulash, beef stew in paprika gravy	150	13.0	9.0	4.0	250	main
-liver	Печень жареная	Fried liver	fried liver with onions	200	22.0	9.0	6.0	150	main
-fish_fried	Рыба жареная	Fried fish	pan-fried breaded fish fillet	180	18.0	9.0	6.0	150	main
-fish_baked	Рыба запечённая	Baked fish	baked white fish fillet	130	20.0	5.0	1.0	150	main
-salmon	Лосось запечённый	Baked salmon	baked salmon fillet	200	22.0	12.0	0.0	150	main
-chicken_breast	Куриная грудка гриль	Grilled chicken breast	grilled chicken breast	165	31.0	3.6	0.0	150	main
-chicken_leg	Куриная ножка запечённая	Roast chicken leg	roasted chicken leg	210	22.0	13.0	0.0	200	main
-fried_chicken	Курица во фритюре	Deep-fried chicken	crispy deep fried chicken	280	20.0	17.0	11.0	200	main
-chicken_wings	Куриные крылышки	Chicken wings	chicken wings	260	22.0	18.0	3.0	200	main
-pork_chop	Отбивная в панировке	Breaded pork chop	breaded pork schnitzel	280	20.0	20.0	5.0	150	main
-steak	Стейк говяжий	Beef steak	grilled beef steak	250	26.0	16.0	0.0	200	main
-meatballs	Тефтели в соусе	Meatballs in sauce	meatballs in tomato sauce	150	9.0	9.0	8.0	250	main
-stuffed_peppers	Перец фаршированный	Stuffed peppers	stuffed bell peppers with meat and rice	95	5.0	4.5	9.0	300	main
-draniki	Драники	Draniki (potato pancakes)	draniki, fried potato pancakes	200	4.0	11.0	22.0	200	main
-kholodets	Холодец	Kholodets (meat aspic)	kholodets, meat aspic jelly	120	15.0	6.0	1.0	150	main
-sosiski	Сосиски	Frankfurters	boiled sausages, frankfurters	260	11.0	23.0	1.5	100	main
-navy_pasta	Макароны по-флотски	Pasta with minced meat	pasta with fried minced meat	210	9.0	10.0	21.0	300	main
-lasagna	Лазанья	Lasagna	lasagna	170	9.0	9.0	13.0	300	main
-bolognese	Спагетти болоньезе	Spaghetti bolognese	spaghetti bolognese	150	7.0	5.0	19.0	300	main
-carbonara	Паста карбонара	Pasta carbonara	pasta carbonara	200	8.0	9.0	22.0	300	main
-mac_cheese	Макароны с сыром	Mac and cheese	macaroni and cheese	190	7.0	8.0	22.0	250	main
-risotto	Ризотто	Risotto	creamy risotto	160	4.0	6.0	22.0	300	main
-paella	Паэлья	Paella	paella with seafood	160	9.0	5.0	20.0	350	main
-shakshuka	Шакшука	Shakshuka	shakshuka, eggs poached in tomato sauce	110	6.0	7.0	5.0	300	main
-curry	Карри с курицей	Chicken curry	chicken curry with sauce	150	11.0	8.0	8.0	300	main
-teriyaki	Курица терияки с рисом	Chicken teriyaki with rice	chicken teriyaki with rice	160	10.0	4.0	21.0	350	main
-lobio	Лобио	Lobio (bean stew)	lobio, georgian stewed red beans	120	6.0	5.0	13.0	200	main
-khachapuri	Хачапури по-аджарски	Adjarian khachapuri	adjarian khachapuri, boat-shaped cheese bread with egg yolk	300	12.0	15.0	30.0	300	bakery
-pizza_margherita	Пицца Маргарита	Pizza margherita	pizza margherita	250	11.0	9.0	31.0	300	fast_food
-pizza_pepperoni	Пицца пепперони	Pepperoni pizza	pepperoni pizza	280	12.0	12.0	30.0	300	fast_food
-burger	Бургер	Burger	hamburger	250	13.0	12.0	22.0	250	fast_food
-hot_dog	Хот-дог	Hot dog	hot dog	260	9.0	15.0	23.0	150	fast_food
-french_fries	Картофель фри	French fries	french fries	310	3.4	15.0	41.0	120	fast_food
-nuggets	Наггетсы	Chicken nuggets	chicken nuggets	300	15.0	19.0	16.0	120	fast_food
-shawarma	Шаурма	Shawarma	shawarma wrap, doner kebab roll	230	10.0	11.0	23.0	350	fast_food
-burrito	Буррито	Burrito	burrito	210	9.0	8.0	26.0	300	fast_food
-tacos	Тако	Tacos	tacos	220	10.0	11.0	20.0	200	fast_food
-quesadilla	Кесадилья	Quesadilla	quesadilla	290	13.0	15.0	26.0	200	fast_food
-falafel	Фалафель	Falafel	falafel balls	330	13.0	18.0	32.0	120	fast_food
-club_sandwich	Сэндвич	Sandwich	sandwich with ham, cheese and lettuce	230	12.0	10.0	23.0	200	fast_food
-chebureki	Чебурек	Cheburek	chebureki, deep fried half-moon turnover with meat	300	9.0	17.0	28.0	130	bakery
-belyash	Беляш	Belyash	belyash, fried round meat pie	290	11.0	16.0	26.0	120	bakery
-pirozhki_fried	Пирожок жареный	Fried pirozhok	fried pirozhki, fried buns with potato filling	260	5.0	12.0	33.0	80	bakery
-pirozhki_baked	Пирожок печёный	Baked pirozhok	baked pirozhki, small glazed buns with meat filling	260	10.0	10.0	32.0	80	bakery
-sushi_rolls	Роллы маки	Maki rolls	sushi maki rolls	150	6.0	3.0	25.0	250	asian
-nigiri	Суши нигири	Nigiri sushi	nigiri sushi with raw fish	145	7.0	1.5	26.0	200	asian
-philadelphia	Ролл Филадельфия	Philadelphia roll	philadelphia roll with salmon and cream cheese	190	8.0	8.0	22.0	250	asian
-poke	Поке	Poke bowl	poke bowl with rice, raw fish and vegetables	140	8.0	5.0	16.0	350	asian
-fried_rice	Жареный рис с яйцом	Egg fried rice	egg fried rice	170	5.0	6.0	25.0	300	asian
-pad_thai	Пад тай	Pad thai	pad thai noodles	170	7.0	6.0	22.0	350	asian
-wok_noodles	Лапша вок с курицей	Chicken wok noodles	stir-fried wok noodles with chicken and vegetables	150	8.0	5.0	18.0	350	asian
-gyoza	Гёдза	Gyoza	gyoza, pan-fried japanese dumplings	210	9.0	9.0	23.0	150	asian
-spring_rolls	Спринг-роллы	Spring rolls	fried spring rolls	200	5.0	9.0	25.0	150	asian
-bibimbap	Пибимпап	Bibimbap	bibimbap, korean rice bowl with vegetables and egg	120	6.0	4.0	16.0	450	asian
-caesar	Цезарь с курицей	Chicken caesar salad	caesar salad with chicken and croutons	190	11.0	13.0	7.0	250	salad
-olivie	Оливье	Olivier salad	olivier salad, russian potato salad with mayonnaise	200	5.0	16.0	8.0	200	salad
-vinegret	Винегрет	Vinegret (beet salad)	vinegret, russian beetroot salad with pickles	130	1.6	10.0	7.0	200	salad
-shuba	Сельдь под шубой	Herring under a fur coat	dressed herring, layered salad with grated beetroot on top	190	6.0	15.0	8.0	200	salad
-mimosa	Салат Мимоза	Mimosa salad	mimosa salad, layered fish salad topped with grated egg yolk	220	9.0	18.0	4.0	200	salad
-crab_salad	Крабовый салат	Crab stick salad	crab stick salad with corn and rice	200	5.0	15.0	11.0	200	salad
-greek_salad	Греческий салат	Greek salad	greek salad with feta cheese and olives	110	3.0	9.0	4.0	250	salad
-veg_salad	Салат из огурцов и помидоров	Cucumber and tomato salad	fresh cucumber and tomato salad	60	1.0	4.5	4.0	200	salad
-coleslaw	Салат из капусты	Coleslaw	coleslaw, shredded cabbage salad	70	1.4	4.5	6.0	150	salad
-korean_carrot	Морковь по-корейски	Korean carrot salad	korean style spicy shredded carrot salad	120	1.3	9.0	8.5	100	salad
-caprese	Капрезе	Caprese	caprese salad with mozzarella and tomato	210	12.0	16.0	4.0	200	salad
-fried_eggs	Яичница глазунья	Fried eggs	fried eggs sunny side up	190	13.0	15.0	1.0	120	breakfast
-omelette	Омлет	Omelette	omelette	150	10.0	11.0	2.0	150	breakfast
-boiled_egg	Яйцо варёное	Boiled egg	boiled eggs	155	13.0	11.0	1.1	55	breakfast
-oatmeal	Овсянка на молоке	Oatmeal with milk	oatmeal porridge	105	3.5	3.0	15.0	250	breakfast
-semolina	Манная каша	Semolina porridge	semolina porridge	100	3.0	3.2	15.0	250	breakfast
-rice_porridge	Рисовая каша на молоке	Rice milk porridge	rice milk porridge	100	3.0	2.5	16.0	250	breakfast
-granola	Гранола с йогуртом	Granola with yogurt	granola with yogurt and berries	200	6.0	7.0	28.0	200	breakfast
-syrniki	Сырники	Syrniki (cottage cheese pancakes)	syrniki, fried cottage cheese pancakes	220	15.0	9.0	20.0	200	breakfast
-blini	Блины	Blini (crepes)	blini, thin russian crepes	230	6.0	9.0	31.0	150	breakfast
-blini_meat	Блинчики с мясом	Crepes with meat	crepes rolled with meat filling	220	10.0	11.0	20.0	200	breakfast
-pancakes	Панкейки	Pancakes	fluffy american pancakes with syrup	230	6.0	9.0	31.0	150	breakfast
-oladyi	Оладьи	Oladyi (small pancakes)	oladyi, small thick fried pancakes	250	6.0	9.0	36.0	150	breakfast
-cottage_cheese	Творог	Cottage cheese	cottage cheese, tvorog	120	17.0	5.0	2.0	150	breakfast
-yogurt	Йогурт натуральный	Plain yogurt	natural yogurt in a bowl	66	5.0	3.2	3.5	150	breakfast
-sandwich_cheese	Бутерброд с сыром	Cheese open sandwich	open sandwich with cheese on bread	300	12.0	15.0	30.0	80	breakfast
-sandwich_sausage	Бутерброд с колбасой	Sausage open sandwich	open sandwich with sausage slices on bread	300	10.0	17.0	27.0	80	breakfast
-avocado_toast	Тост с авокадо	Avocado toast	avocado toast	200	5.0	11.0	20.0	150	breakfast
-croissant	Круассан	Croissant	croissant	410	8.0	21.0	46.0	60	bakery
-buckwheat	Гречка отварная	Boiled buckwheat	boiled buckwheat groats	101	3.6	1.0	20.0	200	side
-rice	Рис отварной	Boiled rice	boiled white rice	130	2.7	0.3	28.0	200	side
-pasta	Макароны отварные	Boiled pasta	boiled pasta	140	5.0	1.0	28.0	200	side
-mashed_potatoes	Картофельное пюре	Mashed potatoes	mashed potatoes	100	2.0	3.5	14.0	200	side
-boiled_potatoes	Картофель отварной	Boiled potatoes	boiled potatoes with dill	85	2.0	0.4	17.0	200	side
-fried_potatoes	Картофель жареный	Fried potatoes	pan-fried potato slices	190	3.0	10.0	23.0	200	side
-baked_potatoes	Картофель запечённый	Roasted potato wedges	roasted potato wedges	130	2.5	5.0	19.0	200	side
-bulgur	Булгур	Bulgur	cooked bulgur	85	3.0	0.2	19.0	200	side
-couscous	Кускус	Couscous	cooked couscous	112	3.8	0.2	23.0	200	side
-quinoa	Киноа	Quinoa	cooked quinoa	120	4.4	1.9	21.0	200	side
-stewed_cabbage	Тушёная капуста	Braised cabbage	braised cabbage	75	2.0	4.0	8.0	200	side
-grilled_vegetables	Овощи гриль	Grilled vegetables	grilled vegetables, zucchini, eggplant and peppers	70	1.5	4.5	6.0	200	side
-steamed_vegetables	Овощи на пару	Steamed vegetables	steamed vegetables, broccoli and carrots	40	2.0	0.3	7.0	200	side
-beans	Фасоль тушёная	Stewed beans	stewed beans	110	6.0	3.0	15.0	200	side
-corn	Кукуруза варёная	Corn on the cob	boiled corn on the cob	96	3.4	1.5	21.0	150	side
-white_bread	Хлеб белый	White bread	slices of white bread	265	8.0	3.2	49.0	30	bread
-rye_bread	Хлеб чёрный	Rye bread	slices of dark rye bread	210	6.6	1.2	40.0	30	bread
-lavash	Лаваш	Lavash	lavash flatbread	275	9.0	1.0	56.0	50	bread
-napoleon	Торт Наполеон	Napoleon cake	napoleon cake, layered puff pastry cake with custard	400	6.0	25.0	38.0	120	dessert
-medovik	Медовик	Medovik (honey cake)	medovik, russian layered honey cake	450	6.0	22.0	56.0	120	dessert
-cheesecake	Чизкейк	Cheesecake	cheesecake	320	6.0	22.0	25.0	120	dessert
-chocolate_cake	Шоколадный торт	Chocolate cake	chocolate cake	380	5.0	20.0	47.0	120	dessert
-tiramisu	Тирамису	Tiramisu	tiramisu	280	5.0	17.0	26.0	120	dessert
-ice_cream	Мороженое пломбир	Ice cream	ice cream scoops	230	3.5	15.0	21.0	80	dessert
-eclair	Эклер	Eclair	chocolate eclair	340	5.0	22.0	30.0	70	dessert
-donut	Пончик	Donut	glazed donut	420	6.0	23.0	47.0	70	dessert
-muffin	Маффин	Muffin	muffin	380	6.0	18.0	50.0	90	dessert
-cookies	Печенье	Cookies	cookies	450	6.0	18.0	66.0	30	dessert
-chocolate	Шоколад	Chocolate	chocolate bar	540	6.0	32.0	56.0	25	dessert
-waffles	Вафли бельгийские	Belgian waffles	belgian waffles	290	7.0	13.0	36.0	100	dessert
-sharlotka	Шарлотка	Sharlotka (apple cake)	sharlotka, apple sponge cake	220	5.0	6.0	37.0	120	dessert
-cinnamon_roll	Булочка с корицей	Cinnamon roll	cinnamon roll	360	6.0	15.0	50.0	100	dessert
-pryanik	Пряник	Pryanik (gingerbread)	pryanik, glazed russian gingerbread	360	5.0	4.5	75.0	50	dessert
-apple	Яблоко	Apple	apple	52	0.3	0.2	14.0	180	fruit
-banana	Банан	Banana	banana	89	1.1	0.3	23.0	120	fruit
-orange	Апельсин	Orange	orange	47	0.9	0.1	12.0	150	fruit
-mandarin	Мандарин	Tangerine	tangerines	53	0.8	0.3	13.0	80	fruit
-grapes	Виноград	Grapes	grapes	69	0.7	0.2	18.0	150	fruit
-pear	Груша	Pear	pear	57	0.4	0.1	15.0	170	fruit
-strawberry	Клубника	Strawberries	strawberries	32	0.7	0.3	7.7	150	fruit
-watermelon	Арбуз	Watermelon	watermelon slices	30	0.6	0.2	7.6	300	fruit
-melon	Дыня	Melon	melon slices	34	0.8	0.2	8.0	250	fruit
-pineapple	Ананас	Pineapple	pineapple	50	0.5	0.1	13.0	150	fruit
-kiwi	Киви	Kiwi	kiwi fruit	61	1.1	0.5	15.0	75	fruit
-peach	Персик	Peach	peach	39	0.9	0.3	9.5	150	fruit
-mango	Манго	Mango	mango	60	0.8	0.4	15.0	200	fruit
-cherries	Черешня	Cherries	cherries	63	1.1	0.2	16.0	150	fruit
-blueberries	Голубика	Blueberries	blueberries	57	0.7	0.3	14.0	100	fruit
-avocado	Авокадо	Avocado	avocado	160	2.0	15.0	9.0	150	fruit
-fruit_salad	Фруктовый салат	Fruit salad	fruit salad	60	0.7	0.3	15.0	200	fruit
-dried_fruits	Сухофрукты	Dried fruits	dried fruits, dried apricots and raisins	280	3.0	0.5	70.0	40	snack
-nuts	Орехи	Nuts	mixed nuts	600	18.0	52.0	15.0	30	snack
-cucumber	Огурец	Cucumber	cucumbers	15	0.7	0.1	3.6	120	vegetable
-tomato	Помидор	Tomato	tomatoes	18	0.9	0.2	3.9	120	vegetable
-carrot	Морковь	Carrot	carrots	41	0.9	0.2	10.0	100	vegetable
-bell_pepper	Перец болгарский	Bell pepper	bell peppers	27	1.0	0.3	6.0	150	vegetable
-broccoli	Брокколи	Broccoli	broccoli	34	2.8	0.4	7.0	150	vegetable
-pickles	Солёные огурцы	Pickles	pickled cucumbers	15	0.8	0.1	2.5	100	vegetable
-chips	Чипсы	Potato chips	potato chips	540	6.0	35.0	50.0	50	snack
-popcorn	Попкорн	Popcorn	popcorn	400	8.0	20.0	55.0	50	snack
-cheese	Сыр твёрдый	Hard cheese	slices of hard cheese	360	25.0	28.0	0.0	30	snack
-sausage	Колбаса варёная	Bologna sausage	slices of bologna sausage	260	12.0	23.0	1.0	50	snack
-salami	Колбаса копчёная	Salami	salami slices	400	22.0	34.0	1.5	40	snack
-herring	Сельдь с луком	Pickled herring with onion	pickled herring with onion rings	220	16.0	17.0	0.0	100	snack
-olives	Оливки	Olives	olives	115	0.8	11.0	6.0	30	snack
-hummus	Хумус	Hummus	hummus	170	8.0	10.0	14.0	80	snack
-coffee	Кофе чёрный	Black coffee	cup of black coffee	2	0.1	0.0	0.3	200	drink
-cappuccino	Капучино	Cappuccino	cappuccino with milk foam	45	2.5	2.0	4.0	250	drink
-latte	Латте	Latte	latte in a glass	55	3.0	2.8	4.7	300	drink
-tea	Чай	Tea	cup of tea	1	0.0	0.0	0.2	250	drink
-hot_chocolate	Какао	Hot chocolate	hot chocolate cocoa drink	80	3.0	3.0	11.0	250	drink
-orange_juice	Апельсиновый сок	Orange juice	glass of orange juice	45	0.7	0.2	10.0	250	drink
-cola	Кола	Cola	glass of cola soda	42	0.0	0.0	10.6	330	drink
-beer	Пиво	Beer	glass of beer	43	0.5	0.0	3.6	500	drink
-red_wine	Вино красное	Red wine	glass of red wine	85	0.1	0.0	2.6	150	drink
-smoothie	Смузи	Smoothie	fruit smoothie	60	1.0	0.5	13.0	300	drink
-milk	Молоко	Milk	glass of milk	52	2.8	2.5	4.7	250	drink
-kefir	Кефир	Kefir	glass of kefir	51	2.9	2.5	4.0	250	drink
-kompot	Компот	Kompot (fruit drink)	kompot, homemade fruit drink in a glass	45	0.2	0.0	11.0	250	drink
+id	name_ru	name_en	name_es	name_nl	prompt	kcal	protein	fat	carbs	portion	category
+borscht	Борщ	Borscht	Borsch	Borsjtsj	borscht, red beet soup with sour cream	49	1.1	2.2	6.7	300	soup
+shchi	Щи	Shchi (cabbage soup)	Shchi (sopa de col)	Sjtsji (koolsoep)	shchi, russian cabbage soup	35	1.5	1.8	3.4	300	soup
+solyanka	Солянка мясная	Solyanka	Solianka	Soljanka	solyanka, meat soup with olives and lemon slice	69	4.6	4.1	3.3	300	soup
+ukha	Уха	Ukha (fish soup)	Ujá (sopa de pescado)	Oecha (vissoep)	ukha, clear fish soup with potatoes	46	4.4	1.5	3.6	300	soup
+okroshka	Окрошка на кефире	Okroshka (kefir)	Okroshka (con kéfir)	Okrosjka (met kefir)	okroshka, cold kefir soup with chopped vegetables and egg	60	3.5	3.0	5.0	300	soup
+chicken_noodle_soup	Куриный суп с лапшой	Chicken noodle soup	Sopa de pollo con fideos	Kippensoep met vermicelli	chicken noodle soup	40	3.0	1.3	4.5	300	soup
+pea_soup	Гороховый суп	Split pea soup	Sopa de guisantes	Spliterwtensoep	split pea soup	66	4.4	2.5	6.8	300	soup
+rassolnik	Рассольник	Rassolnik (pickle soup)	Rassólnik (sopa de pepinillos)	Rassolnik (augurkensoep)	rassolnik, pickle soup with pearl barley	42	1.5	2.0	4.6	300	soup
+mushroom_soup	Грибной суп	Mushroom soup	Sopa de setas	Paddenstoelensoep	mushroom soup with potatoes	30	1.0	1.5	3.5	300	soup
+cream_mushroom_soup	Крем-суп грибной	Cream of mushroom soup	Crema de champiñones	Champignonroomsoep	cream of mushroom soup	75	2.0	5.0	5.5	250	soup
+pumpkin_soup	Тыквенный крем-суп	Pumpkin cream soup	Crema de calabaza	Pompoensoep	pumpkin cream soup	55	1.2	2.8	6.5	250	soup
+tom_yum	Том ям	Tom yum	Tom yum	Tom yum	tom yum soup with shrimp	45	4.0	2.0	3.0	300	soup
+ramen	Рамен	Ramen	Ramen	Ramen	ramen noodle soup with egg and pork	85	4.5	3.0	10.0	450	soup
+pho	Фо бо	Pho bo	Pho bo	Pho bo	pho, vietnamese beef noodle soup	60	4.5	1.5	7.0	450	soup
+minestrone	Минестроне	Minestrone	Minestrone	Minestrone	minestrone vegetable soup	35	1.5	1.0	5.0	300	soup
+miso_soup	Мисо-суп	Miso soup	Sopa de miso	Misosoep	miso soup with tofu and seaweed	25	2.0	0.9	2.5	250	soup
+lagman	Лагман	Lagman	Lagman	Lagman	lagman, thick noodle soup with meat and vegetables	90	5.0	3.5	10.0	350	soup
+kharcho	Харчо	Kharcho	Jarcho	Chartsjo	kharcho, georgian beef and rice soup	70	4.5	3.5	5.0	300	soup
+gazpacho	Гаспачо	Gazpacho	Gazpacho	Gazpacho	gazpacho, cold tomato soup	30	0.9	1.5	3.5	250	soup
+onion_soup	Луковый суп	French onion soup	Sopa de cebolla	Franse uiensoep	french onion soup with cheese crouton	60	2.5	2.5	6.5	300	soup
+pelmeni	Пельмени	Pelmeni	Pelmeni	Pelmeni	pelmeni, russian meat dumplings with sour cream	275	11.9	12.4	29.0	250	main
+vareniki_potato	Вареники с картошкой	Vareniki with potato	Varéniki de patata	Vareniki met aardappel	vareniki, boiled dumplings with potato filling and fried onion	150	3.7	3.5	26.0	250	main
+vareniki_cherry	Вареники с вишней	Vareniki with cherry	Varéniki de cereza	Vareniki met kersen	vareniki, sweet dumplings with cherry	190	4.0	2.0	38.0	200	main
+vareniki_cottage	Вареники с творогом	Vareniki with cottage cheese	Varéniki de requesón	Vareniki met kwark	vareniki with cottage cheese filling	200	10.0	5.0	28.0	220	main
+khinkali	Хинкали	Khinkali	Jinkali	Chinkali	khinkali, large georgian twisted dumplings	220	10.0	9.0	25.0	300	main
+manti	Манты	Manti	Manti	Manti	manti, large steamed meat dumplings	210	10.0	10.0	20.0	300	main
+golubtsy	Голубцы	Golubtsy (cabbage rolls)	Golubtsy (rollitos de col)	Golubtsy (koolrolletjes)	golubtsy, cabbage rolls stuffed with meat and rice in tomato sauce	110	6.0	6.0	7.0	300	main
+kotleta	Котлета мясная	Meat cutlet	Filete ruso	Gehaktschijf	pan-fried minced meat cutlet patty	240	14.0	17.0	9.0	100	main
+kotleta_chicken	Котлета куриная	Chicken cutlet	Hamburguesa de pollo	Kipschijf	chicken cutlet patty	190	16.0	10.0	8.0	100	main
+beef_stroganoff	Бефстроганов	Beef stroganoff	Ternera Stroganoff	Beef stroganoff	beef stroganoff, beef strips in creamy sauce	190	15.0	13.0	3.5	200	main
+plov	Плов	Plov (pilaf)	Plov (arroz pilaf)	Plov (pilav)	plov, pilaf rice with meat and carrots	190	7.0	9.0	20.0	300	main
+shashlik_pork	Шашлык из свинины	Pork shashlik	Pinchos de cerdo	Varkenssjasliek	pork shashlik, grilled meat chunks on skewers	260	18.0	20.0	1.0	200	main
+shashlik_chicken	Шашлык куриный	Chicken skewers	Brochetas de pollo	Kipspiesjes	grilled chicken skewers	165	20.0	9.0	1.0	200	main
+lula_kebab	Люля-кебаб	Lula kebab	Lula kebab	Lula kebab	lula kebab, grilled minced meat on skewer	270	17.0	21.0	3.0	200	main
+zharkoe	Жаркое с картофелем	Pot roast with potatoes	Estofado de carne con patatas	Stoofvlees met aardappelen	roasted meat stew with potatoes in a pot	140	8.0	7.0	11.0	300	main
+goulash	Гуляш	Goulash	Gulash	Goulash	goulash, beef stew in paprika gravy	150	13.0	9.0	4.0	250	main
+liver	Печень жареная	Fried liver	Hígado frito	Gebakken lever	fried liver with onions	200	22.0	9.0	6.0	150	main
+fish_fried	Рыба жареная	Fried fish	Pescado frito	Gebakken vis	pan-fried breaded fish fillet	180	18.0	9.0	6.0	150	main
+fish_baked	Рыба запечённая	Baked fish	Pescado al horno	Gebakken witvis uit de oven	baked white fish fillet	130	20.0	5.0	1.0	150	main
+salmon	Лосось запечённый	Baked salmon	Salmón al horno	Zalm uit de oven	baked salmon fillet	200	22.0	12.0	0.0	150	main
+chicken_breast	Куриная грудка гриль	Grilled chicken breast	Pechuga de pollo a la plancha	Gegrilde kipfilet	grilled chicken breast	165	31.0	3.6	0.0	150	main
+chicken_leg	Куриная ножка запечённая	Roast chicken leg	Muslo de pollo asado	Geroosterde kippenpoot	roasted chicken leg	210	22.0	13.0	0.0	200	main
+fried_chicken	Курица во фритюре	Deep-fried chicken	Pollo frito	Gefrituurde kip	crispy deep fried chicken	280	20.0	17.0	11.0	200	main
+chicken_wings	Куриные крылышки	Chicken wings	Alitas de pollo	Kippenvleugels	chicken wings	260	22.0	18.0	3.0	200	main
+pork_chop	Отбивная в панировке	Breaded pork chop	Escalope de cerdo empanado	Gepaneerde varkensschnitzel	breaded pork schnitzel	280	20.0	20.0	5.0	150	main
+steak	Стейк говяжий	Beef steak	Filete de ternera	Biefstuk	grilled beef steak	250	26.0	16.0	0.0	200	main
+meatballs	Тефтели в соусе	Meatballs in sauce	Albóndigas en salsa	Gehaktballetjes in saus	meatballs in tomato sauce	150	9.0	9.0	8.0	250	main
+stuffed_peppers	Перец фаршированный	Stuffed peppers	Pimientos rellenos	Gevulde paprika's	stuffed bell peppers with meat and rice	95	5.0	4.5	9.0	300	main
+draniki	Драники	Draniki (potato pancakes)	Draniki (tortitas de patata)	Draniki (aardappelpannenkoekjes)	draniki, fried potato pancakes	200	4.0	11.0	22.0	200	main
+kholodets	Холодец	Kholodets (meat aspic)	Jolodets (gelatina de carne)	Cholodets (vleesaspic)	kholodets, meat aspic jelly	120	15.0	6.0	1.0	150	main
+sosiski	Сосиски	Frankfurters	Salchichas cocidas	Knakworstjes	boiled sausages, frankfurters	260	11.0	23.0	1.5	100	main
+navy_pasta	Макароны по-флотски	Pasta with minced meat	Pasta con carne picada	Pasta met gehakt	pasta with fried minced meat	210	9.0	10.0	21.0	300	main
+lasagna	Лазанья	Lasagna	Lasaña	Lasagne	lasagna	170	9.0	9.0	13.0	300	main
+bolognese	Спагетти болоньезе	Spaghetti bolognese	Espaguetis a la boloñesa	Spaghetti bolognese	spaghetti bolognese	150	7.0	5.0	19.0	300	main
+carbonara	Паста карбонара	Pasta carbonara	Pasta carbonara	Pasta carbonara	pasta carbonara	200	8.0	9.0	22.0	300	main
+mac_cheese	Макароны с сыром	Mac and cheese	Macarrones con queso	Macaroni met kaas	macaroni and cheese	190	7.0	8.0	22.0	250	main
+risotto	Ризотто	Risotto	Risotto	Risotto	creamy risotto	160	4.0	6.0	22.0	300	main
+paella	Паэлья	Paella	Paella	Paella	paella with seafood	160	9.0	5.0	20.0	350	main
+shakshuka	Шакшука	Shakshuka	Shakshuka	Shakshuka	shakshuka, eggs poached in tomato sauce	110	6.0	7.0	5.0	300	main
+curry	Карри с курицей	Chicken curry	Curry de pollo	Kipcurry	chicken curry with sauce	150	11.0	8.0	8.0	300	main
+teriyaki	Курица терияки с рисом	Chicken teriyaki with rice	Pollo teriyaki con arroz	Kip teriyaki met rijst	chicken teriyaki with rice	160	10.0	4.0	21.0	350	main
+lobio	Лобио	Lobio (bean stew)	Lobio (guiso de alubias)	Lobio (bonenstoof)	lobio, georgian stewed red beans	120	6.0	5.0	13.0	200	main
+khachapuri	Хачапури по-аджарски	Adjarian khachapuri	Jachapuri adjaruli	Adjaarse chatsjapoeri	adjarian khachapuri, boat-shaped cheese bread with egg yolk	300	12.0	15.0	30.0	300	bakery
+pizza_margherita	Пицца Маргарита	Pizza margherita	Pizza margarita	Pizza margherita	pizza margherita	250	11.0	9.0	31.0	300	fast_food
+pizza_pepperoni	Пицца пепперони	Pepperoni pizza	Pizza de pepperoni	Pizza pepperoni	pepperoni pizza	280	12.0	12.0	30.0	300	fast_food
+burger	Бургер	Burger	Hamburguesa	Hamburger	hamburger	250	13.0	12.0	22.0	250	fast_food
+hot_dog	Хот-дог	Hot dog	Perrito caliente	Hotdog	hot dog	260	9.0	15.0	23.0	150	fast_food
+french_fries	Картофель фри	French fries	Patatas fritas	Patat	french fries	310	3.4	15.0	41.0	120	fast_food
+nuggets	Наггетсы	Chicken nuggets	Nuggets de pollo	Kipnuggets	chicken nuggets	300	15.0	19.0	16.0	120	fast_food
+shawarma	Шаурма	Shawarma	Shawarma	Shoarma	shawarma wrap, doner kebab roll	230	10.0	11.0	23.0	350	fast_food
+burrito	Буррито	Burrito	Burrito	Burrito	burrito	210	9.0	8.0	26.0	300	fast_food
+tacos	Тако	Tacos	Tacos	Taco's	tacos	220	10.0	11.0	20.0	200	fast_food
+quesadilla	Кесадилья	Quesadilla	Quesadilla	Quesadilla	quesadilla	290	13.0	15.0	26.0	200	fast_food
+falafel	Фалафель	Falafel	Falafel	Falafel	falafel balls	330	13.0	18.0	32.0	120	fast_food
+club_sandwich	Сэндвич	Sandwich	Sándwich	Sandwich	sandwich with ham, cheese and lettuce	230	12.0	10.0	23.0	200	fast_food
+chebureki	Чебурек	Cheburek	Chebureki	Tsjeboereki	chebureki, deep fried half-moon turnover with meat	300	9.0	17.0	28.0	130	bakery
+belyash	Беляш	Belyash	Beliash	Beljasj	belyash, fried round meat pie	290	11.0	16.0	26.0	120	bakery
+pirozhki_fried	Пирожок жареный	Fried pirozhok	Pirozhki frito	Gefrituurde pirozjki	fried pirozhki, fried buns with potato filling	260	5.0	12.0	33.0	80	bakery
+pirozhki_baked	Пирожок печёный	Baked pirozhok	Pirozhki al horno	Gebakken pirozjki	baked pirozhki, small glazed buns with meat filling	260	10.0	10.0	32.0	80	bakery
+sushi_rolls	Роллы маки	Maki rolls	Rollos maki	Makirolletjes	sushi maki rolls	150	6.0	3.0	25.0	250	asian
+nigiri	Суши нигири	Nigiri sushi	Sushi nigiri	Nigiri sushi	nigiri sushi with raw fish	145	7.0	1.5	26.0	200	asian
+philadelphia	Ролл Филадельфия	Philadelphia roll	Rollo Filadelfia	Philadelphia roll	philadelphia roll with salmon and cream cheese	190	8.0	8.0	22.0	250	asian
+poke	Поке	Poke bowl	Poke bowl	Pokébowl	poke bowl with rice, raw fish and vegetables	140	8.0	5.0	16.0	350	asian
+fried_rice	Жареный рис с яйцом	Egg fried rice	Arroz frito con huevo	Gebakken rijst met ei	egg fried rice	170	5.0	6.0	25.0	300	asian
+pad_thai	Пад тай	Pad thai	Pad thai	Pad thai	pad thai noodles	170	7.0	6.0	22.0	350	asian
+wok_noodles	Лапша вок с курицей	Chicken wok noodles	Fideos wok con pollo	Wokmie met kip	stir-fried wok noodles with chicken and vegetables	150	8.0	5.0	18.0	350	asian
+gyoza	Гёдза	Gyoza	Gyozas	Gyoza	gyoza, pan-fried japanese dumplings	210	9.0	9.0	23.0	150	asian
+spring_rolls	Спринг-роллы	Spring rolls	Rollitos de primavera	Loempia's	fried spring rolls	200	5.0	9.0	25.0	150	asian
+bibimbap	Пибимпап	Bibimbap	Bibimbap	Bibimbap	bibimbap, korean rice bowl with vegetables and egg	120	6.0	4.0	16.0	450	asian
+caesar	Цезарь с курицей	Chicken caesar salad	Ensalada César con pollo	Caesarsalade met kip	caesar salad with chicken and croutons	190	11.0	13.0	7.0	250	salad
+olivie	Оливье	Olivier salad	Ensaladilla rusa (Olivier)	Olivier-salade (Russische salade)	olivier salad, russian potato salad with mayonnaise	200	5.0	16.0	8.0	200	salad
+vinegret	Винегрет	Vinegret (beet salad)	Vinegret (ensalada de remolacha)	Vinegret (bietensalade)	vinegret, russian beetroot salad with pickles	130	1.6	10.0	7.0	200	salad
+shuba	Сельдь под шубой	Herring under a fur coat	Arenque bajo abrigo	Haring onder een bontjas	dressed herring, layered salad with grated beetroot on top	190	6.0	15.0	8.0	200	salad
+mimosa	Салат Мимоза	Mimosa salad	Ensalada Mimosa	Mimosasalade	mimosa salad, layered fish salad topped with grated egg yolk	220	9.0	18.0	4.0	200	salad
+crab_salad	Крабовый салат	Crab stick salad	Ensalada de palitos de cangrejo	Krabsticksalade	crab stick salad with corn and rice	200	5.0	15.0	11.0	200	salad
+greek_salad	Греческий салат	Greek salad	Ensalada griega	Griekse salade	greek salad with feta cheese and olives	110	3.0	9.0	4.0	250	salad
+veg_salad	Салат из огурцов и помидоров	Cucumber and tomato salad	Ensalada de pepino y tomate	Komkommer-tomatensalade	fresh cucumber and tomato salad	60	1.0	4.5	4.0	200	salad
+coleslaw	Салат из капусты	Coleslaw	Ensalada de col	Koolsalade	coleslaw, shredded cabbage salad	70	1.4	4.5	6.0	150	salad
+korean_carrot	Морковь по-корейски	Korean carrot salad	Zanahoria a la coreana	Koreaanse wortelsalade	korean style spicy shredded carrot salad	120	1.3	9.0	8.5	100	salad
+caprese	Капрезе	Caprese	Ensalada caprese	Caprese	caprese salad with mozzarella and tomato	210	12.0	16.0	4.0	200	salad
+fried_eggs	Яичница глазунья	Fried eggs	Huevos fritos	Spiegeleieren	fried eggs sunny side up	190	13.0	15.0	1.0	120	breakfast
+omelette	Омлет	Omelette	Tortilla francesa	Omelet	omelette	150	10.0	11.0	2.0	150	breakfast
+boiled_egg	Яйцо варёное	Boiled egg	Huevo cocido	Gekookt ei	boiled eggs	155	13.0	11.0	1.1	55	breakfast
+oatmeal	Овсянка на молоке	Oatmeal with milk	Gachas de avena con leche	Havermout met melk	oatmeal porridge	105	3.5	3.0	15.0	250	breakfast
+semolina	Манная каша	Semolina porridge	Gachas de sémola	Griesmeelpap	semolina porridge	100	3.0	3.2	15.0	250	breakfast
+rice_porridge	Рисовая каша на молоке	Rice milk porridge	Arroz con leche	Rijstebrij	rice milk porridge	100	3.0	2.5	16.0	250	breakfast
+granola	Гранола с йогуртом	Granola with yogurt	Granola con yogur	Granola met yoghurt	granola with yogurt and berries	200	6.0	7.0	28.0	200	breakfast
+syrniki	Сырники	Syrniki (cottage cheese pancakes)	Syrniki (tortitas de requesón)	Syrniki (kwarkpannenkoekjes)	syrniki, small thick round golden fried cottage cheese pancakes with sour cream	220	15.0	9.0	20.0	200	breakfast
+blini	Блины	Blini (crepes)	Blinis (crepes)	Blini (flensjes)	blini, thin russian crepes	230	6.0	9.0	31.0	150	breakfast
+blini_meat	Блинчики с мясом	Crepes with meat	Crepes rellenas de carne	Flensjes met vlees	crepes rolled with meat filling	220	10.0	11.0	20.0	200	breakfast
+pancakes	Панкейки	Pancakes	Tortitas americanas	Amerikaanse pancakes	fluffy american pancakes with syrup	230	6.0	9.0	31.0	150	breakfast
+oladyi	Оладьи	Oladyi (small pancakes)	Oladi (tortitas pequeñas)	Oladji (kleine pannenkoekjes)	oladyi, small thick fried pancakes	250	6.0	9.0	36.0	150	breakfast
+cottage_cheese	Творог	Cottage cheese	Requesón	Kwark	cottage cheese, tvorog	120	17.0	5.0	2.0	150	breakfast
+yogurt	Йогурт натуральный	Plain yogurt	Yogur natural	Naturel yoghurt	natural yogurt in a bowl	66	5.0	3.2	3.5	150	breakfast
+sandwich_cheese	Бутерброд с сыром	Cheese open sandwich	Tostada de queso	Boterham met kaas	open sandwich with cheese on bread	300	12.0	15.0	30.0	80	breakfast
+sandwich_sausage	Бутерброд с колбасой	Sausage open sandwich	Tostada de embutido	Boterham met worst	open sandwich with sausage slices on bread	300	10.0	17.0	27.0	80	breakfast
+avocado_toast	Тост с авокадо	Avocado toast	Tostada de aguacate	Avocadotoast	avocado toast	200	5.0	11.0	20.0	150	breakfast
+croissant	Круассан	Croissant	Cruasán	Croissant	croissant	410	8.0	21.0	46.0	60	bakery
+buckwheat	Гречка отварная	Boiled buckwheat	Trigo sarraceno cocido	Gekookte boekweit	boiled buckwheat groats	101	3.6	1.0	20.0	200	side
+rice	Рис отварной	Boiled rice	Arroz blanco cocido	Gekookte rijst	boiled white rice	130	2.7	0.3	28.0	200	side
+pasta	Макароны отварные	Boiled pasta	Pasta cocida	Gekookte pasta	boiled pasta	140	5.0	1.0	28.0	200	side
+mashed_potatoes	Картофельное пюре	Mashed potatoes	Puré de patatas	Aardappelpuree	mashed potatoes	100	2.0	3.5	14.0	200	side
+boiled_potatoes	Картофель отварной	Boiled potatoes	Patatas cocidas	Gekookte aardappelen	boiled potatoes with dill	85	2.0	0.4	17.0	200	side
+fried_potatoes	Картофель жареный	Fried potatoes	Patatas salteadas	Gebakken aardappelen	pan-fried potato slices	190	3.0	10.0	23.0	200	side
+baked_potatoes	Картофель запечённый	Roasted potato wedges	Patatas gajo al horno	Aardappelpartjes uit de oven	roasted potato wedges	130	2.5	5.0	19.0	200	side
+bulgur	Булгур	Bulgur	Bulgur	Bulgur	cooked bulgur	85	3.0	0.2	19.0	200	side
+couscous	Кускус	Couscous	Cuscús	Couscous	cooked couscous	112	3.8	0.2	23.0	200	side
+quinoa	Киноа	Quinoa	Quinoa	Quinoa	cooked quinoa	120	4.4	1.9	21.0	200	side
+stewed_cabbage	Тушёная капуста	Braised cabbage	Col guisada	Gestoofde kool	braised cabbage	75	2.0	4.0	8.0	200	side
+grilled_vegetables	Овощи гриль	Grilled vegetables	Verduras a la plancha	Gegrilde groenten	grilled vegetables, zucchini, eggplant and peppers	70	1.5	4.5	6.0	200	side
+steamed_vegetables	Овощи на пару	Steamed vegetables	Verduras al vapor	Gestoomde groenten	steamed vegetables, broccoli and carrots	40	2.0	0.3	7.0	200	side
+beans	Фасоль тушёная	Stewed beans	Alubias guisadas	Gestoofde bonen	stewed beans	110	6.0	3.0	15.0	200	side
+corn	Кукуруза варёная	Corn on the cob	Mazorca de maíz	Maïskolf	boiled corn on the cob	96	3.4	1.5	21.0	150	side
+white_bread	Хлеб белый	White bread	Pan blanco	Wit brood	slices of white bread	265	8.0	3.2	49.0	30	bread
+rye_bread	Хлеб чёрный	Rye bread	Pan de centeno	Roggebrood	slices of dark rye bread	210	6.6	1.2	40.0	30	bread
+lavash	Лаваш	Lavash	Lavash	Lavash	lavash flatbread	275	9.0	1.0	56.0	50	bread
+napoleon	Торт Наполеон	Napoleon cake	Tarta Napoleón	Napoleontaart	napoleon cake, layered puff pastry cake with custard	400	6.0	25.0	38.0	120	dessert
+medovik	Медовик	Medovik (honey cake)	Medovik (tarta de miel)	Medovik (honingtaart)	medovik, russian layered honey cake	450	6.0	22.0	56.0	120	dessert
+cheesecake	Чизкейк	Cheesecake	Tarta de queso	Cheesecake	cheesecake	320	6.0	22.0	25.0	120	dessert
+chocolate_cake	Шоколадный торт	Chocolate cake	Tarta de chocolate	Chocoladetaart	chocolate cake	380	5.0	20.0	47.0	120	dessert
+tiramisu	Тирамису	Tiramisu	Tiramisú	Tiramisu	tiramisu	280	5.0	17.0	26.0	120	dessert
+ice_cream	Мороженое пломбир	Ice cream	Helado	IJs	ice cream scoops	230	3.5	15.0	21.0	80	dessert
+eclair	Эклер	Eclair	Pepito de chocolate (éclair)	Eclair	chocolate eclair	340	5.0	22.0	30.0	70	dessert
+donut	Пончик	Donut	Dónut	Donut	glazed donut	420	6.0	23.0	47.0	70	dessert
+muffin	Маффин	Muffin	Magdalena (muffin)	Muffin	muffin	380	6.0	18.0	50.0	90	dessert
+cookies	Печенье	Cookies	Galletas	Koekjes	cookies	450	6.0	18.0	66.0	30	dessert
+chocolate	Шоколад	Chocolate	Chocolate	Chocolade	chocolate bar	540	6.0	32.0	56.0	25	dessert
+waffles	Вафли бельгийские	Belgian waffles	Gofres	Brusselse wafels	belgian waffles	290	7.0	13.0	36.0	100	dessert
+sharlotka	Шарлотка	Sharlotka (apple cake)	Sharlotka (bizcocho de manzana)	Sjarlotka (appelcake)	sharlotka, apple sponge cake	220	5.0	6.0	37.0	120	dessert
+cinnamon_roll	Булочка с корицей	Cinnamon roll	Rollo de canela	Kaneelbroodje	cinnamon roll	360	6.0	15.0	50.0	100	dessert
+pryanik	Пряник	Pryanik (gingerbread)	Prianik (pan de jengibre)	Prjanik (peperkoek)	pryanik, glazed russian gingerbread	360	5.0	4.5	75.0	50	dessert
+apple	Яблоко	Apple	Manzana	Appel	apple	52	0.3	0.2	14.0	180	fruit
+banana	Банан	Banana	Plátano	Banaan	banana	89	1.1	0.3	23.0	120	fruit
+orange	Апельсин	Orange	Naranja	Sinaasappel	orange	47	0.9	0.1	12.0	150	fruit
+mandarin	Мандарин	Tangerine	Mandarina	Mandarijn	tangerines	53	0.8	0.3	13.0	80	fruit
+grapes	Виноград	Grapes	Uvas	Druiven	grapes	69	0.7	0.2	18.0	150	fruit
+pear	Груша	Pear	Pera	Peer	pear	57	0.4	0.1	15.0	170	fruit
+strawberry	Клубника	Strawberries	Fresas	Aardbeien	strawberries	32	0.7	0.3	7.7	150	fruit
+watermelon	Арбуз	Watermelon	Sandía	Watermeloen	watermelon slices	30	0.6	0.2	7.6	300	fruit
+melon	Дыня	Melon	Melón	Meloen	melon slices	34	0.8	0.2	8.0	250	fruit
+pineapple	Ананас	Pineapple	Piña	Ananas	pineapple	50	0.5	0.1	13.0	150	fruit
+kiwi	Киви	Kiwi	Kiwi	Kiwi	kiwi fruit	61	1.1	0.5	15.0	75	fruit
+peach	Персик	Peach	Melocotón	Perzik	peach	39	0.9	0.3	9.5	150	fruit
+mango	Манго	Mango	Mango	Mango	mango	60	0.8	0.4	15.0	200	fruit
+cherries	Черешня	Cherries	Cerezas	Kersen	cherries	63	1.1	0.2	16.0	150	fruit
+blueberries	Голубика	Blueberries	Arándanos	Blauwe bessen	blueberries	57	0.7	0.3	14.0	100	fruit
+avocado	Авокадо	Avocado	Aguacate	Avocado	avocado	160	2.0	15.0	9.0	150	fruit
+fruit_salad	Фруктовый салат	Fruit salad	Macedonia de frutas	Fruitsalade	fruit salad	60	0.7	0.3	15.0	200	fruit
+dried_fruits	Сухофрукты	Dried fruits	Frutos secos deshidratados	Gedroogd fruit	dried fruits, dried apricots and raisins	280	3.0	0.5	70.0	40	snack
+nuts	Орехи	Nuts	Frutos secos	Noten	mixed nuts	600	18.0	52.0	15.0	30	snack
+cucumber	Огурец	Cucumber	Pepino	Komkommer	cucumbers	15	0.7	0.1	3.6	120	vegetable
+tomato	Помидор	Tomato	Tomate	Tomaat	tomatoes	18	0.9	0.2	3.9	120	vegetable
+carrot	Морковь	Carrot	Zanahoria	Wortel	carrots	41	0.9	0.2	10.0	100	vegetable
+bell_pepper	Перец болгарский	Bell pepper	Pimiento	Paprika	bell peppers	27	1.0	0.3	6.0	150	vegetable
+broccoli	Брокколи	Broccoli	Brócoli	Broccoli	broccoli	34	2.8	0.4	7.0	150	vegetable
+pickles	Солёные огурцы	Pickles	Pepinillos en salmuera	Augurken	pickled cucumbers	15	0.8	0.1	2.5	100	vegetable
+chips	Чипсы	Potato chips	Patatas chips	Chips	potato chips	540	6.0	35.0	50.0	50	snack
+popcorn	Попкорн	Popcorn	Palomitas	Popcorn	popcorn	400	8.0	20.0	55.0	50	snack
+cheese	Сыр твёрдый	Hard cheese	Queso curado	Harde kaas	slices of hard cheese	360	25.0	28.0	0.0	30	snack
+sausage	Колбаса варёная	Bologna sausage	Mortadela	Boterhamworst	slices of bologna sausage	260	12.0	23.0	1.0	50	snack
+salami	Колбаса копчёная	Salami	Salami	Salami	salami slices	400	22.0	34.0	1.5	40	snack
+herring	Сельдь с луком	Pickled herring with onion	Arenque en vinagre con cebolla	Zure haring met ui	pickled herring with onion rings	220	16.0	17.0	0.0	100	snack
+olives	Оливки	Olives	Aceitunas	Olijven	olives	115	0.8	11.0	6.0	30	snack
+hummus	Хумус	Hummus	Hummus	Hummus	hummus	170	8.0	10.0	14.0	80	snack
+coffee	Кофе чёрный	Black coffee	Café solo	Zwarte koffie	cup of black coffee	2	0.1	0.0	0.3	200	drink
+cappuccino	Капучино	Cappuccino	Capuchino	Cappuccino	cappuccino with milk foam	45	2.5	2.0	4.0	250	drink
+latte	Латте	Latte	Café con leche	Latte	latte in a glass	55	3.0	2.8	4.7	300	drink
+tea	Чай	Tea	Té	Thee	cup of tea	1	0.0	0.0	0.2	250	drink
+hot_chocolate	Какао	Hot chocolate	Chocolate caliente	Warme chocolademelk	hot chocolate cocoa drink	80	3.0	3.0	11.0	250	drink
+orange_juice	Апельсиновый сок	Orange juice	Zumo de naranja	Sinaasappelsap	glass of orange juice	45	0.7	0.2	10.0	250	drink
+cola	Кола	Cola	Cola	Cola	glass of cola soda	42	0.0	0.0	10.6	330	drink
+beer	Пиво	Beer	Cerveza	Bier	glass of beer	43	0.5	0.0	3.6	500	drink
+red_wine	Вино красное	Red wine	Vino tinto	Rode wijn	glass of red wine	85	0.1	0.0	2.6	150	drink
+smoothie	Смузи	Smoothie	Batido de frutas	Smoothie	fruit smoothie	60	1.0	0.5	13.0	300	drink
+milk	Молоко	Milk	Leche	Melk	glass of milk	52	2.8	2.5	4.7	250	drink
+kefir	Кефир	Kefir	Kéfir	Kefir	glass of kefir	51	2.9	2.5	4.0	250	drink
+kompot	Компот	Kompot (fruit drink)	Kompot (bebida de frutas)	Kompot (vruchtendrank)	kompot, homemade fruit drink in a glass	45	0.2	0.0	11.0	250	drink
+tortilla_espanola	Испанская тортилья	Spanish omelette (tortilla)	Tortilla española	Spaanse tortilla	spanish tortilla, thick round potato and egg omelette cut into wedges on a plate	160	6.5	10	11	150	breakfast
+salmorejo	Сальморехо	Salmorejo	Salmorejo	Salmorejo	salmorejo, thick cold tomato and bread cream soup topped with egg and ham	110	2.5	7.5	8	250	soup
+croquetas	Крокеты с хамоном	Ham croquettes	Croquetas de jamón	Hamkroketjes	spanish croquetas, small breaded fried ham croquettes	230	7	13	21	120	snack
+patatas_bravas	Патас бравас	Patatas bravas	Patatas bravas	Patatas bravas	patatas bravas, fried potato cubes with spicy red sauce and aioli	180	2.5	10	20	200	side
+jamon_serrano	Хамон серрано	Serrano ham	Jamón serrano	Serranoham	thin slices of spanish cured serrano ham	240	31	13	0	50	snack
+chorizo	Чоризо	Chorizo	Chorizo	Chorizo	slices of spanish chorizo sausage	455	24	38	2	50	snack
+pimientos_padron	Перчики падрон	Padrón peppers	Pimientos de Padrón	Padrón-pepers	pimientos de padron, blistered small green peppers with coarse salt	90	1.5	7	5	150	vegetable
+calamares	Кальмары в кляре	Fried calamari	Calamares a la romana	Gefrituurde inktvisringen	calamares a la romana, deep fried battered squid rings with lemon	230	13	12	17	150	main
+pulpo_gallega	Осьминог по-галисийски	Galician-style octopus	Pulpo a la gallega	Octopus op Galicische wijze	pulpo a la gallega, sliced boiled octopus with paprika and olive oil on potatoes	140	20	6	2	200	main
+gambas_ajillo	Креветки в чесночном масле	Garlic prawns	Gambas al ajillo	Gamba's in knoflookolie	gambas al ajillo, prawns sizzling in garlic olive oil in a clay dish	210	17	15	2	150	main
+fabada	Фабада астуриана	Fabada asturiana	Fabada asturiana	Fabada (Asturische bonenstoof)	fabada asturiana, white bean stew with chorizo and morcilla	140	9	8	9	350	main
+cocido_madrileno	Косидо мадриленьо	Cocido madrileño	Cocido madrileño	Cocido madrileño	cocido madrileno, chickpea stew with meats, chorizo and vegetables	130	10	6.5	8	400	main
+pisto	Писто	Pisto	Pisto	Pisto (Spaanse ratatouille)	pisto manchego, spanish vegetable stew with tomato, zucchini and peppers	70	1.5	4.5	6	200	side
+empanada_gallega	Эмпанада	Empanada	Empanada gallega	Empanada	empanada gallega, slice of savory pie filled with tuna and peppers	270	10	13	28	150	bakery
+pan_con_tomate	Хлеб с томатом	Bread with tomato	Pan con tomate	Brood met tomaat	pan con tomate, toasted bread rubbed with tomato and olive oil	200	5	7	29	100	breakfast
+bocadillo_jamon	Бокадильо с хамоном	Ham baguette sandwich	Bocadillo de jamón	Stokbrood met ham	bocadillo de jamon, spanish baguette sandwich with cured ham	260	13	8	34	200	fast_food
+manchego	Сыр манчего	Manchego cheese	Queso manchego	Manchego-kaas	wedges of manchego cheese	390	26	32	0.5	40	snack
+guacamole	Гуакамоле	Guacamole	Guacamole	Guacamole	guacamole with tortilla chips	160	2	14.5	8.5	100	snack
+churros	Чуррос с шоколадом	Churros with chocolate	Churros con chocolate	Churros met chocolade	churros with a cup of thick hot chocolate	400	5	22	46	120	dessert
+crema_catalana	Крема каталана	Crema catalana	Crema catalana	Crema catalana	crema catalana, custard with caramelized sugar crust in a clay dish	190	4.5	9	23	150	dessert
+flan	Флан	Flan	Flan	Flan (karamelpudding)	flan, caramel custard pudding	150	4.5	4.5	23	120	dessert
+tarta_santiago	Сантьягский торт	Tarta de Santiago	Tarta de Santiago	Tarta de Santiago (amandeltaart)	tarta de santiago, almond cake dusted with powdered sugar and a cross	430	10	24	44	100	dessert
+sangria	Сангрия	Sangria	Sangría	Sangria	a jug and glass of sangria with fruit pieces	90	0.1	0	10	250	drink
+stamppot	Стамппот с капустой кале	Kale stamppot	Stamppot de col rizada	Boerenkoolstamppot	boerenkool stamppot, dutch mashed potatoes with kale and smoked sausage	120	5	6	11	400	main
+hutspot	Хутспот	Hutspot	Hutspot	Hutspot	hutspot, dutch mash of potatoes, carrots and onions	85	1.8	3	12.5	350	side
+erwtensoep	Гороховый суп по-голландски	Dutch pea soup (snert)	Sopa de guisantes holandesa	Erwtensoep (snert)	erwtensoep snert, very thick dutch green pea soup with sausage slices	95	6	3.5	10	350	soup
+bitterballen	Биттерболлен	Bitterballen	Bitterballen	Bitterballen	bitterballen, round breaded fried dutch meat ragout balls with mustard	280	8	19	19	100	snack
+kroket	Крокет (голландский)	Dutch croquette	Croqueta holandesa	Kroket	dutch kroket, long breaded fried meat croquette	250	7	15	21	90	fast_food
+frikandel	Фрикандель	Frikandel	Frikandel	Frikandel	frikandel, long skinless dutch minced meat sausage	280	12	22	8	85	fast_food
+kibbeling	Киббелинг	Kibbeling	Kibbeling	Kibbeling	kibbeling, battered deep fried fish chunks with garlic sauce	230	15	13	14	150	main
+hollandse_nieuwe	Голландская сельдь	Dutch raw herring	Arenque holandés	Hollandse nieuwe	hollandse nieuwe, raw herring fillet with chopped onions	160	16	10.5	0	85	snack
+poffertjes	Поффертьес	Poffertjes	Poffertjes	Poffertjes	poffertjes, tiny fluffy dutch pancakes with butter and powdered sugar	290	6	12	39	150	dessert
+pannenkoek	Голландский блин	Dutch pancake	Panqueque holandés	Pannenkoek	dutch pannenkoek, large thin plate-sized pancake	220	6.5	8	30	250	breakfast
+stroopwafel	Строопвафель	Stroopwafel	Stroopwafel	Stroopwafel	stroopwafel, thin waffle cookie with caramel syrup filling	460	4	20	66	30	dessert
+appeltaart	Голландский яблочный пирог	Dutch apple pie	Tarta de manzana holandesa	Appeltaart	dutch appeltaart, deep apple pie with lattice crust and whipped cream	260	3	12	35	130	dessert
+oliebollen	Олиболлен	Oliebollen	Oliebollen	Oliebollen	oliebollen, deep fried dough balls dusted with powdered sugar	300	6	12	42	80	dessert
+hagelslag	Бутерброд с шоколадной посыпкой	Bread with chocolate sprinkles	Pan con virutas de chocolate	Boterham met hagelslag	slice of buttered bread covered with chocolate sprinkles hagelslag	340	7	12	51	70	breakfast
+uitsmijter	Уитсмейтер	Uitsmijter	Uitsmijter	Uitsmijter	uitsmijter, fried eggs on bread with ham and cheese	230	13	14	13	250	breakfast
+kaassouffle	Каассуффле	Cheese soufflé snack	Kaassoufflé	Kaassoufflé	kaassouffle, breaded deep fried cheese-filled pastry snack	300	9	18	26	70	fast_food
+saucijzenbroodje	Колбаска в тесте	Sausage roll	Hojaldre de salchicha	Saucijzenbroodje	saucijzenbroodje, puff pastry sausage roll	330	9	21	27	100	bakery
+vla	Вла (заварной пудинг)	Vla (custard)	Vla (natillas)	Vla	dutch vla custard dessert in a bowl	110	3.2	3	17.5	200	dessert
+drop	Лакричные конфеты	Liquorice (drop)	Regaliz	Drop	black dutch liquorice candies drop	375	3.5	0.5	88	30	snack
+speculaas	Спекулос	Speculaas	Speculoos	Speculaas	speculaas, spiced shortcrust windmill cookies	470	6	20	66	30	dessert
+rookworst	Копчёная колбаса (рокворст)	Smoked sausage (rookworst)	Salchicha ahumada	Rookworst	rookworst, horseshoe-shaped dutch smoked sausage	300	13	27	2	100	main
+kapsalon	Капсалон	Kapsalon	Kapsalon	Kapsalon	kapsalon, fries topped with shawarma meat, melted cheese and salad in a tray	230	10	14	16	450	fast_food
+patatje_oorlog	Картошка «орлог»	Fries with mayo and peanut sauce	Patatas con mayonesa y salsa de cacahuete	Patatje oorlog	patatje oorlog, fries with mayonnaise, peanut satay sauce and raw onions	300	4	18	30	200	fast_food
+nasi_goreng	Наси горенг	Nasi goreng	Nasi goreng	Nasi goreng	nasi goreng, indonesian fried rice with fried egg on top	170	6	6.5	22	350	asian
+bami_goreng	Бами горенг	Bami goreng	Bami goreng	Bami goreng	bami goreng, indonesian fried noodles with vegetables	160	6.5	5.5	21	350	asian
+sate_ajam	Куриный сатай	Chicken satay	Satay de pollo	Saté ajam	chicken satay skewers with peanut sauce	250	20	16	7	200	asian

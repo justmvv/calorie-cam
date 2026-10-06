@@ -26,7 +26,7 @@ extension Formatting on AppLocalizations {
     return DateFormat.MMMMEEEEd(localeName).format(d);
   }
 
-  String dishName(Dish d) => localeName == 'ru' ? d.nameRu : d.nameEn;
+  String dishName(Dish d) => d.name(localeName);
 
   /// Name from the catalog in the current language; falls back to the name saved with the entry.
   String mealName(Meal m, DishCatalog catalog) => switch (catalog.byId(m.dishId)) {

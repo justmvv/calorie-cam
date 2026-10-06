@@ -8,7 +8,7 @@ class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
 
   /// Language names are shown in their own language so they are recognizable in any UI language.
-  static const _languages = {'en': 'English', 'ru': 'Русский'};
+  static const _languages = {'en': 'English', 'es': 'Español', 'nl': 'Nederlands', 'ru': 'Русский'};
 
   @override
   Widget build(BuildContext context) {

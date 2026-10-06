@@ -55,11 +55,11 @@ async function networkFirst(req) {
   }
 }
 
-// Versioned files (main.dart.js?v=…, canvaskit-<rev>/…) get a new URL with every release;
-// drop the old copies so the cache doesn't grow.
+// Versioned files (main.dart.js?v=…, b-<build>/assets/…, canvaskit-<rev>/…) get a new URL with
+// every release; drop the old copies so the cache doesn't grow.
 const versionless = (url) => {
   const u = new URL(url);
-  return u.pathname.replace(/\/canvaskit-[0-9a-f]+\//, '/canvaskit/');
+  return u.pathname.replace(/\/canvaskit-[0-9a-f]+\//, '/canvaskit/').replace(/\/b-[0-9a-f]+\//, '/b/');
 };
 
 async function dropOldVersions(cache, url) {

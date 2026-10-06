@@ -22,11 +22,11 @@ void main() {
 
   test('nutrition values are plausible', () {
     for (final d in catalog.dishes) {
-      expect(d.kcal, inInclusiveRange(0, 900), reason: d.nameEn);
-      expect(d.portion, greaterThan(0), reason: d.nameEn);
+      expect(d.kcal, inInclusiveRange(0, 900), reason: d.id);
+      expect(d.portion, greaterThan(0), reason: d.id);
       // Calories can't be much lower than the sum from macros (4/9/4 kcal per gram).
       final fromMacros = d.protein * 4 + d.fat * 9 + d.carbs * 4;
-      expect(d.kcal, greaterThan(fromMacros * 0.75), reason: d.nameEn);
+      expect(d.kcal, greaterThan(fromMacros * 0.75), reason: d.id);
     }
   });
 
@@ -43,30 +43,37 @@ void main() {
     expect(top.fold(0.0, (a, m) => a + m.probability), lessThanOrEqualTo(1.0 + 1e-9));
   });
 
-  test('search matches both languages, ignoring case and ё/е', () {
+  test('search matches every language, ignoring case, accents and ё/е', () {
     expect(catalog.search('ЩИ').map((d) => d.id), contains('shchi'));
     expect(catalog.search('тушеная').map((d) => d.id), contains('stewed_cabbage'));
     expect(catalog.search('BORSCHT').map((d) => d.id), contains('borscht'));
+    expect(catalog.search('jamon').map((d) => d.id), contains('jamon_serrano'));
+    expect(catalog.search('stamppot').map((d) => d.id), contains('stamppot'));
+    expect(catalog.search('aardappel').map((d) => d.id), contains('boiled_potatoes'));
     expect(catalog.search('  '), hasLength(catalog.dishes.length));
   });
 
   group('localization', () {
     final en = lookupAppLocalizations(const Locale('en'));
     final ru = lookupAppLocalizations(const Locale('ru'));
+    final languages = AppLocalizations.supportedLocales.map((l) => l.languageCode);
 
-    test('every dish has a name in both languages', () {
-      for (final d in catalog.dishes) {
-        expect(d.nameEn.trim(), isNotEmpty, reason: d.id);
-        expect(d.nameRu.trim(), isNotEmpty, reason: d.id);
-        expect(en.dishName(d), d.nameEn);
-        expect(ru.dishName(d), d.nameRu);
+    test('every dish has a name in every UI language', () {
+      for (final lang in languages) {
+        final l10n = lookupAppLocalizations(Locale(lang));
+        for (final d in catalog.dishes) {
+          expect(d.names[lang]?.trim(), isNotEmpty, reason: '$lang: ${d.id}');
+          expect(l10n.dishName(d), d.names[lang]);
+        }
       }
     });
 
-    test('every category id is translated', () {
-      for (final id in catalog.dishes.map((d) => d.category).toSet()) {
-        expect(en.category(id), isNot(id), reason: 'en: $id');
-        expect(ru.category(id), isNot(id), reason: 'ru: $id');
+    test('every category id is translated in every UI language', () {
+      for (final lang in languages) {
+        final l10n = lookupAppLocalizations(Locale(lang));
+        for (final id in catalog.dishes.map((d) => d.category).toSet()) {
+          expect(l10n.category(id), isNot(id), reason: '$lang: $id');
+        }
       }
     });
 

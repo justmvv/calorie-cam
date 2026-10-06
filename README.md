@@ -4,7 +4,7 @@ A Flutter PWA food diary: take a photo of a dish, the app suggests what it is an
 
 Everything runs **locally in the browser**: recognition is done by an on-device model, and the diary is stored in SQLite (WASM) in browser storage. After the first load no network is needed.
 
-The UI is available in **English and Russian**. By default it follows the system language (anything other than Russian falls back to English); it can be switched in Settings.
+The UI is available in **English, Spanish, Dutch and Russian**. By default it follows the system language (unsupported languages fall back to English); it can be switched in Settings.
 
 ## How it works
 
@@ -16,7 +16,7 @@ user picks the dish and portion ──► kcal = kcal/100 g × grams ──► D
 ```
 
 - **Recognition:** zero-shot [MobileCLIP-S0](https://github.com/apple/ml-mobileclip) (fp16 vision encoder, ~23 MB). A dish is recognized if it's in the catalog; no model retraining is needed.
-- **Catalog:** [`assets/dishes.tsv`](assets/dishes.tsv), ~200 Russian and international dishes with names in both languages, calories/protein/fat/carbs per 100 g and a typical portion. Text embeddings are precomputed in `assets/dish_embeddings.*`.
+- **Catalog:** [`assets/dishes.tsv`](assets/dishes.tsv), ~250 dishes — Russian, Spanish, Dutch (including the Indonesian-Dutch classics) and international — with names in every UI language, calories/protein/fat/carbs per 100 g and a typical portion. Text embeddings are precomputed in `assets/dish_embeddings.*`.
 - **Database:** [`lib/data/db.dart`](lib/data/db.dart), two tables: `meals` (what, how much, when; nutrition already scaled to the portion) and `photos` (~15 KB JPEG thumbnails).
 - **Localization:** ARB files in [`lib/l10n/`](lib/l10n/) (`flutter gen-l10n`). Logged entries are shown with the catalog name in the current language.
 - **Offline and updates:** see the section below.
@@ -50,13 +50,13 @@ The first load is ≈ 45 MB (23 MB model + 12 MB ONNX runtime + the app); after 
 The app works offline but never gets stuck on an old version:
 
 - **[`web/sw.js`](web/sw.js).** The model and onnxruntime (~35 MB) are cache-first. Everything else is network-first and bypasses the browser HTTP cache (GitHub Pages sends `max-age=600`); the cache is used only without a network. Flutter's built-in service worker is disabled.
-- **[`tools/build_web.sh`](tools/build_web.sh).** Chrome may serve a `<script>` from its memory cache, bypassing the service worker, so every build gets its own URLs: `main.dart.js?v=<hash>`, `flutter_bootstrap.js?v=…`, `food_ai.js?v=…`, `canvaskit-<engine revision>/`. The service worker removes old versions from the cache.
+- **[`tools/build_web.sh`](tools/build_web.sh).** Chrome may serve a `<script>` from its memory cache, bypassing the service worker, so every build gets its own URLs: `main.dart.js?v=<hash>`, `flutter_bootstrap.js?v=…`, `food_ai.js?v=…`, `b-<hash>/assets/` (Flutter's `assetBase`, so the dish catalog and its embeddings always come from the same release as the code), `canvaskit-<engine revision>/`. The service worker removes old versions from the cache.
 - **[`lib/update_checker.dart`](lib/update_checker.dart).** CI compiles `BUILD_ID` (the commit sha) into the app and publishes it as `build_id.txt`. The app compares versions on start, when it returns from the background, and every 30 minutes. On the home screen it reloads silently; in the middle of an entry it shows an "Update" button instead. A guard prevents reload loops.
 - When you change the model or the onnxruntime version in `tools/fetch_assets.sh`, bump `ASSETS_CACHE` in `web/sw.js`.
 
 ## Adding or editing a dish
 
-1. Edit `assets/dishes.tsv`: `name_ru` / `name_en` are display names, `prompt` is an English description for the model, `category` is one of the category ids translated in `lib/l10n/`. The more distinctive the prompt ("layered salad with grated beetroot on top"), the better the recognition.
+1. Edit `assets/dishes.tsv`: `name_<lang>` columns are display names (one per UI language), `prompt` is an English description for the model, `category` is one of the category ids translated in `lib/l10n/`. The more distinctive the prompt ("layered salad with grated beetroot on top"), the better the recognition.
 2. Recompute the embeddings:
    ```bash
    cd tools && npm install && node build_embeddings.mjs
@@ -75,7 +75,7 @@ cd tools && npm install && node make_icons.mjs   # CHROME_PATH=… if Chrome isn
 
 ## Adding a UI language
 
-Add `lib/l10n/app_<code>.arb` (copy `app_en.arb`), a `name_<code>` column to the catalog with handling in `Formatting.dishName` ([`lib/ui/format.dart`](lib/ui/format.dart)), and the language to the list in [`lib/ui/settings_page.dart`](lib/ui/settings_page.dart).
+Add `lib/l10n/app_<code>.arb` (copy `app_en.arb`), a `name_<code>` column to the catalog (picked up automatically; missing names fall back to English), and the language to the list in [`lib/ui/settings_page.dart`](lib/ui/settings_page.dart). The tests check that every dish and category has a translation in every UI language.
 
 ## Tests
 
