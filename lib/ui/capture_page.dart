@@ -8,6 +8,7 @@ import '../ml/food_ai.dart';
 import '../services.dart';
 import 'dish_search.dart';
 import 'format.dart';
+import 'palette.dart';
 
 /// An item on the plate: a dish and its portion.
 class _PlateItem {
@@ -161,11 +162,13 @@ class _CapturePageState extends State<CapturePage> {
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: FilledButton.icon(
-            style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(56)),
+          child: GradientButton(
             onPressed: canSave ? _save : null,
             icon: _saving
-                ? const SizedBox.square(dimension: 18, child: CircularProgressIndicator(strokeWidth: 2))
+                ? const SizedBox.square(
+                    dimension: 18,
+                    child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                  )
                 : const Icon(Icons.check),
             label: Text(_plate.isEmpty ? l10n.chooseDish : l10n.addToDiary(l10n.kcal(total))),
           ),

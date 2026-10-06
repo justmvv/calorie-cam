@@ -63,6 +63,16 @@ The app works offline but never gets stuck on an old version:
    ```
 3. Check quality on your own photos: put them into `tools/testimg/` and run `node eval.mjs fp16`.
 
+## Look and icon
+
+The palette lives in [`lib/ui/palette.dart`](lib/ui/palette.dart): herb greens flowing into a saturated blue, used for the theme, the gradient buttons and day card, and the calendar heatmap (pale green → green → deep blue as you approach 150% of the daily goal).
+
+The icon is a faceted heart made of a lighter green half and a darker blue half. It is generated from code, not drawn by hand: [`tools/make_icons.mjs`](tools/make_icons.mjs) writes `tools/icon.svg` and renders every PNG (PWA icons, maskable icons, apple-touch icon, favicon, in-app logo) with headless Chrome:
+
+```bash
+cd tools && npm install && node make_icons.mjs   # CHROME_PATH=… if Chrome isn't in /Applications
+```
+
 ## Adding a UI language
 
 Add `lib/l10n/app_<code>.arb` (copy `app_en.arb`), a `name_<code>` column to the catalog with handling in `Formatting.dishName` ([`lib/ui/format.dart`](lib/ui/format.dart)), and the language to the list in [`lib/ui/settings_page.dart`](lib/ui/settings_page.dart).

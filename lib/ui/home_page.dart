@@ -7,6 +7,7 @@ import 'calendar_page.dart';
 import 'capture_page.dart';
 import 'day_meals_view.dart';
 import 'format.dart';
+import 'palette.dart';
 import 'settings_page.dart';
 
 class HomePage extends StatelessWidget {
@@ -17,7 +18,8 @@ class HomePage extends StatelessWidget {
     final l10n = context.l10n;
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.today),
+        titleSpacing: 16,
+        title: Row(children: [const HeartLogo(), const SizedBox(width: 10), Text(l10n.today)]),
         actions: [
           IconButton(
             tooltip: l10n.calendar,
@@ -38,8 +40,7 @@ class HomePage extends StatelessWidget {
           child: Row(
             children: [
               Expanded(
-                child: FilledButton.icon(
-                  style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(56)),
+                child: GradientButton(
                   onPressed: () => _fromCamera(context, ImageSource.camera),
                   icon: const Icon(Icons.photo_camera),
                   label: Text(l10n.takePhoto),

@@ -4,8 +4,10 @@ import 'package:intl/intl.dart';
 import '../services.dart';
 import 'day_page.dart';
 import 'format.dart';
+import 'palette.dart';
 
-/// Monthly heatmap: the more eaten relative to the daily goal, the deeper the red.
+/// Monthly heatmap: the more eaten relative to the daily goal, the further the color moves
+/// from pale herb green to saturated blue.
 class CalendarPage extends StatefulWidget {
   const CalendarPage({super.key});
 
@@ -19,10 +21,7 @@ class _CalendarPageState extends State<CalendarPage> {
   /// Intensity saturates at 150% of the goal.
   static const _maxRatio = 1.5;
 
-  static Color heat(double ratio) {
-    final t = (ratio / _maxRatio).clamp(0.0, 1.0);
-    return Color.lerp(const Color(0xFFFFEBEE), const Color(0xFFB71C1C), t)!;
-  }
+  static Color heat(double ratio) => Palette.heat(ratio / _maxRatio);
 
   void _shift(int months) => setState(() => _month = DateTime(_month.year, _month.month + months));
 
@@ -145,7 +144,9 @@ class _DayCell extends StatelessWidget {
   Widget build(BuildContext context) {
     final ratio = kcal == null ? 0.0 : kcal! / goal;
     final color = kcal == null ? emptyColor : _CalendarPageState.heat(ratio);
-    final onColor = kcal != null && ratio > 0.6 ? Colors.white : Theme.of(context).colorScheme.onSurface;
+    final onColor = kcal != null && ratio / _CalendarPageState._maxRatio > 0.45
+        ? Colors.white
+        : Theme.of(context).colorScheme.onSurface;
     return Opacity(
       opacity: isFuture ? 0.35 : 1,
       child: Material(

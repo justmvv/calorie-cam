@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../data/db.dart';
 import '../services.dart';
 import 'format.dart';
+import 'palette.dart';
 
 /// Day totals and the list of logged items: tap to edit portion/time, swipe to delete.
 class DayMealsView extends StatelessWidget {
@@ -44,7 +45,7 @@ class _DaySummary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final scheme = Theme.of(context).colorScheme;
+    final text = Theme.of(context).textTheme;
     double sum(double Function(Meal) f) => meals.fold(0.0, (a, m) => a + f(m));
     final total = sum((m) => m.kcal);
     final macros = l10n.macrosOf(sum((m) => m.protein), sum((m) => m.fat), sum((m) => m.carbs));
@@ -52,9 +53,14 @@ class _DaySummary extends StatelessWidget {
       valueListenable: services.dailyGoal,
       builder: (context, goal, _) {
         final over = total > goal;
-        return Card(
-          elevation: 0,
-          color: scheme.surfaceContainerHighest,
+        return DecoratedBox(
+          decoration: BoxDecoration(
+            gradient: Palette.brandGradient,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(color: Palette.blue.withValues(alpha: 0.25), blurRadius: 16, offset: const Offset(0, 6)),
+            ],
+          ),
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
@@ -64,8 +70,8 @@ class _DaySummary extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.baseline,
                   textBaseline: TextBaseline.alphabetic,
                   children: [
-                    Text('${total.round()}', style: Theme.of(context).textTheme.displaySmall),
-                    Text(' / ${l10n.kcal(goal)}', style: Theme.of(context).textTheme.titleMedium),
+                    Text('${total.round()}', style: text.displaySmall?.copyWith(color: Colors.white)),
+                    Text(' / ${l10n.kcal(goal)}', style: text.titleMedium?.copyWith(color: Colors.white70)),
                   ],
                 ),
                 const SizedBox(height: 8),
@@ -73,14 +79,16 @@ class _DaySummary extends StatelessWidget {
                   value: goal == 0 ? 0 : (total / goal).clamp(0.0, 1.0),
                   minHeight: 8,
                   borderRadius: BorderRadius.circular(4),
-                  color: over ? scheme.error : scheme.primary,
+                  backgroundColor: Colors.white24,
+                  // Over the goal the bar turns amber so it stands out on the green-blue card.
+                  color: over ? Colors.amberAccent : Colors.white,
                 ),
                 const SizedBox(height: 8),
                 Text(
                   over
                       ? l10n.kcalOver(l10n.kcal(total - goal), macros)
                       : l10n.kcalLeft(l10n.kcal(goal - total), macros),
-                  style: Theme.of(context).textTheme.bodyMedium,
+                  style: text.bodyMedium?.copyWith(color: Colors.white),
                 ),
               ],
             ),

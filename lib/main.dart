@@ -4,6 +4,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'l10n/app_localizations.dart';
 import 'services.dart';
 import 'ui/home_page.dart';
+import 'ui/palette.dart';
 import 'update_checker.dart';
 
 Future<void> main() async {
@@ -22,10 +23,6 @@ class CalorieCamApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ThemeData theme(Brightness b) => ThemeData(
-      colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFC62828), brightness: b),
-      useMaterial3: true,
-    );
     return ValueListenableBuilder<String?>(
       valueListenable: services.language,
       builder: (context, language, _) => MaterialApp(
@@ -33,8 +30,8 @@ class CalorieCamApp extends StatelessWidget {
         navigatorKey: _navigatorKey,
         scaffoldMessengerKey: _messengerKey,
         debugShowCheckedModeBanner: false,
-        theme: theme(Brightness.light),
-        darkTheme: theme(Brightness.dark),
+        theme: Palette.theme(Brightness.light),
+        darkTheme: Palette.theme(Brightness.dark),
         // null = follow the system; unsupported system languages fall back to English
         // (the first entry of supportedLocales).
         locale: language == null ? null : Locale(language),

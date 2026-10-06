@@ -13,5 +13,8 @@
   "dependencies": {
     "@huggingface/transformers": "^4.3.0",
     "onnxruntime-web": "^1.31.0-dev.20260914-8d85527a0"
+  },
+  "devDependencies": {
+    "puppeteer-core": "^25.12.0"
   }
 }
