@@ -1,6 +1,7 @@
 # Dish catalog. Values are per 100 g (per 100 ml for drinks): averaged reference-table data.
 # name_<lang> — display name per UI language (ru, en, es, nl).
 # prompt   — English description used by the recognition model (MobileCLIP); not shown in the UI.
+#            Several descriptions can be separated by " | "; their embeddings are averaged.
 # category — id, translated in the UI (lib/l10n/).
 # After editing: cd tools && node build_embeddings.mjs
 id	name_ru	name_en	name_es	name_nl	prompt	kcal	protein	fat	carbs	portion	category
@@ -150,7 +151,7 @@ eclair	Эклер	Eclair	Pepito de chocolate (éclair)	Eclair	chocolate eclair	3
 donut	Пончик	Donut	Dónut	Donut	glazed donut	420	6.0	23.0	47.0	70	dessert
 muffin	Маффин	Muffin	Magdalena (muffin)	Muffin	muffin	380	6.0	18.0	50.0	90	dessert
 cookies	Печенье	Cookies	Galletas	Koekjes	cookies	450	6.0	18.0	66.0	30	dessert
-chocolate	Шоколад	Chocolate	Chocolate	Chocolade	chocolate bar	540	6.0	32.0	56.0	25	dessert
+chocolate	Шоколад	Chocolate	Chocolate	Chocolade	a bar of chocolate broken into squares | squares of dark and milk chocolate	540	6.0	32.0	56.0	25	dessert
 waffles	Вафли бельгийские	Belgian waffles	Gofres	Brusselse wafels	belgian waffles	290	7.0	13.0	36.0	100	dessert
 sharlotka	Шарлотка	Sharlotka (apple cake)	Sharlotka (bizcocho de manzana)	Sjarlotka (appelcake)	sharlotka, apple sponge cake	220	5.0	6.0	37.0	120	dessert
 cinnamon_roll	Булочка с корицей	Cinnamon roll	Rollo de canela	Kaneelbroodje	cinnamon roll	360	6.0	15.0	50.0	100	dessert
@@ -250,3 +251,5 @@ patatje_oorlog	Картошка «орлог»	Fries with mayo and peanut sauce	
 nasi_goreng	Наси горенг	Nasi goreng	Nasi goreng	Nasi goreng	nasi goreng, indonesian fried rice with fried egg on top	170	6	6.5	22	350	asian
 bami_goreng	Бами горенг	Bami goreng	Bami goreng	Bami goreng	bami goreng, indonesian fried noodles with vegetables	160	6.5	5.5	21	350	asian
 sate_ajam	Куриный сатай	Chicken satay	Satay de pollo	Saté ajam	chicken satay skewers with peanut sauce	250	20	16	7	200	asian
+protein_bar	Протеиновый батончик	Protein bar	Barrita de proteínas	Proteïnereep	protein bar, a dense rectangular nutrition bar coated in chocolate | protein bar cut in half showing a chewy dense filling | protein bar with nuts and crisps | a protein bar in an open wrapper	360	33	12	30	60	snack
+muesli_bar	Батончик мюсли	Granola bar	Barrita de cereales	Mueslireep	granola bar, a rectangular cereal bar with visible oats and nuts | muesli bar with dried fruit pieces	400	6	14	62	25	snack

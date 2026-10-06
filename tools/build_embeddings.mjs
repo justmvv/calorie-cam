@@ -12,7 +12,9 @@ const textModel = await CLIPTextModelWithProjection.from_pretrained(MODEL_ID, { 
 
 const vectors = [];
 for (const d of dishes) {
-  const texts = TEMPLATES.map((t) => t.replace('{}', d.prompt));
+  // A prompt may list several descriptions separated by " | " (e.g. a food that looks different
+  // wrapped and unwrapped); every description × template is embedded and averaged.
+  const texts = d.prompt.split('|').flatMap((p) => TEMPLATES.map((t) => t.replace('{}', p.trim())));
   const inputs = tokenizer(texts, { padding: 'max_length', truncation: true });
   const { text_embeds } = await textModel(inputs);
   const rows = text_embeds.normalize().tolist();
