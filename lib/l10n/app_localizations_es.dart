@@ -220,4 +220,55 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get categoryDrink => 'Bebidas';
+
+  @override
+  String get backup => 'Copia de seguridad';
+
+  @override
+  String get exportBackup => 'Exportar diario';
+
+  @override
+  String lastExport(String date) {
+    return 'Última exportación: $date';
+  }
+
+  @override
+  String get neverExported => 'Aún no exportado: guarda una copia en Google Drive';
+
+  @override
+  String get exportDownloaded => 'Copia guardada en Descargas';
+
+  @override
+  String get exportShared => 'Archivo de copia creado';
+
+  @override
+  String exportFailed(String error) {
+    return 'No se pudo exportar: $error';
+  }
+
+  @override
+  String get importBackup => 'Importar desde archivo';
+
+  @override
+  String get importHint => 'Las entradas se combinan, sin duplicados';
+
+  @override
+  String importDone(int added, int updated) {
+    return 'Importado: $added nuevas, $updated actualizadas';
+  }
+
+  @override
+  String get importInvalid => 'Este archivo no es una copia de Calorie Cam';
+
+  @override
+  String importFailed(String error) {
+    return 'No se pudo importar: $error';
+  }
+
+  @override
+  String get storagePersistent => 'El almacenamiento está protegido contra el borrado automático';
+
+  @override
+  String get storageNotPersistent =>
+      'El navegador puede borrar los datos si falta espacio: instala la app y exporta con regularidad';
 }

@@ -159,5 +159,50 @@
   "categoryFruit": "Fruit",
   "categorySnack": "Snacks",
   "categoryVegetable": "Vegetables",
-  "categoryDrink": "Drinks"
+  "categoryDrink": "Drinks",
+  "backup": "Backup",
+  "exportBackup": "Export diary",
+  "lastExport": "Last export: {date}",
+  "@lastExport": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "neverExported": "Not exported yet — save a copy to Google Drive",
+  "exportDownloaded": "Backup saved to Downloads",
+  "exportShared": "Backup file created",
+  "exportFailed": "Export failed: {error}",
+  "@exportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "importBackup": "Import from file",
+  "importHint": "Entries are merged, nothing is duplicated",
+  "importDone": "Imported: {added} new, {updated} updated",
+  "@importDone": {
+    "placeholders": {
+      "added": {
+        "type": "int"
+      },
+      "updated": {
+        "type": "int"
+      }
+    }
+  },
+  "importInvalid": "This file isn't a Calorie Cam backup",
+  "importFailed": "Couldn't import: {error}",
+  "@importFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "storagePersistent": "Storage is protected from automatic clearing",
+  "storageNotPersistent": "The browser may clear data when space runs low: install the app and export regularly"
 }

@@ -62,5 +62,19 @@
   "categoryFruit": "Fruta",
   "categorySnack": "Aperitivos",
   "categoryVegetable": "Verduras",
-  "categoryDrink": "Bebidas"
+  "categoryDrink": "Bebidas",
+  "backup": "Copia de seguridad",
+  "exportBackup": "Exportar diario",
+  "lastExport": "Última exportación: {date}",
+  "neverExported": "Aún no exportado: guarda una copia en Google Drive",
+  "exportDownloaded": "Copia guardada en Descargas",
+  "exportShared": "Archivo de copia creado",
+  "exportFailed": "No se pudo exportar: {error}",
+  "importBackup": "Importar desde archivo",
+  "importHint": "Las entradas se combinan, sin duplicados",
+  "importDone": "Importado: {added} nuevas, {updated} actualizadas",
+  "importInvalid": "Este archivo no es una copia de Calorie Cam",
+  "importFailed": "No se pudo importar: {error}",
+  "storagePersistent": "El almacenamiento está protegido contra el borrado automático",
+  "storageNotPersistent": "El navegador puede borrar los datos si falta espacio: instala la app y exporta con regularidad"
 }

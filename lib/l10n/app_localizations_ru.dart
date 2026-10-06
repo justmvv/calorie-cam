@@ -220,4 +220,55 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get categoryDrink => 'Напитки';
+
+  @override
+  String get backup => 'Резервная копия';
+
+  @override
+  String get exportBackup => 'Экспортировать дневник';
+
+  @override
+  String lastExport(String date) {
+    return 'Последний экспорт: $date';
+  }
+
+  @override
+  String get neverExported => 'Ещё не экспортировался — сохраните копию в Google Drive';
+
+  @override
+  String get exportDownloaded => 'Копия сохранена в «Загрузки»';
+
+  @override
+  String get exportShared => 'Файл копии создан';
+
+  @override
+  String exportFailed(String error) {
+    return 'Не удалось экспортировать: $error';
+  }
+
+  @override
+  String get importBackup => 'Импортировать из файла';
+
+  @override
+  String get importHint => 'Записи объединяются, дубликатов не будет';
+
+  @override
+  String importDone(int added, int updated) {
+    return 'Импорт: новых $added, обновлено $updated';
+  }
+
+  @override
+  String get importInvalid => 'Это не резервная копия Calorie Cam';
+
+  @override
+  String importFailed(String error) {
+    return 'Не удалось импортировать: $error';
+  }
+
+  @override
+  String get storagePersistent => 'Хранилище защищено от автоматической очистки';
+
+  @override
+  String get storageNotPersistent =>
+      'Браузер может очистить данные при нехватке места: установите приложение и делайте экспорт';
 }

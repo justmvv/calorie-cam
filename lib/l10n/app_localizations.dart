@@ -471,6 +471,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Drinks'**
   String get categoryDrink;
+
+  /// No description provided for @backup.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup'**
+  String get backup;
+
+  /// No description provided for @exportBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'Export diary'**
+  String get exportBackup;
+
+  /// No description provided for @lastExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Last export: {date}'**
+  String lastExport(String date);
+
+  /// No description provided for @neverExported.
+  ///
+  /// In en, this message translates to:
+  /// **'Not exported yet — save a copy to Google Drive'**
+  String get neverExported;
+
+  /// No description provided for @exportDownloaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup saved to Downloads'**
+  String get exportDownloaded;
+
+  /// No description provided for @exportShared.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup file created'**
+  String get exportShared;
+
+  /// No description provided for @exportFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Export failed: {error}'**
+  String exportFailed(String error);
+
+  /// No description provided for @importBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'Import from file'**
+  String get importBackup;
+
+  /// No description provided for @importHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Entries are merged, nothing is duplicated'**
+  String get importHint;
+
+  /// No description provided for @importDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Imported: {added} new, {updated} updated'**
+  String importDone(int added, int updated);
+
+  /// No description provided for @importInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'This file isn\'t a Calorie Cam backup'**
+  String get importInvalid;
+
+  /// No description provided for @importFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t import: {error}'**
+  String importFailed(String error);
+
+  /// No description provided for @storagePersistent.
+  ///
+  /// In en, this message translates to:
+  /// **'Storage is protected from automatic clearing'**
+  String get storagePersistent;
+
+  /// No description provided for @storageNotPersistent.
+  ///
+  /// In en, this message translates to:
+  /// **'The browser may clear data when space runs low: install the app and export regularly'**
+  String get storageNotPersistent;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

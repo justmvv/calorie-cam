@@ -17,7 +17,7 @@ user picks the dish and portion ──► kcal = kcal/100 g × grams ──► D
 
 - **Recognition:** zero-shot [MobileCLIP-S0](https://github.com/apple/ml-mobileclip) (fp16 vision encoder, ~23 MB). A dish is recognized if it's in the catalog; no model retraining is needed.
 - **Catalog:** [`assets/dishes.tsv`](assets/dishes.tsv), ~250 dishes — Russian, Spanish, Dutch (including the Indonesian-Dutch classics) and international — with names in every UI language, calories/protein/fat/carbs per 100 g and a typical portion. Text embeddings are precomputed in `assets/dish_embeddings.*`.
-- **Database:** [`lib/data/db.dart`](lib/data/db.dart), two tables: `meals` (what, how much, when; nutrition already scaled to the portion) and `photos` (~15 KB JPEG thumbnails).
+- **Database:** [`lib/data/db.dart`](lib/data/db.dart), two tables: `meals` (what, how much, when; nutrition already scaled to the portion) and `photos` (~15 KB JPEG thumbnails). Rows have global UUIDs, a millisecond `updated_at_ms` and soft deletes (tombstones), so backups from different moments or devices merge cleanly.
 - **Localization:** ARB files in [`lib/l10n/`](lib/l10n/) (`flutter gen-l10n`). Logged entries are shown with the catalog name in the current language.
 - **Offline and updates:** see the section below.
 
@@ -44,6 +44,16 @@ One-time repository setting: **Settings → Pages → Source: GitHub Actions**. 
 The MobileCLIP model is distributed under Apple's license; the license text is published next to the model (`models/LICENSE-MobileCLIP.txt`).
 
 The first load is ≈ 45 MB (23 MB model + 12 MB ONNX runtime + the app); after that everything comes from the cache.
+
+## Backup
+
+Settings → Backup:
+
+- **Export diary** writes a JSON file (`calorie-cam-backup-<date>.json`: entries, photos as base64, daily goal and language) and opens the system share sheet — on Android pick Google Drive, Files or a messenger. Where file sharing isn't available it is downloaded instead.
+- **Import from file** merges a backup by UUID: new entries are added, an entry present on both sides keeps the newer edit, deletions stay deleted, and importing the same file twice changes nothing. Settings are restored only into an empty diary (e.g. a new phone).
+- On start the app calls `navigator.storage.persist()` so the browser doesn't evict the diary when space runs low; Settings shows whether it was granted (Chrome grants it to installed PWAs).
+
+Format and merge rules: [`lib/data/backup.dart`](lib/data/backup.dart); tests (including the v1 → v2 schema migration): [`test/backup_test.dart`](test/backup_test.dart).
 
 ## Caching and auto-update
 

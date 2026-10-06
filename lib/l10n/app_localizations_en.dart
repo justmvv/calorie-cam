@@ -220,4 +220,55 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get categoryDrink => 'Drinks';
+
+  @override
+  String get backup => 'Backup';
+
+  @override
+  String get exportBackup => 'Export diary';
+
+  @override
+  String lastExport(String date) {
+    return 'Last export: $date';
+  }
+
+  @override
+  String get neverExported => 'Not exported yet — save a copy to Google Drive';
+
+  @override
+  String get exportDownloaded => 'Backup saved to Downloads';
+
+  @override
+  String get exportShared => 'Backup file created';
+
+  @override
+  String exportFailed(String error) {
+    return 'Export failed: $error';
+  }
+
+  @override
+  String get importBackup => 'Import from file';
+
+  @override
+  String get importHint => 'Entries are merged, nothing is duplicated';
+
+  @override
+  String importDone(int added, int updated) {
+    return 'Imported: $added new, $updated updated';
+  }
+
+  @override
+  String get importInvalid => 'This file isn\'t a Calorie Cam backup';
+
+  @override
+  String importFailed(String error) {
+    return 'Couldn\'t import: $error';
+  }
+
+  @override
+  String get storagePersistent => 'Storage is protected from automatic clearing';
+
+  @override
+  String get storageNotPersistent =>
+      'The browser may clear data when space runs low: install the app and export regularly';
 }

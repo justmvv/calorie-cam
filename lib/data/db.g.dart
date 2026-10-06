@@ -19,6 +19,16 @@ class $PhotosTable extends Photos with TableInfo<$PhotosTable, Photo> {
     requiredDuringInsert: false,
     defaultConstraints: GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'),
   );
+  static const VerificationMeta _uuidMeta = const VerificationMeta('uuid');
+  @override
+  late final GeneratedColumn<String> uuid = GeneratedColumn<String>(
+    'uuid',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    clientDefault: newUuid,
+  );
   static const VerificationMeta _jpegMeta = const VerificationMeta('jpeg');
   @override
   late final GeneratedColumn<Uint8List> jpeg = GeneratedColumn<Uint8List>(
@@ -29,7 +39,7 @@ class $PhotosTable extends Photos with TableInfo<$PhotosTable, Photo> {
     requiredDuringInsert: true,
   );
   @override
-  List<GeneratedColumn> get $columns => [id, jpeg];
+  List<GeneratedColumn> get $columns => [id, uuid, jpeg];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -41,6 +51,9 @@ class $PhotosTable extends Photos with TableInfo<$PhotosTable, Photo> {
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('uuid')) {
+      context.handle(_uuidMeta, uuid.isAcceptableOrUnknown(data['uuid']!, _uuidMeta));
     }
     if (data.containsKey('jpeg')) {
       context.handle(_jpegMeta, jpeg.isAcceptableOrUnknown(data['jpeg']!, _jpegMeta));
@@ -57,6 +70,7 @@ class $PhotosTable extends Photos with TableInfo<$PhotosTable, Photo> {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return Photo(
       id: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      uuid: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}uuid'])!,
       jpeg: attachedDatabase.typeMapping.read(DriftSqlType.blob, data['${effectivePrefix}jpeg'])!,
     );
   }
@@ -69,63 +83,94 @@ class $PhotosTable extends Photos with TableInfo<$PhotosTable, Photo> {
 
 class Photo extends DataClass implements Insertable<Photo> {
   final int id;
+
+  /// Global id, stable across devices and backups (the integer [id] is local).
+  final String uuid;
   final Uint8List jpeg;
-  const Photo({required this.id, required this.jpeg});
+  const Photo({required this.id, required this.uuid, required this.jpeg});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
+    map['uuid'] = Variable<String>(uuid);
     map['jpeg'] = Variable<Uint8List>(jpeg);
     return map;
   }
 
   PhotosCompanion toCompanion(bool nullToAbsent) {
-    return PhotosCompanion(id: Value(id), jpeg: Value(jpeg));
+    return PhotosCompanion(id: Value(id), uuid: Value(uuid), jpeg: Value(jpeg));
   }
 
   factory Photo.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Photo(id: serializer.fromJson<int>(json['id']), jpeg: serializer.fromJson<Uint8List>(json['jpeg']));
+    return Photo(
+      id: serializer.fromJson<int>(json['id']),
+      uuid: serializer.fromJson<String>(json['uuid']),
+      jpeg: serializer.fromJson<Uint8List>(json['jpeg']),
+    );
   }
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{'id': serializer.toJson<int>(id), 'jpeg': serializer.toJson<Uint8List>(jpeg)};
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'uuid': serializer.toJson<String>(uuid),
+      'jpeg': serializer.toJson<Uint8List>(jpeg),
+    };
   }
 
-  Photo copyWith({int? id, Uint8List? jpeg}) => Photo(id: id ?? this.id, jpeg: jpeg ?? this.jpeg);
+  Photo copyWith({int? id, String? uuid, Uint8List? jpeg}) =>
+      Photo(id: id ?? this.id, uuid: uuid ?? this.uuid, jpeg: jpeg ?? this.jpeg);
   Photo copyWithCompanion(PhotosCompanion data) {
-    return Photo(id: data.id.present ? data.id.value : this.id, jpeg: data.jpeg.present ? data.jpeg.value : this.jpeg);
+    return Photo(
+      id: data.id.present ? data.id.value : this.id,
+      uuid: data.uuid.present ? data.uuid.value : this.uuid,
+      jpeg: data.jpeg.present ? data.jpeg.value : this.jpeg,
+    );
   }
 
   @override
   String toString() {
     return (StringBuffer('Photo(')
           ..write('id: $id, ')
+          ..write('uuid: $uuid, ')
           ..write('jpeg: $jpeg')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, $driftBlobEquality.hash(jpeg));
+  int get hashCode => Object.hash(id, uuid, $driftBlobEquality.hash(jpeg));
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Photo && other.id == this.id && $driftBlobEquality.equals(other.jpeg, this.jpeg));
+      (other is Photo &&
+          other.id == this.id &&
+          other.uuid == this.uuid &&
+          $driftBlobEquality.equals(other.jpeg, this.jpeg));
 }
 
 class PhotosCompanion extends UpdateCompanion<Photo> {
   final Value<int> id;
+  final Value<String> uuid;
   final Value<Uint8List> jpeg;
-  const PhotosCompanion({this.id = const Value.absent(), this.jpeg = const Value.absent()});
-  PhotosCompanion.insert({this.id = const Value.absent(), required Uint8List jpeg}) : jpeg = Value(jpeg);
-  static Insertable<Photo> custom({Expression<int>? id, Expression<Uint8List>? jpeg}) {
-    return RawValuesInsertable({if (id != null) 'id': id, if (jpeg != null) 'jpeg': jpeg});
+  const PhotosCompanion({
+    this.id = const Value.absent(),
+    this.uuid = const Value.absent(),
+    this.jpeg = const Value.absent(),
+  });
+  PhotosCompanion.insert({this.id = const Value.absent(), this.uuid = const Value.absent(), required Uint8List jpeg})
+    : jpeg = Value(jpeg);
+  static Insertable<Photo> custom({Expression<int>? id, Expression<String>? uuid, Expression<Uint8List>? jpeg}) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (uuid != null) 'uuid': uuid,
+      if (jpeg != null) 'jpeg': jpeg,
+    });
   }
 
-  PhotosCompanion copyWith({Value<int>? id, Value<Uint8List>? jpeg}) {
-    return PhotosCompanion(id: id ?? this.id, jpeg: jpeg ?? this.jpeg);
+  PhotosCompanion copyWith({Value<int>? id, Value<String>? uuid, Value<Uint8List>? jpeg}) {
+    return PhotosCompanion(id: id ?? this.id, uuid: uuid ?? this.uuid, jpeg: jpeg ?? this.jpeg);
   }
 
   @override
@@ -133,6 +178,9 @@ class PhotosCompanion extends UpdateCompanion<Photo> {
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<int>(id.value);
+    }
+    if (uuid.present) {
+      map['uuid'] = Variable<String>(uuid.value);
     }
     if (jpeg.present) {
       map['jpeg'] = Variable<Uint8List>(jpeg.value);
@@ -144,6 +192,7 @@ class PhotosCompanion extends UpdateCompanion<Photo> {
   String toString() {
     return (StringBuffer('PhotosCompanion(')
           ..write('id: $id, ')
+          ..write('uuid: $uuid, ')
           ..write('jpeg: $jpeg')
           ..write(')'))
         .toString();
@@ -165,6 +214,16 @@ class $MealsTable extends Meals with TableInfo<$MealsTable, Meal> {
     type: DriftSqlType.int,
     requiredDuringInsert: false,
     defaultConstraints: GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'),
+  );
+  static const VerificationMeta _uuidMeta = const VerificationMeta('uuid');
+  @override
+  late final GeneratedColumn<String> uuid = GeneratedColumn<String>(
+    'uuid',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    clientDefault: newUuid,
   );
   static const VerificationMeta _eatenAtMeta = const VerificationMeta('eatenAt');
   @override
@@ -258,9 +317,31 @@ class $MealsTable extends Meals with TableInfo<$MealsTable, Meal> {
     requiredDuringInsert: false,
     defaultValue: currentDateAndTime,
   );
+  static const VerificationMeta _updatedAtMsMeta = const VerificationMeta('updatedAtMs');
+  @override
+  late final GeneratedColumn<int> updatedAtMs = GeneratedColumn<int>(
+    'updated_at_ms',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    clientDefault: _nowMs,
+  );
+  static const VerificationMeta _deletedMeta = const VerificationMeta('deleted');
+  @override
+  late final GeneratedColumn<bool> deleted = GeneratedColumn<bool>(
+    'deleted',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('CHECK ("deleted" IN (0, 1))'),
+    defaultValue: const Constant(false),
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
+    uuid,
     eatenAt,
     dishId,
     name,
@@ -271,6 +352,8 @@ class $MealsTable extends Meals with TableInfo<$MealsTable, Meal> {
     carbs,
     photoId,
     createdAt,
+    updatedAtMs,
+    deleted,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -283,6 +366,9 @@ class $MealsTable extends Meals with TableInfo<$MealsTable, Meal> {
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('uuid')) {
+      context.handle(_uuidMeta, uuid.isAcceptableOrUnknown(data['uuid']!, _uuidMeta));
     }
     if (data.containsKey('eaten_at')) {
       context.handle(_eatenAtMeta, eatenAt.isAcceptableOrUnknown(data['eaten_at']!, _eatenAtMeta));
@@ -330,6 +416,12 @@ class $MealsTable extends Meals with TableInfo<$MealsTable, Meal> {
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta, createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
     }
+    if (data.containsKey('updated_at_ms')) {
+      context.handle(_updatedAtMsMeta, updatedAtMs.isAcceptableOrUnknown(data['updated_at_ms']!, _updatedAtMsMeta));
+    }
+    if (data.containsKey('deleted')) {
+      context.handle(_deletedMeta, deleted.isAcceptableOrUnknown(data['deleted']!, _deletedMeta));
+    }
     return context;
   }
 
@@ -340,6 +432,7 @@ class $MealsTable extends Meals with TableInfo<$MealsTable, Meal> {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return Meal(
       id: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      uuid: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}uuid'])!,
       eatenAt: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}eaten_at'])!,
       dishId: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}dish_id'])!,
       name: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}name'])!,
@@ -350,6 +443,8 @@ class $MealsTable extends Meals with TableInfo<$MealsTable, Meal> {
       carbs: attachedDatabase.typeMapping.read(DriftSqlType.double, data['${effectivePrefix}carbs'])!,
       photoId: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}photo_id']),
       createdAt: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      updatedAtMs: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}updated_at_ms'])!,
+      deleted: attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}deleted'])!,
     );
   }
 
@@ -361,6 +456,9 @@ class $MealsTable extends Meals with TableInfo<$MealsTable, Meal> {
 
 class Meal extends DataClass implements Insertable<Meal> {
   final int id;
+
+  /// Global id, stable across devices and backups (the integer [id] is local).
+  final String uuid;
   final DateTime eatenAt;
   final String dishId;
   final String name;
@@ -371,8 +469,14 @@ class Meal extends DataClass implements Insertable<Meal> {
   final double carbs;
   final int? photoId;
   final DateTime createdAt;
+
+  /// Last change, epoch milliseconds (drift's DateTime is only second-precise, too coarse
+  /// to order edits made in quick succession).
+  final int updatedAtMs;
+  final bool deleted;
   const Meal({
     required this.id,
+    required this.uuid,
     required this.eatenAt,
     required this.dishId,
     required this.name,
@@ -383,11 +487,14 @@ class Meal extends DataClass implements Insertable<Meal> {
     required this.carbs,
     this.photoId,
     required this.createdAt,
+    required this.updatedAtMs,
+    required this.deleted,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
+    map['uuid'] = Variable<String>(uuid);
     map['eaten_at'] = Variable<DateTime>(eatenAt);
     map['dish_id'] = Variable<String>(dishId);
     map['name'] = Variable<String>(name);
@@ -400,12 +507,15 @@ class Meal extends DataClass implements Insertable<Meal> {
       map['photo_id'] = Variable<int>(photoId);
     }
     map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at_ms'] = Variable<int>(updatedAtMs);
+    map['deleted'] = Variable<bool>(deleted);
     return map;
   }
 
   MealsCompanion toCompanion(bool nullToAbsent) {
     return MealsCompanion(
       id: Value(id),
+      uuid: Value(uuid),
       eatenAt: Value(eatenAt),
       dishId: Value(dishId),
       name: Value(name),
@@ -416,6 +526,8 @@ class Meal extends DataClass implements Insertable<Meal> {
       carbs: Value(carbs),
       photoId: photoId == null && nullToAbsent ? const Value.absent() : Value(photoId),
       createdAt: Value(createdAt),
+      updatedAtMs: Value(updatedAtMs),
+      deleted: Value(deleted),
     );
   }
 
@@ -423,6 +535,7 @@ class Meal extends DataClass implements Insertable<Meal> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Meal(
       id: serializer.fromJson<int>(json['id']),
+      uuid: serializer.fromJson<String>(json['uuid']),
       eatenAt: serializer.fromJson<DateTime>(json['eatenAt']),
       dishId: serializer.fromJson<String>(json['dishId']),
       name: serializer.fromJson<String>(json['name']),
@@ -433,6 +546,8 @@ class Meal extends DataClass implements Insertable<Meal> {
       carbs: serializer.fromJson<double>(json['carbs']),
       photoId: serializer.fromJson<int?>(json['photoId']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAtMs: serializer.fromJson<int>(json['updatedAtMs']),
+      deleted: serializer.fromJson<bool>(json['deleted']),
     );
   }
   @override
@@ -440,6 +555,7 @@ class Meal extends DataClass implements Insertable<Meal> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
+      'uuid': serializer.toJson<String>(uuid),
       'eatenAt': serializer.toJson<DateTime>(eatenAt),
       'dishId': serializer.toJson<String>(dishId),
       'name': serializer.toJson<String>(name),
@@ -450,11 +566,14 @@ class Meal extends DataClass implements Insertable<Meal> {
       'carbs': serializer.toJson<double>(carbs),
       'photoId': serializer.toJson<int?>(photoId),
       'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAtMs': serializer.toJson<int>(updatedAtMs),
+      'deleted': serializer.toJson<bool>(deleted),
     };
   }
 
   Meal copyWith({
     int? id,
+    String? uuid,
     DateTime? eatenAt,
     String? dishId,
     String? name,
@@ -465,8 +584,11 @@ class Meal extends DataClass implements Insertable<Meal> {
     double? carbs,
     Value<int?> photoId = const Value.absent(),
     DateTime? createdAt,
+    int? updatedAtMs,
+    bool? deleted,
   }) => Meal(
     id: id ?? this.id,
+    uuid: uuid ?? this.uuid,
     eatenAt: eatenAt ?? this.eatenAt,
     dishId: dishId ?? this.dishId,
     name: name ?? this.name,
@@ -477,10 +599,13 @@ class Meal extends DataClass implements Insertable<Meal> {
     carbs: carbs ?? this.carbs,
     photoId: photoId.present ? photoId.value : this.photoId,
     createdAt: createdAt ?? this.createdAt,
+    updatedAtMs: updatedAtMs ?? this.updatedAtMs,
+    deleted: deleted ?? this.deleted,
   );
   Meal copyWithCompanion(MealsCompanion data) {
     return Meal(
       id: data.id.present ? data.id.value : this.id,
+      uuid: data.uuid.present ? data.uuid.value : this.uuid,
       eatenAt: data.eatenAt.present ? data.eatenAt.value : this.eatenAt,
       dishId: data.dishId.present ? data.dishId.value : this.dishId,
       name: data.name.present ? data.name.value : this.name,
@@ -491,6 +616,8 @@ class Meal extends DataClass implements Insertable<Meal> {
       carbs: data.carbs.present ? data.carbs.value : this.carbs,
       photoId: data.photoId.present ? data.photoId.value : this.photoId,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAtMs: data.updatedAtMs.present ? data.updatedAtMs.value : this.updatedAtMs,
+      deleted: data.deleted.present ? data.deleted.value : this.deleted,
     );
   }
 
@@ -498,6 +625,7 @@ class Meal extends DataClass implements Insertable<Meal> {
   String toString() {
     return (StringBuffer('Meal(')
           ..write('id: $id, ')
+          ..write('uuid: $uuid, ')
           ..write('eatenAt: $eatenAt, ')
           ..write('dishId: $dishId, ')
           ..write('name: $name, ')
@@ -507,18 +635,36 @@ class Meal extends DataClass implements Insertable<Meal> {
           ..write('fat: $fat, ')
           ..write('carbs: $carbs, ')
           ..write('photoId: $photoId, ')
-          ..write('createdAt: $createdAt')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAtMs: $updatedAtMs, ')
+          ..write('deleted: $deleted')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, eatenAt, dishId, name, grams, kcal, protein, fat, carbs, photoId, createdAt);
+  int get hashCode => Object.hash(
+    id,
+    uuid,
+    eatenAt,
+    dishId,
+    name,
+    grams,
+    kcal,
+    protein,
+    fat,
+    carbs,
+    photoId,
+    createdAt,
+    updatedAtMs,
+    deleted,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Meal &&
           other.id == this.id &&
+          other.uuid == this.uuid &&
           other.eatenAt == this.eatenAt &&
           other.dishId == this.dishId &&
           other.name == this.name &&
@@ -528,11 +674,14 @@ class Meal extends DataClass implements Insertable<Meal> {
           other.fat == this.fat &&
           other.carbs == this.carbs &&
           other.photoId == this.photoId &&
-          other.createdAt == this.createdAt);
+          other.createdAt == this.createdAt &&
+          other.updatedAtMs == this.updatedAtMs &&
+          other.deleted == this.deleted);
 }
 
 class MealsCompanion extends UpdateCompanion<Meal> {
   final Value<int> id;
+  final Value<String> uuid;
   final Value<DateTime> eatenAt;
   final Value<String> dishId;
   final Value<String> name;
@@ -543,8 +692,11 @@ class MealsCompanion extends UpdateCompanion<Meal> {
   final Value<double> carbs;
   final Value<int?> photoId;
   final Value<DateTime> createdAt;
+  final Value<int> updatedAtMs;
+  final Value<bool> deleted;
   const MealsCompanion({
     this.id = const Value.absent(),
+    this.uuid = const Value.absent(),
     this.eatenAt = const Value.absent(),
     this.dishId = const Value.absent(),
     this.name = const Value.absent(),
@@ -555,9 +707,12 @@ class MealsCompanion extends UpdateCompanion<Meal> {
     this.carbs = const Value.absent(),
     this.photoId = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.updatedAtMs = const Value.absent(),
+    this.deleted = const Value.absent(),
   });
   MealsCompanion.insert({
     this.id = const Value.absent(),
+    this.uuid = const Value.absent(),
     required DateTime eatenAt,
     required String dishId,
     required String name,
@@ -568,6 +723,8 @@ class MealsCompanion extends UpdateCompanion<Meal> {
     required double carbs,
     this.photoId = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.updatedAtMs = const Value.absent(),
+    this.deleted = const Value.absent(),
   }) : eatenAt = Value(eatenAt),
        dishId = Value(dishId),
        name = Value(name),
@@ -578,6 +735,7 @@ class MealsCompanion extends UpdateCompanion<Meal> {
        carbs = Value(carbs);
   static Insertable<Meal> custom({
     Expression<int>? id,
+    Expression<String>? uuid,
     Expression<DateTime>? eatenAt,
     Expression<String>? dishId,
     Expression<String>? name,
@@ -588,9 +746,12 @@ class MealsCompanion extends UpdateCompanion<Meal> {
     Expression<double>? carbs,
     Expression<int>? photoId,
     Expression<DateTime>? createdAt,
+    Expression<int>? updatedAtMs,
+    Expression<bool>? deleted,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
+      if (uuid != null) 'uuid': uuid,
       if (eatenAt != null) 'eaten_at': eatenAt,
       if (dishId != null) 'dish_id': dishId,
       if (name != null) 'name': name,
@@ -601,11 +762,14 @@ class MealsCompanion extends UpdateCompanion<Meal> {
       if (carbs != null) 'carbs': carbs,
       if (photoId != null) 'photo_id': photoId,
       if (createdAt != null) 'created_at': createdAt,
+      if (updatedAtMs != null) 'updated_at_ms': updatedAtMs,
+      if (deleted != null) 'deleted': deleted,
     });
   }
 
   MealsCompanion copyWith({
     Value<int>? id,
+    Value<String>? uuid,
     Value<DateTime>? eatenAt,
     Value<String>? dishId,
     Value<String>? name,
@@ -616,9 +780,12 @@ class MealsCompanion extends UpdateCompanion<Meal> {
     Value<double>? carbs,
     Value<int?>? photoId,
     Value<DateTime>? createdAt,
+    Value<int>? updatedAtMs,
+    Value<bool>? deleted,
   }) {
     return MealsCompanion(
       id: id ?? this.id,
+      uuid: uuid ?? this.uuid,
       eatenAt: eatenAt ?? this.eatenAt,
       dishId: dishId ?? this.dishId,
       name: name ?? this.name,
@@ -629,6 +796,8 @@ class MealsCompanion extends UpdateCompanion<Meal> {
       carbs: carbs ?? this.carbs,
       photoId: photoId ?? this.photoId,
       createdAt: createdAt ?? this.createdAt,
+      updatedAtMs: updatedAtMs ?? this.updatedAtMs,
+      deleted: deleted ?? this.deleted,
     );
   }
 
@@ -637,6 +806,9 @@ class MealsCompanion extends UpdateCompanion<Meal> {
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<int>(id.value);
+    }
+    if (uuid.present) {
+      map['uuid'] = Variable<String>(uuid.value);
     }
     if (eatenAt.present) {
       map['eaten_at'] = Variable<DateTime>(eatenAt.value);
@@ -668,6 +840,12 @@ class MealsCompanion extends UpdateCompanion<Meal> {
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
+    if (updatedAtMs.present) {
+      map['updated_at_ms'] = Variable<int>(updatedAtMs.value);
+    }
+    if (deleted.present) {
+      map['deleted'] = Variable<bool>(deleted.value);
+    }
     return map;
   }
 
@@ -675,6 +853,7 @@ class MealsCompanion extends UpdateCompanion<Meal> {
   String toString() {
     return (StringBuffer('MealsCompanion(')
           ..write('id: $id, ')
+          ..write('uuid: $uuid, ')
           ..write('eatenAt: $eatenAt, ')
           ..write('dishId: $dishId, ')
           ..write('name: $name, ')
@@ -684,7 +863,9 @@ class MealsCompanion extends UpdateCompanion<Meal> {
           ..write('fat: $fat, ')
           ..write('carbs: $carbs, ')
           ..write('photoId: $photoId, ')
-          ..write('createdAt: $createdAt')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAtMs: $updatedAtMs, ')
+          ..write('deleted: $deleted')
           ..write(')'))
         .toString();
   }
@@ -701,8 +882,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   List<DatabaseSchemaEntity> get allSchemaEntities => [photos, meals];
 }
 
-typedef $$PhotosTableCreateCompanionBuilder = PhotosCompanion Function({Value<int> id, required Uint8List jpeg});
-typedef $$PhotosTableUpdateCompanionBuilder = PhotosCompanion Function({Value<int> id, Value<Uint8List> jpeg});
+typedef $$PhotosTableCreateCompanionBuilder =
+    PhotosCompanion Function({Value<int> id, Value<String> uuid, required Uint8List jpeg});
+typedef $$PhotosTableUpdateCompanionBuilder =
+    PhotosCompanion Function({Value<int> id, Value<String> uuid, Value<Uint8List> jpeg});
 
 final class $$PhotosTableReferences extends BaseReferences<_$AppDatabase, $PhotosTable, Photo> {
   $$PhotosTableReferences(super.$_db, super.$_table, super.$_typedResult);
@@ -730,6 +913,8 @@ class $$PhotosTableFilterComposer extends Composer<_$AppDatabase, $PhotosTable> 
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<int> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get uuid => $composableBuilder(column: $table.uuid, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<Uint8List> get jpeg =>
       $composableBuilder(column: $table.jpeg, builder: (column) => ColumnFilters(column));
@@ -763,6 +948,9 @@ class $$PhotosTableOrderingComposer extends Composer<_$AppDatabase, $PhotosTable
   });
   ColumnOrderings<int> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<String> get uuid =>
+      $composableBuilder(column: $table.uuid, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<Uint8List> get jpeg =>
       $composableBuilder(column: $table.jpeg, builder: (column) => ColumnOrderings(column));
 }
@@ -776,6 +964,8 @@ class $$PhotosTableAnnotationComposer extends Composer<_$AppDatabase, $PhotosTab
     super.$removeJoinBuilderFromRootComposer,
   });
   GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get uuid => $composableBuilder(column: $table.uuid, builder: (column) => column);
 
   GeneratedColumn<Uint8List> get jpeg => $composableBuilder(column: $table.jpeg, builder: (column) => column);
 
@@ -822,10 +1012,17 @@ class $$PhotosTableTableManager
           createOrderingComposer: () => $$PhotosTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () => $$PhotosTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback:
-              ({Value<int> id = const Value.absent(), Value<Uint8List> jpeg = const Value.absent()}) =>
-                  PhotosCompanion(id: id, jpeg: jpeg),
-          createCompanionCallback: ({Value<int> id = const Value.absent(), required Uint8List jpeg}) =>
-              PhotosCompanion.insert(id: id, jpeg: jpeg),
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> uuid = const Value.absent(),
+                Value<Uint8List> jpeg = const Value.absent(),
+              }) => PhotosCompanion(id: id, uuid: uuid, jpeg: jpeg),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> uuid = const Value.absent(),
+                required Uint8List jpeg,
+              }) => PhotosCompanion.insert(id: id, uuid: uuid, jpeg: jpeg),
           withReferenceMapper: (p0) =>
               p0.map((e) => (e.readTable<$PhotosTable, Photo>(table), $$PhotosTableReferences(db, table, e))).toList(),
           prefetchHooksCallback: ({mealsRefs = false}) {
@@ -869,6 +1066,7 @@ typedef $$PhotosTableProcessedTableManager =
 typedef $$MealsTableCreateCompanionBuilder =
     MealsCompanion Function({
       Value<int> id,
+      Value<String> uuid,
       required DateTime eatenAt,
       required String dishId,
       required String name,
@@ -879,10 +1077,13 @@ typedef $$MealsTableCreateCompanionBuilder =
       required double carbs,
       Value<int?> photoId,
       Value<DateTime> createdAt,
+      Value<int> updatedAtMs,
+      Value<bool> deleted,
     });
 typedef $$MealsTableUpdateCompanionBuilder =
     MealsCompanion Function({
       Value<int> id,
+      Value<String> uuid,
       Value<DateTime> eatenAt,
       Value<String> dishId,
       Value<String> name,
@@ -893,6 +1094,8 @@ typedef $$MealsTableUpdateCompanionBuilder =
       Value<double> carbs,
       Value<int?> photoId,
       Value<DateTime> createdAt,
+      Value<int> updatedAtMs,
+      Value<bool> deleted,
     });
 
 final class $$MealsTableReferences extends BaseReferences<_$AppDatabase, $MealsTable, Meal> {
@@ -920,6 +1123,8 @@ class $$MealsTableFilterComposer extends Composer<_$AppDatabase, $MealsTable> {
   });
   ColumnFilters<int> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnFilters(column));
 
+  ColumnFilters<String> get uuid => $composableBuilder(column: $table.uuid, builder: (column) => ColumnFilters(column));
+
   ColumnFilters<DateTime> get eatenAt =>
       $composableBuilder(column: $table.eatenAt, builder: (column) => ColumnFilters(column));
 
@@ -943,6 +1148,12 @@ class $$MealsTableFilterComposer extends Composer<_$AppDatabase, $MealsTable> {
 
   ColumnFilters<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get updatedAtMs =>
+      $composableBuilder(column: $table.updatedAtMs, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get deleted =>
+      $composableBuilder(column: $table.deleted, builder: (column) => ColumnFilters(column));
 
   $$PhotosTableFilterComposer get photoId {
     final $$PhotosTableFilterComposer composer = $composerBuilder(
@@ -973,6 +1184,9 @@ class $$MealsTableOrderingComposer extends Composer<_$AppDatabase, $MealsTable> 
   });
   ColumnOrderings<int> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<String> get uuid =>
+      $composableBuilder(column: $table.uuid, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<DateTime> get eatenAt =>
       $composableBuilder(column: $table.eatenAt, builder: (column) => ColumnOrderings(column));
 
@@ -999,6 +1213,12 @@ class $$MealsTableOrderingComposer extends Composer<_$AppDatabase, $MealsTable> 
 
   ColumnOrderings<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get updatedAtMs =>
+      $composableBuilder(column: $table.updatedAtMs, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get deleted =>
+      $composableBuilder(column: $table.deleted, builder: (column) => ColumnOrderings(column));
 
   $$PhotosTableOrderingComposer get photoId {
     final $$PhotosTableOrderingComposer composer = $composerBuilder(
@@ -1029,6 +1249,8 @@ class $$MealsTableAnnotationComposer extends Composer<_$AppDatabase, $MealsTable
   });
   GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
 
+  GeneratedColumn<String> get uuid => $composableBuilder(column: $table.uuid, builder: (column) => column);
+
   GeneratedColumn<DateTime> get eatenAt => $composableBuilder(column: $table.eatenAt, builder: (column) => column);
 
   GeneratedColumn<String> get dishId => $composableBuilder(column: $table.dishId, builder: (column) => column);
@@ -1046,6 +1268,10 @@ class $$MealsTableAnnotationComposer extends Composer<_$AppDatabase, $MealsTable
   GeneratedColumn<double> get carbs => $composableBuilder(column: $table.carbs, builder: (column) => column);
 
   GeneratedColumn<DateTime> get createdAt => $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedAtMs => $composableBuilder(column: $table.updatedAtMs, builder: (column) => column);
+
+  GeneratedColumn<bool> get deleted => $composableBuilder(column: $table.deleted, builder: (column) => column);
 
   $$PhotosTableAnnotationComposer get photoId {
     final $$PhotosTableAnnotationComposer composer = $composerBuilder(
@@ -1092,6 +1318,7 @@ class $$MealsTableTableManager
           updateCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
+                Value<String> uuid = const Value.absent(),
                 Value<DateTime> eatenAt = const Value.absent(),
                 Value<String> dishId = const Value.absent(),
                 Value<String> name = const Value.absent(),
@@ -1102,8 +1329,11 @@ class $$MealsTableTableManager
                 Value<double> carbs = const Value.absent(),
                 Value<int?> photoId = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
+                Value<int> updatedAtMs = const Value.absent(),
+                Value<bool> deleted = const Value.absent(),
               }) => MealsCompanion(
                 id: id,
+                uuid: uuid,
                 eatenAt: eatenAt,
                 dishId: dishId,
                 name: name,
@@ -1114,10 +1344,13 @@ class $$MealsTableTableManager
                 carbs: carbs,
                 photoId: photoId,
                 createdAt: createdAt,
+                updatedAtMs: updatedAtMs,
+                deleted: deleted,
               ),
           createCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
+                Value<String> uuid = const Value.absent(),
                 required DateTime eatenAt,
                 required String dishId,
                 required String name,
@@ -1128,8 +1361,11 @@ class $$MealsTableTableManager
                 required double carbs,
                 Value<int?> photoId = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
+                Value<int> updatedAtMs = const Value.absent(),
+                Value<bool> deleted = const Value.absent(),
               }) => MealsCompanion.insert(
                 id: id,
+                uuid: uuid,
                 eatenAt: eatenAt,
                 dishId: dishId,
                 name: name,
@@ -1140,6 +1376,8 @@ class $$MealsTableTableManager
                 carbs: carbs,
                 photoId: photoId,
                 createdAt: createdAt,
+                updatedAtMs: updatedAtMs,
+                deleted: deleted,
               ),
           withReferenceMapper: (p0) =>
               p0.map((e) => (e.readTable<$MealsTable, Meal>(table), $$MealsTableReferences(db, table, e))).toList(),

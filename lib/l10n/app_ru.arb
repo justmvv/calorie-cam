@@ -62,5 +62,19 @@
   "categoryFruit": "Фрукты",
   "categorySnack": "Снеки",
   "categoryVegetable": "Овощи",
-  "categoryDrink": "Напитки"
+  "categoryDrink": "Напитки",
+  "backup": "Резервная копия",
+  "exportBackup": "Экспортировать дневник",
+  "lastExport": "Последний экспорт: {date}",
+  "neverExported": "Ещё не экспортировался — сохраните копию в Google Drive",
+  "exportDownloaded": "Копия сохранена в «Загрузки»",
+  "exportShared": "Файл копии создан",
+  "exportFailed": "Не удалось экспортировать: {error}",
+  "importBackup": "Импортировать из файла",
+  "importHint": "Записи объединяются, дубликатов не будет",
+  "importDone": "Импорт: новых {added}, обновлено {updated}",
+  "importInvalid": "Это не резервная копия Calorie Cam",
+  "importFailed": "Не удалось импортировать: {error}",
+  "storagePersistent": "Хранилище защищено от автоматической очистки",
+  "storageNotPersistent": "Браузер может очистить данные при нехватке места: установите приложение и делайте экспорт"
 }

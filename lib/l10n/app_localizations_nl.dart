@@ -220,4 +220,55 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get categoryDrink => 'Dranken';
+
+  @override
+  String get backup => 'Back-up';
+
+  @override
+  String get exportBackup => 'Dagboek exporteren';
+
+  @override
+  String lastExport(String date) {
+    return 'Laatste export: $date';
+  }
+
+  @override
+  String get neverExported => 'Nog niet geëxporteerd — bewaar een kopie in Google Drive';
+
+  @override
+  String get exportDownloaded => 'Back-up opgeslagen in Downloads';
+
+  @override
+  String get exportShared => 'Back-upbestand gemaakt';
+
+  @override
+  String exportFailed(String error) {
+    return 'Exporteren mislukt: $error';
+  }
+
+  @override
+  String get importBackup => 'Importeren uit bestand';
+
+  @override
+  String get importHint => 'Items worden samengevoegd, zonder dubbele';
+
+  @override
+  String importDone(int added, int updated) {
+    return 'Geïmporteerd: $added nieuw, $updated bijgewerkt';
+  }
+
+  @override
+  String get importInvalid => 'Dit bestand is geen back-up van Calorie Cam';
+
+  @override
+  String importFailed(String error) {
+    return 'Importeren mislukt: $error';
+  }
+
+  @override
+  String get storagePersistent => 'Opslag is beschermd tegen automatisch wissen';
+
+  @override
+  String get storageNotPersistent =>
+      'De browser kan gegevens wissen bij te weinig ruimte: installeer de app en exporteer regelmatig';
 }

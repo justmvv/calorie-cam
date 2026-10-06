@@ -62,5 +62,19 @@
   "categoryFruit": "Fruit",
   "categorySnack": "Snacks",
   "categoryVegetable": "Groenten",
-  "categoryDrink": "Dranken"
+  "categoryDrink": "Dranken",
+  "backup": "Back-up",
+  "exportBackup": "Dagboek exporteren",
+  "lastExport": "Laatste export: {date}",
+  "neverExported": "Nog niet geëxporteerd — bewaar een kopie in Google Drive",
+  "exportDownloaded": "Back-up opgeslagen in Downloads",
+  "exportShared": "Back-upbestand gemaakt",
+  "exportFailed": "Exporteren mislukt: {error}",
+  "importBackup": "Importeren uit bestand",
+  "importHint": "Items worden samengevoegd, zonder dubbele",
+  "importDone": "Geïmporteerd: {added} nieuw, {updated} bijgewerkt",
+  "importInvalid": "Dit bestand is geen back-up van Calorie Cam",
+  "importFailed": "Importeren mislukt: {error}",
+  "storagePersistent": "Opslag is beschermd tegen automatisch wissen",
+  "storageNotPersistent": "De browser kan gegevens wissen bij te weinig ruimte: installeer de app en exporteer regelmatig"
 }
