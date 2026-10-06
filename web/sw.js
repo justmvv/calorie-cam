@@ -7,15 +7,18 @@
 //   with an old main.dart.js for 10 minutes. ETag revalidation is cheap (304).
 //   The cache is used only when there is no network.
 // - Requests with cache: 'no-store' (the version check) are left alone.
-const APP_CACHE = 'calorie-cam-app';
-const ASSETS_CACHE = 'calorie-cam-assets-v1';
+// CacheStorage is shared by every app on the origin (all *.github.io/<repo>/ projects of a user),
+// so this worker only ever touches caches with its own prefix.
+const PREFIX = 'calorie-cam-';
+const APP_CACHE = `${PREFIX}app`;
+const ASSETS_CACHE = `${PREFIX}assets-v1`;
 const IMMUTABLE = [/\/models\//, /\/ort\//];
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (e) => e.waitUntil(
   caches.keys()
     .then((keys) => Promise.all(keys
-      .filter((k) => k !== APP_CACHE && k !== ASSETS_CACHE)
+      .filter((k) => k.startsWith(PREFIX) && k !== APP_CACHE && k !== ASSETS_CACHE)
       .map((k) => caches.delete(k))))
     .then(() => self.clients.claim()),
 ));

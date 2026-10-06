@@ -8,7 +8,7 @@ import 'ml/food_ai.dart';
 /// App-wide services (one instance per process).
 class Services {
   Services._(this.db, this.catalog, this.ai, this._prefs)
-    : dailyGoal = ValueNotifier(_prefs.getInt(_goalKey) ?? 2000),
+    : dailyGoal = ValueNotifier(_prefs.getInt(_goalKey) ?? _prefs.getInt('daily_goal_kcal') ?? 2000),
       language = ValueNotifier(_prefs.getString(_languageKey)) {
     dailyGoal.addListener(() => _prefs.setInt(_goalKey, dailyGoal.value));
     language.addListener(() {
@@ -17,8 +17,11 @@ class Services {
     });
   }
 
-  static const _goalKey = 'daily_goal_kcal';
-  static const _languageKey = 'language';
+  // Keys are namespaced: browser storage is shared by every app on the origin
+  // (all of a user's <user>.github.io/<repo>/ projects). The goal falls back to the
+  // pre-namespacing key once so existing users keep their value.
+  static const _goalKey = 'calorie_cam.daily_goal_kcal';
+  static const _languageKey = 'calorie_cam.language';
 
   final AppDatabase db;
   final DishCatalog catalog;
