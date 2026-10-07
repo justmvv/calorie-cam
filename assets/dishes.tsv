@@ -189,10 +189,10 @@ salami	Колбаса копчёная	Salami	Salami	Salami	salami slices	400	22
 herring	Сельдь с луком	Pickled herring with onion	Arenque en vinagre con cebolla	Zure haring met ui	pickled herring with onion rings	220	16.0	17.0	0.0	100	snack
 olives	Оливки	Olives	Aceitunas	Olijven	olives	115	0.8	11.0	6.0	30	snack
 hummus	Хумус	Hummus	Hummus	Hummus	hummus	170	8.0	10.0	14.0	80	snack
-coffee	Кофе чёрный	Black coffee	Café solo	Zwarte koffie	cup of black coffee	2	0.1	0.0	0.3	200	drink
-cappuccino	Капучино	Cappuccino	Capuchino	Cappuccino	cappuccino with milk foam	45	2.5	2.0	4.0	250	drink
-latte	Латте	Latte	Café con leche	Latte	latte in a glass	55	3.0	2.8	4.7	300	drink
-tea	Чай	Tea	Té	Thee	cup of tea	1	0.0	0.0	0.2	250	drink
+coffee	Кофе чёрный (без сахара)	Black coffee (no sugar)	Café solo (sin azúcar)	Zwarte koffie (zonder suiker)	cup of black coffee	2	0.1	0.0	0.3	200	drink
+cappuccino	Капучино (без сахара)	Cappuccino (no sugar)	Capuchino (sin azúcar)	Cappuccino (zonder suiker)	cappuccino with milk foam	35	1.9	1.6	2.8	250	drink
+latte	Латте (без сахара)	Latte (no sugar)	Café con leche (sin azúcar)	Latte (zonder suiker)	latte in a tall glass with milk foam | a cup of caffe latte with latte art	40	2.2	1.9	3.4	300	drink
+tea	Чай (без сахара)	Tea (no sugar)	Té (sin azúcar)	Thee (zonder suiker)	cup of tea	1	0.0	0.0	0.2	250	drink
 hot_chocolate	Какао	Hot chocolate	Chocolate caliente	Warme chocolademelk	hot chocolate cocoa drink	80	3.0	3.0	11.0	250	drink
 orange_juice	Апельсиновый сок	Orange juice	Zumo de naranja	Sinaasappelsap	glass of orange juice	45	0.7	0.2	10.0	250	drink
 cola	Кола	Cola	Cola	Cola	glass of cola soda	42	0.0	0.0	10.6	330	drink
@@ -253,3 +253,11 @@ bami_goreng	Бами горенг	Bami goreng	Bami goreng	Bami goreng	bami goren
 sate_ajam	Куриный сатай	Chicken satay	Satay de pollo	Saté ajam	chicken satay skewers with peanut sauce	250	20	16	7	200	asian
 protein_bar	Протеиновый батончик	Protein bar	Barrita de proteínas	Proteïnereep	protein bar, a dense rectangular nutrition bar coated in chocolate | protein bar cut in half showing a chewy dense filling | protein bar with nuts and crisps | a protein bar in an open wrapper	360	33	12	30	60	snack
 muesli_bar	Батончик мюсли	Granola bar	Barrita de cereales	Mueslireep	granola bar, a rectangular cereal bar with visible oats and nuts | muesli bar with dried fruit pieces	400	6	14	62	25	snack
+flat_white	Флэт уайт (без сахара)	Flat white (no sugar)	Flat white (sin azúcar)	Flat white (zonder suiker)	flat white coffee with microfoam in a small cup	45	2.5	2.3	3.6	180	drink
+coffee_milk	Кофе с молоком (без сахара)	Coffee with milk (no sugar)	Café cortado con leche (sin azúcar)	Koffie met melk (zonder suiker)	a mug of brewed coffee with milk	25	1.3	1.2	2.0	250	drink
+latte_syrup	Латте с сиропом	Latte with syrup	Café con leche con sirope	Latte met siroop	sweet flavored latte with syrup and whipped cream on top	70	2.1	1.8	11	300	drink
+raf	Раф-кофе	Raf coffee	Café raf	Raf-koffie	raf coffee, creamy whipped coffee with cream and vanilla in a tall glass	115	2.2	7	11	300	drink
+sugar	Сахар (1 ч. л. = 5 г)	Sugar (1 tsp = 5 g)	Azúcar (1 cdta. = 5 g)	Suiker (1 tl = 5 g)	sugar cubes and a teaspoon of white sugar	399	0	0	99.8	5	snack
+pumpkin_porridge	Тыквенная каша	Pumpkin porridge	Gachas de calabaza	Pompoenpap	pumpkin porridge, orange millet porridge with pumpkin pieces in a bowl | thick creamy orange pumpkin and rice porridge | pumpkin kasha baked in a clay pot	95	2.8	3	14	250	breakfast
+millet_porridge	Пшённая каша на молоке	Millet porridge	Gachas de mijo	Gierstpap	millet porridge, yellow millet kasha with a piece of butter in a bowl	110	3.5	3.2	17	250	breakfast
+liver_fritters	Печёночные оладьи	Liver fritters	Tortitas de hígado	Leverpannenkoekjes	liver fritters, small dark brown fried liver pancakes on a plate | pechenochnye oladyi, round fried chicken liver patties with sour cream	190	15	10	10	150	main
