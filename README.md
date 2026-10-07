@@ -26,6 +26,7 @@ Portion weight is not estimated from the photo — that isn't reliable. The user
 ## Adding a meal
 
 - **Photo** → the main dish and, if visible, a side/salad are preselected; other options are chips. **Add photo** puts more photos into the same meal (e.g. a set lunch: soup, main, drink); each item keeps the thumbnail of its photo.
+- **Portion in grams or in kcal**: the amount field of an item (and of a diary entry when editing it) switches between grams and calories for the whole item — when the total is known exactly, type it in; the grams and macros follow from the dish's calorie density.
 - **Edit calories** (tap the "kcal per 100 g" line of an item): type the numbers from the package, per 100 g or per portion; optionally save as one of **My products**.
 - **Search** lists **Enter calories manually**, **My sets**, **My products** (swipe to delete) and the catalog. The bookmark button saves the current plate as a set.
 - **Search the web** sends the photo to Google Lens or Bing (a form upload in a new tab, no API keys) or to another app through the share sheet (Google Lens, Yandex…), for dishes the catalog doesn't know.

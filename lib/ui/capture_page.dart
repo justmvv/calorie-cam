@@ -19,10 +19,15 @@ class _PlateItem {
     required this.dishId,
     required this.name,
     required this.per100,
-    required double grams,
+    required this.grams,
     required this.portion,
     this.photo,
-  }) : gramsCtl = TextEditingController(text: grams.round().toString());
+    bool byKcal = false,
+  }) : amountCtl = TextEditingController() {
+    // Typing calories needs a known calorie density.
+    this.byKcal = byKcal && per100.kcal > 0;
+    refreshAmount();
+  }
 
   _PlateItem.dish(Dish d, {_Photo? photo})
     : this(
@@ -54,12 +59,38 @@ class _PlateItem {
 
   /// The photo the item was recognized on; its thumbnail is stored with the entry.
   final _Photo? photo;
-  final TextEditingController gramsCtl;
+
+  /// Portion in grams — the source of truth for nutrition.
+  double grams;
+
+  /// Whether the amount field takes calories for the whole item instead of grams (the grams
+  /// are then derived from the calorie density, so macros scale along).
+  late bool byKcal;
+
+  /// The amount field: grams, or calories when [byKcal].
+  final TextEditingController amountCtl;
 
   static String _productId(String uuid) => 'product:$uuid';
 
-  double get grams => double.tryParse(gramsCtl.text.replaceAll(',', '.')) ?? 0;
   double get kcal => per100.kcal * grams / 100;
+
+  void setGrams(double g) {
+    grams = g;
+    refreshAmount();
+  }
+
+  void setByKcal(bool value) {
+    byKcal = value && per100.kcal > 0;
+    refreshAmount();
+  }
+
+  /// Applies what the user typed in the amount field.
+  void amountTyped(String text) {
+    final v = double.tryParse(text.trim().replaceAll(',', '.')) ?? 0;
+    grams = byKcal ? v * 100 / per100.kcal : v;
+  }
+
+  void refreshAmount() => amountCtl.text = (byKcal ? kcal : grams).round().toString();
 
   /// Catalog dishes are shown in the current language (unless the user renamed them).
   String displayName(AppLocalizations l10n) => switch (services.catalog.byId(dishId)) {
@@ -115,7 +146,7 @@ class _CapturePageState extends State<CapturePage> {
   @override
   void dispose() {
     for (final p in _plate) {
-      p.gramsCtl.dispose();
+      p.amountCtl.dispose();
     }
     super.dispose();
   }
@@ -193,7 +224,7 @@ class _CapturePageState extends State<CapturePage> {
   void _remove(_PlateItem item) {
     _removed.add(item.dishId);
     _plate.remove(item);
-    item.gramsCtl.dispose();
+    item.amountCtl.dispose();
   }
 
   Future<void> _pickPhoto(ImageSource source) async {
@@ -221,7 +252,8 @@ class _CapturePageState extends State<CapturePage> {
   /// A custom item: the user types the calories in (e.g. from the package).
   Future<void> _addManual() async {
     final l10n = context.l10n;
-    final input = await showNutritionDialog(context, name: '', grams: 100);
+    // Usually it's "this whole thing had N kcal": start with calories for the whole item.
+    final input = await showNutritionDialog(context, name: '', grams: 100, perPortion: true);
     if (input == null || !mounted) return;
     final name = input.name.isEmpty ? l10n.customItem : input.name;
     var dishId = 'custom';
@@ -230,7 +262,11 @@ class _CapturePageState extends State<CapturePage> {
       dishId = _PlateItem._productId(product.uuid);
     }
     if (!mounted) return;
-    setState(() => _plate.add(_PlateItem(dishId: dishId, name: name, per100: input.per100, grams: 100, portion: 100)));
+    setState(
+      () => _plate.add(
+        _PlateItem(dishId: dishId, name: name, per100: input.per100, grams: 100, portion: 100, byKcal: true),
+      ),
+    );
   }
 
   Future<void> _editNutrition(_PlateItem item) async {
@@ -252,6 +288,7 @@ class _CapturePageState extends State<CapturePage> {
     if (!mounted) return;
     setState(() {
       item.per100 = input.per100;
+      item.setByKcal(item.byKcal); // the field shows calories: refresh it (or leave calorie mode if 0)
       if (renamed) {
         item.name = input.name;
         if (services.catalog.byId(item.dishId) != null) item.dishId = 'custom';
@@ -463,7 +500,6 @@ class _CapturePageState extends State<CapturePage> {
   }
 
   Widget _plateCard(AppLocalizations l10n, _PlateItem item) {
-    void setGrams(double g) => setState(() => item.gramsCtl.text = g.round().toString());
     final textTheme = Theme.of(context).textTheme;
     return Card(
       margin: const EdgeInsets.only(top: 8),
@@ -508,16 +544,31 @@ class _CapturePageState extends State<CapturePage> {
             Row(
               children: [
                 SizedBox(
-                  width: 96,
+                  width: 118, // fits four digits plus "kcal"/"ккал"
                   child: TextField(
-                    controller: item.gramsCtl,
+                    controller: item.amountCtl,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                      suffixText: l10n.gramsUnit,
+                      suffixText: item.byKcal ? l10n.kcalUnit : l10n.gramsUnit,
                       isDense: true,
                       border: const OutlineInputBorder(),
                     ),
-                    onChanged: (_) => setState(() {}),
+                    onChanged: (text) => setState(() => item.amountTyped(text)),
+                  ),
+                ),
+                const SizedBox(width: 4),
+                // Grams or calories for the whole item, e.g. when the calories are known exactly.
+                SegmentedButton<bool>(
+                  segments: [
+                    ButtonSegment(value: false, label: Text(l10n.gramsUnit)),
+                    ButtonSegment(value: true, label: Text(l10n.kcalUnit), enabled: item.per100.kcal > 0),
+                  ],
+                  selected: {item.byKcal},
+                  onSelectionChanged: (s) => setState(() => item.setByKcal(s.single)),
+                  showSelectedIcon: false,
+                  style: const ButtonStyle(
+                    visualDensity: VisualDensity.compact,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -532,7 +583,7 @@ class _CapturePageState extends State<CapturePage> {
                             child: ActionChip(
                               label: Text(label),
                               tooltip: l10n.grams(item.portion * k),
-                              onPressed: () => setGrams(item.portion * k),
+                              onPressed: () => setState(() => item.setGrams(item.portion * k)),
                             ),
                           ),
                       ],

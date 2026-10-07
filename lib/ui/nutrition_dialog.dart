@@ -19,17 +19,19 @@ Future<NutritionInput?> showNutritionDialog(
   required String name,
   Per100? initial,
   required double grams,
+  bool perPortion = false,
 }) => showDialog<NutritionInput>(
   context: context,
-  builder: (context) => _NutritionDialog(name: name, initial: initial, grams: grams),
+  builder: (context) => _NutritionDialog(name: name, initial: initial, grams: grams, perPortion: perPortion),
 );
 
 class _NutritionDialog extends StatefulWidget {
-  const _NutritionDialog({required this.name, required this.initial, required this.grams});
+  const _NutritionDialog({required this.name, required this.initial, required this.grams, required this.perPortion});
 
   final String name;
   final Per100? initial;
   final double grams;
+  final bool perPortion;
 
   @override
   State<_NutritionDialog> createState() => _NutritionDialogState();
@@ -42,7 +44,7 @@ class _NutritionDialogState extends State<_NutritionDialog> {
   late final _protein = TextEditingController(text: _fmt(widget.initial?.protein));
   late final _fat = TextEditingController(text: _fmt(widget.initial?.fat));
   late final _carbs = TextEditingController(text: _fmt(widget.initial?.carbs));
-  var _perPortion = false;
+  late var _perPortion = widget.perPortion;
   var _save = false;
 
   static String _fmt(double? v) => v == null ? '' : (v == v.roundToDouble() ? '${v.round()}' : v.toStringAsFixed(1));

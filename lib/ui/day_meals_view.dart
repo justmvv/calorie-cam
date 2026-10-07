@@ -150,6 +150,18 @@ class _MealTile extends StatelessWidget {
       ),
     );
     var eatenAt = meal.eatenAt;
+    // The amount can be typed as grams or as calories for the whole item.
+    final canUseKcal = meal.kcal > 0 && meal.grams > 0;
+    var byKcal = false;
+    void switchMode(bool kcal) {
+      final v = double.tryParse(controller.text.replaceAll(',', '.'));
+      byKcal = kcal;
+      if (v != null) {
+        final converted = kcal ? v * meal.kcal / meal.grams : v * meal.grams / meal.kcal;
+        controller.text = converted.round().toString();
+      }
+    }
+
     final saved = await showDialog<bool>(
       context: context,
       builder: (context) => StatefulBuilder(
@@ -162,8 +174,23 @@ class _MealTile extends StatelessWidget {
                 controller: controller,
                 keyboardType: TextInputType.number,
                 autofocus: true,
-                decoration: InputDecoration(labelText: l10n.portion, suffixText: l10n.gramsUnit),
+                decoration: InputDecoration(
+                  labelText: l10n.portion,
+                  suffixText: byKcal ? l10n.kcalUnit : l10n.gramsUnit,
+                ),
               ),
+              if (canUseKcal) ...[
+                const SizedBox(height: 8),
+                SegmentedButton<bool>(
+                  segments: [
+                    ButtonSegment(value: false, label: Text(l10n.gramsUnit)),
+                    ButtonSegment(value: true, label: Text(l10n.kcalUnit)),
+                  ],
+                  selected: {byKcal},
+                  onSelectionChanged: (s) => setState(() => switchMode(s.single)),
+                  showSelectedIcon: false,
+                ),
+              ],
               const SizedBox(height: 8),
               ListTile(
                 contentPadding: EdgeInsets.zero,
@@ -185,7 +212,8 @@ class _MealTile extends StatelessWidget {
         ),
       ),
     );
-    final g = double.tryParse(controller.text.replaceAll(',', '.'));
+    final v = double.tryParse(controller.text.replaceAll(',', '.'));
+    final g = v == null ? null : (byKcal ? v * meal.grams / meal.kcal : v);
     if (saved == true && g != null && g > 0) {
       await services.db.updateMeal(meal, grams: g, eatenAt: eatenAt);
     }
