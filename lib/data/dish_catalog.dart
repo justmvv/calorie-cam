@@ -206,7 +206,7 @@ class DishCatalog {
   static const memoryFloor = 0.6;
 
   /// Logit bonus per unit of similarity above [memoryFloor], in units of the logit scale.
-  static const memoryWeight = 4.0;
+  static const memoryWeight = 1.0; // grid search: 4 hurt, 1 best (+2.7 pp top-1)
 
   /// From this similarity on, the past plate is suggested as a whole.
   static const memorySuggest = 0.8;
