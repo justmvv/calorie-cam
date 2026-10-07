@@ -52,6 +52,8 @@ jobs:
       # it wouldn't be cached for offline use). BUILD_ID is compiled into the app and published
       # as build_id.txt; a mismatch tells a running app that a new version is out.
       - name: Build web release
+        env:
+          BUILD_NUMBER: ${{ github.run_number }}
         run: |
           tools/build_web.sh \
             --base-href "/${{ github.event.repository.name }}/" \

@@ -9,6 +9,10 @@
 #             must always come from the same release as the code)
 #   canvaskit/ → canvaskit-<engine revision>/ (changes with the Flutter version)
 #
+# Version: the name comes from pubspec.yaml (version: X.Y.Z+N), the build number from
+# $BUILD_NUMBER (CI sets the run number) or else from pubspec. Both are compiled into the app
+# (shown in Settings) and written to version.json.
+#
 # The manifest "id" is set to the base href: an id is resolved against the origin, not the
 # manifest's folder, so a relative "./" would claim the whole <user>.github.io origin.
 set -euo pipefail
@@ -23,7 +27,14 @@ for ((i = 1; i <= $#; i++)); do
   esac
 done
 
-flutter build web --release --no-web-resources-cdn "$@"
+PUBSPEC_VERSION=$(grep -E '^version:' pubspec.yaml | awk '{print $2}')
+VERSION_NAME=${PUBSPEC_VERSION%%+*}
+BUILD_NUMBER=${BUILD_NUMBER:-${PUBSPEC_VERSION##*+}}
+
+flutter build web --release --no-web-resources-cdn \
+  --build-name="$VERSION_NAME" --build-number="$BUILD_NUMBER" \
+  --dart-define=APP_VERSION="$VERSION_NAME" --dart-define=BUILD_NUMBER="$BUILD_NUMBER" \
+  "$@"
 
 VERSION=$( (cat "$OUT/main.dart.js" "$OUT/food_ai.js" "$OUT/flutter_bootstrap.js"
             find "$OUT/assets" -type f | LC_ALL=C sort | xargs cat) | shasum -a 256 | cut -c1-12)
@@ -42,4 +53,4 @@ grep -q "buildVersion = '$VERSION'" "$OUT/flutter_bootstrap.js"
 grep -q "flutter_bootstrap.js?v=$VERSION" "$OUT/index.html"
 grep -q "\"id\": \"$BASE_HREF\"" "$OUT/manifest.json"
 [ -f "$OUT/b-$VERSION/assets/AssetManifest.bin" ]
-echo "Build $VERSION, CanvasKit $REV, manifest id $BASE_HREF"
+echo "Version $VERSION_NAME+$BUILD_NUMBER, build $VERSION, CanvasKit $REV, manifest id $BASE_HREF"

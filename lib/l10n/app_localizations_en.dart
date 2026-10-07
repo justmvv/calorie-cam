@@ -356,4 +356,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get chipsHint => 'Tap to replace the suggested dish, hold to add one more';
+
+  @override
+  String versionLabel(String version, String build) {
+    return 'Version $version · build $build';
+  }
+
+  @override
+  String get devBuild => 'Development build';
 }

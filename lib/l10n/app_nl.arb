@@ -103,5 +103,7 @@
   "customItem": "Eigen product",
   "deleteItem": "Verwijderen",
   "shareDay": "Dag delen",
-  "chipsHint": "Tik om het voorgestelde gerecht te vervangen, houd vast om er een toe te voegen"
+  "chipsHint": "Tik om het voorgestelde gerecht te vervangen, houd vast om er een toe te voegen",
+  "versionLabel": "Versie {version} · build {build}",
+  "devBuild": "Ontwikkelversie"
 }

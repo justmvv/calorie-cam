@@ -356,4 +356,12 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get chipsHint => 'Toca para cambiar el plato sugerido, mantén pulsado para añadir otro';
+
+  @override
+  String versionLabel(String version, String build) {
+    return 'Versión $version · compilación $build';
+  }
+
+  @override
+  String get devBuild => 'Compilación de desarrollo';
 }

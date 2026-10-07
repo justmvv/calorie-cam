@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../app_version.dart';
 import '../platform/web_files.dart';
+import '../update_checker.dart' show buildId;
 import '../services.dart';
 import 'format.dart';
 import 'share_flow.dart';
@@ -104,6 +106,19 @@ class _SettingsPageState extends State<SettingsPage> {
             builder: (context, persisted, _) => ListTile(
               leading: Icon(persisted ? Icons.verified_user_outlined : Icons.info_outline),
               subtitle: Text(persisted ? l10n.storagePersistent : l10n.storageNotPersistent),
+            ),
+          ),
+          const Divider(),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+            child: Text(
+              appVersion.isEmpty
+                  ? l10n.devBuild
+                  : [
+                      l10n.versionLabel(appVersion, buildNumber),
+                      if (buildId.isNotEmpty) '(${buildId.substring(0, buildId.length.clamp(0, 7))})',
+                    ].join(' '),
+              style: Theme.of(context).textTheme.bodySmall,
             ),
           ),
         ],

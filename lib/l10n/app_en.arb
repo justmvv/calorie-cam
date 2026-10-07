@@ -245,5 +245,17 @@
   "customItem": "Custom item",
   "deleteItem": "Delete",
   "shareDay": "Share the day",
-  "chipsHint": "Tap to replace the suggested dish, hold to add one more"
+  "chipsHint": "Tap to replace the suggested dish, hold to add one more",
+  "versionLabel": "Version {version} · build {build}",
+  "@versionLabel": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      },
+      "build": {
+        "type": "String"
+      }
+    }
+  },
+  "devBuild": "Development build"
 }

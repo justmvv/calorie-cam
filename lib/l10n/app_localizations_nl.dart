@@ -356,4 +356,12 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get chipsHint => 'Tik om het voorgestelde gerecht te vervangen, houd vast om er een toe te voegen';
+
+  @override
+  String versionLabel(String version, String build) {
+    return 'Versie $version · build $build';
+  }
+
+  @override
+  String get devBuild => 'Ontwikkelversie';
 }

@@ -43,6 +43,12 @@ tools/build_web.sh             # release PWA in build/web (versioned URLs)
 
 On a phone you need **HTTPS**, otherwise the browser won't allow the camera or the service worker. Then choose "Add to Home Screen" in Safari or Chrome.
 
+## Versions
+
+`version:` in `pubspec.yaml` is the release (bump it with each set of changes and add an entry to
+[CHANGELOG.md](CHANGELOG.md)); CI uses the GitHub Actions run number as the build number.
+Settings shows e.g. "Version 1.5.0 · build 57 (394ddf3)".
+
 ## Publishing (GitHub Pages)
 
 The workflow [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) runs on every push to `main`: it downloads the model, runs the tests, builds the PWA with `--base-href /<repo>/` and publishes it to `https://<user>.github.io/<repo>/`.

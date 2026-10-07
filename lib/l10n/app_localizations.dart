@@ -717,6 +717,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Tap to replace the suggested dish, hold to add one more'**
   String get chipsHint;
+
+  /// No description provided for @versionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version} · build {build}'**
+  String versionLabel(String version, String build);
+
+  /// No description provided for @devBuild.
+  ///
+  /// In en, this message translates to:
+  /// **'Development build'**
+  String get devBuild;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

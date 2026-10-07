@@ -356,4 +356,12 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get chipsHint => 'Нажмите, чтобы заменить блюдо, удерживайте — чтобы добавить ещё одно';
+
+  @override
+  String versionLabel(String version, String build) {
+    return 'Версия $version · сборка $build';
+  }
+
+  @override
+  String get devBuild => 'Сборка для разработки';
 }

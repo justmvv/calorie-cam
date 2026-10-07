@@ -103,5 +103,7 @@
   "customItem": "Producto propio",
   "deleteItem": "Eliminar",
   "shareDay": "Compartir el día",
-  "chipsHint": "Toca para cambiar el plato sugerido, mantén pulsado para añadir otro"
+  "chipsHint": "Toca para cambiar el plato sugerido, mantén pulsado para añadir otro",
+  "versionLabel": "Versión {version} · compilación {build}",
+  "devBuild": "Compilación de desarrollo"
 }
