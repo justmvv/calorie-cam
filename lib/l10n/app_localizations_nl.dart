@@ -134,7 +134,7 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String get recognizing => 'Herkennen… De eerste keer wordt het model gedownload (~23 MB).';
+  String get recognizing => 'Herkennen… De eerste keer wordt het model gedownload (~72 MB).';
 
   @override
   String get looksLike => 'Lijkt op:';

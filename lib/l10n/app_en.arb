@@ -118,7 +118,7 @@
       }
     }
   },
-  "recognizing": "Recognizing… The first run downloads the model (~23 MB).",
+  "recognizing": "Recognizing… The first run downloads the model (~72 MB).",
   "looksLike": "Looks like:",
   "remove": "Remove",
   "saveFailed": "Couldn't save: {error}",

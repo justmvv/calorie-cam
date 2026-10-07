@@ -35,7 +35,7 @@
   "addToDiary": "Toevoegen aan dagboek · {kcal}",
   "recognitionFailed": "Foto kon niet worden herkend",
   "chooseManually": "Kies het gerecht handmatig.\n{error}",
-  "recognizing": "Herkennen… De eerste keer wordt het model gedownload (~23 MB).",
+  "recognizing": "Herkennen… De eerste keer wordt het model gedownload (~72 MB).",
   "looksLike": "Lijkt op:",
   "remove": "Verwijderen",
   "saveFailed": "Opslaan mislukt: {error}",

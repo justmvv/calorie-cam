@@ -11,7 +11,7 @@
 // so this worker only ever touches caches with its own prefix.
 const PREFIX = 'calorie-cam-';
 const APP_CACHE = `${PREFIX}app`;
-const ASSETS_CACHE = `${PREFIX}assets-v1`;
+const ASSETS_CACHE = `${PREFIX}assets-v2`; // v2: MobileCLIP-S2
 const IMMUTABLE = [/\/models\//, /\/ort\//];
 
 self.addEventListener('install', () => self.skipWaiting());

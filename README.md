@@ -15,7 +15,7 @@ photo ──► web/food_ai.js ────────────────�
 user picks the dish and portion ──► kcal = kcal/100 g × grams ──► Drift (SQLite WASM)
 ```
 
-- **Recognition:** zero-shot [MobileCLIP-S0](https://github.com/apple/ml-mobileclip) (fp16 vision encoder, ~23 MB). A dish is recognized if it's in the catalog; no model retraining is needed. Besides the whole photo, five overlapping parts of it are analyzed in one batch, so a side dish or salad next to the main dish is put on the plate too (`DishCatalog.suggestPlate`: one dish per role — main, side, salad, … — with per-role confidence thresholds; tune with `tools/eval_plate.mjs`).
+- **Recognition:** zero-shot [MobileCLIP-S2](https://github.com/apple/ml-mobileclip) (fp16 vision encoder, ~72 MB; S2 instead of S0: 55% vs 47% top-1 on 763 Wikipedia photos, `tools/eval_set.mjs`). A dish is recognized if it's in the catalog; no model retraining is needed. Besides the whole photo, five overlapping parts of it are analyzed in one batch, so a side dish or salad next to the main dish is put on the plate too (`DishCatalog.suggestPlate`: one dish per role — main, side, salad, … — with per-role confidence thresholds; tune with `tools/eval_plate.mjs`).
 - **Catalog:** [`assets/dishes.tsv`](assets/dishes.tsv), ~250 dishes — Russian, Spanish, Dutch (including the Indonesian-Dutch classics) and international — with names in every UI language, calories/protein/fat/carbs per 100 g and a typical portion. Text embeddings are precomputed in `assets/dish_embeddings.*`.
 - **Database:** [`lib/data/db.dart`](lib/data/db.dart): `meals` (what, how much, when; nutrition already scaled to the portion), `photos` (~15 KB JPEG thumbnails), `products` (the user's own products, per 100 g) and `meal_sets` (saved sets of items). Rows have global UUIDs, a millisecond `updated_at_ms` and soft deletes (tombstones), so backups from different moments or devices merge cleanly.
 - **Localization:** ARB files in [`lib/l10n/`](lib/l10n/) (`flutter gen-l10n`). Logged entries are shown with the catalog name in the current language.
@@ -26,6 +26,8 @@ Portion weight is not estimated from the photo — that isn't reliable. The user
 ## Adding a meal
 
 - **Photo** → the main dish and, if visible, a side/salad are preselected; other options are chips. **Add photo** puts more photos into the same meal (e.g. a set lunch: soup, main, drink); each item keeps the thumbnail of its photo.
+- **Recognition memory**: every logged photo is remembered (image embedding + what was put on the plate, tagged with the model). A near-identical new photo gets the same plate right away, a similar one shows an "As last time" card; similar past photos also boost their dishes. Tuned with `tools/eval_set.mjs` (photo similarity above 0.77 happens for different dishes in only 0.1% of pairs).
+- **Context hints**: small logit bonuses for breakfast dishes in the morning, soups at midday and dishes eaten often in the last 90 days (`lib/data/context_prior.dart`).
 - **Portion in grams or in kcal**: the amount field of an item (and of a diary entry when editing it) switches between grams and calories for the whole item — when the total is known exactly, type it in; the grams and macros follow from the dish's calorie density.
 - **Edit calories** (tap the "kcal per 100 g" line of an item): type the numbers from the package, per 100 g or per portion; optionally save as one of **My products**.
 - **Search** lists **Enter calories manually**, **My sets**, **My products** (swipe to delete) and the catalog. The bookmark button saves the current plate as a set.
@@ -57,7 +59,7 @@ One-time repository setting: **Settings → Pages → Source: GitHub Actions**. 
 
 The MobileCLIP model is distributed under Apple's license; the license text is published next to the model (`models/LICENSE-MobileCLIP.txt`).
 
-The first load is ≈ 45 MB (23 MB model + 12 MB ONNX runtime + the app); after that everything comes from the cache.
+The first load is ≈ 95 MB (72 MB model + 12 MB ONNX runtime + the app); after that everything comes from the cache.
 
 ## Backup
 
@@ -73,7 +75,7 @@ Format and merge rules: [`lib/data/backup.dart`](lib/data/backup.dart); tests (i
 
 The app works offline but never gets stuck on an old version:
 
-- **[`web/sw.js`](web/sw.js).** The model and onnxruntime (~35 MB) are cache-first. Everything else is network-first and bypasses the browser HTTP cache (GitHub Pages sends `max-age=600`); the cache is used only without a network. Flutter's built-in service worker is disabled.
+- **[`web/sw.js`](web/sw.js).** The model and onnxruntime are cache-first; the runtime is the WebGPU build where the browser has a GPU adapter, otherwise the lighter CPU-only one (`web/food_ai.js`). Everything else is network-first and bypasses the browser HTTP cache (GitHub Pages sends `max-age=600`); the cache is used only without a network. Flutter's built-in service worker is disabled.
 - **[`tools/build_web.sh`](tools/build_web.sh).** Chrome may serve a `<script>` from its memory cache, bypassing the service worker, so every build gets its own URLs: `main.dart.js?v=<hash>`, `flutter_bootstrap.js?v=…`, `food_ai.js?v=…`, `b-<hash>/assets/` (Flutter's `assetBase`, so the dish catalog and its embeddings always come from the same release as the code), `canvaskit-<engine revision>/`. The service worker removes old versions from the cache.
 - **[`lib/update_checker.dart`](lib/update_checker.dart).** CI compiles `BUILD_ID` (the commit sha) into the app and publishes it as `build_id.txt`. The app compares versions on start, when it returns from the background, and every 30 minutes. On the home screen it reloads silently; in the middle of an entry it shows an "Update" button instead. A guard prevents reload loops.
 - When you change the model or the onnxruntime version in `tools/fetch_assets.sh`, bump `ASSETS_CACHE` in `web/sw.js`.
@@ -100,6 +102,15 @@ cd tools && npm install && node make_icons.mjs   # CHROME_PATH=… if Chrome isn
 ## Adding a UI language
 
 Add `lib/l10n/app_<code>.arb` (copy `app_en.arb`), a `name_<code>` column to the catalog (picked up automatically; missing names fall back to English), and the language to the list in [`lib/ui/settings_page.dart`](lib/ui/settings_page.dart). The tests check that every dish and category has a translation in every UI language.
+
+## Measuring recognition
+
+```bash
+python3 tools/fetch_eval.py                 # ~900 photos of catalog dishes from Wikipedia articles
+cd tools && node eval_set.mjs               # accuracy, confidence calibration, memory simulation
+node eval_plate.mjs                         # plates with sides and set-lunch trays (testimg/combo)
+MODEL=Xenova/mobileclip_s0 node build_embeddings.mjs && MODEL=Xenova/mobileclip_s0 node eval_set.mjs  # compare models
+```
 
 ## Tests
 

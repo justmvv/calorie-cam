@@ -3,6 +3,21 @@
 Versions follow `version:` in `pubspec.yaml`; the build number is the GitHub Actions run that
 published it. The running version is shown at the bottom of Settings.
 
+## 1.6.0 — 2026-10-08
+
+- Bigger recognition model: MobileCLIP-S2 instead of S0 — 55% vs 47% right on the first try,
+  79% vs 74% in the top 5 (763 Wikipedia photos of 235 dishes). The model download grows from
+  23 to 72 MB (once; then cached).
+- Recognition runs on the GPU (WebGPU) where the browser supports it: parts of the photo are
+  analyzed ~10× faster; other browsers use the CPU as before.
+- Recognition memory: each logged photo is remembered with what ended up on the plate; a similar
+  photo next time gets "As last time" (put on the plate right away when nearly identical), which
+  also recognizes your own products and canteen sets. Settings shows the count and can forget it;
+  backups include it.
+- Set lunch: soup and a main can be picked together; the photo is analyzed as a 3 × 3 grid and up
+  to 5 items are put on the plate.
+- Gentle context hints: breakfast dishes in the morning, soups at midday, dishes you eat often.
+
 ## 1.5.0 — 2026-10-07
 
 - Plates with sides: besides the whole photo, parts of it are analyzed so a side dish or salad is

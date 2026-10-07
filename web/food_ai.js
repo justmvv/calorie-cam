@@ -1,4 +1,4 @@
-// On-device food recognition: MobileCLIP-S0 (vision encoder) via onnxruntime-web.
+// On-device food recognition: MobileCLIP-S2 (vision encoder) via onnxruntime-web.
 // Dart calls window.foodAI.analyze(bytes) for the whole photo (embedding + JPEG thumbnail), then
 // window.foodAI.analyzeRegions(bytes) for parts of it (to find a side dish next to the main one);
 // matching against catalog dishes happens in Dart.
@@ -12,18 +12,43 @@
   const REGION_SIZE = 0.5;
 
   let sessionPromise = null;
+  let backend = null; // 'webgpu' or 'wasm', for diagnostics
+
+  function loadScript(src) {
+    return new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = src;
+      s.onload = resolve;
+      s.onerror = () => reject(new Error(`failed to load ${src}`));
+      document.head.append(s);
+    });
+  }
+
+  // The GPU is ~10× faster than the CPU for this model: use WebGPU where the browser offers an
+  // adapter (most current Android phones in Chrome), otherwise the lighter CPU-only runtime.
+  async function createSession() {
+    const gpu = navigator.gpu ? await navigator.gpu.requestAdapter().catch(() => null) : null;
+    await loadScript(gpu ? 'ort/ort.webgpu.min.js' : 'ort/ort.wasm.min.js');
+    // Absolute URL: a relative path in dynamic import() is treated as a bare module specifier.
+    ort.env.wasm.wasmPaths = new URL('ort/', document.baseURI).href;
+    // Multithreading requires cross-origin isolation.
+    ort.env.wasm.numThreads = self.crossOriginIsolated ? Math.min(4, navigator.hardwareConcurrency || 1) : 1;
+    const options = { graphOptimizationLevel: 'all' };
+    if (gpu) {
+      try {
+        const session = await ort.InferenceSession.create(MODEL_URL, { ...options, executionProviders: ['webgpu'] });
+        backend = 'webgpu';
+        return session;
+      } catch (e) {
+        console.warn('WebGPU unavailable, using the CPU:', e);
+      }
+    }
+    backend = 'wasm';
+    return ort.InferenceSession.create(MODEL_URL, { ...options, executionProviders: ['wasm'] });
+  }
 
   function loadSession() {
-    if (!sessionPromise) {
-      // Absolute URL: a relative path in dynamic import() is treated as a bare module specifier.
-      ort.env.wasm.wasmPaths = new URL('ort/', document.baseURI).href;
-      // Multithreading requires cross-origin isolation.
-      ort.env.wasm.numThreads = self.crossOriginIsolated
-        ? Math.min(4, navigator.hardwareConcurrency || 1) : 1;
-      sessionPromise = ort.InferenceSession
-        .create(MODEL_URL, { executionProviders: ['wasm'], graphOptimizationLevel: 'all' })
-        .catch((e) => { sessionPromise = null; throw e; });
-    }
+    sessionPromise ??= createSession().catch((e) => { sessionPromise = null; throw e; });
     return sessionPromise;
   }
 
@@ -92,8 +117,11 @@
   }
 
   window.foodAI = {
-    // Preload the model (first time: ~23 MB download, then from cache).
+    // Preload the model (first time: ~72 MB download, then from cache).
     async warmUp() { await loadSession(); },
+
+    // 'webgpu' or 'wasm' once the model is loaded.
+    get backend() { return backend; },
 
     // Whole photo: embedding (512 floats) and a JPEG thumbnail.
     analyze(bytes) {

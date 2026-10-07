@@ -35,7 +35,7 @@
   "addToDiary": "Añadir al diario · {kcal}",
   "recognitionFailed": "No se pudo reconocer la foto",
   "chooseManually": "Elige el plato manualmente.\n{error}",
-  "recognizing": "Reconociendo… La primera vez se descarga el modelo (~23 MB).",
+  "recognizing": "Reconociendo… La primera vez se descarga el modelo (~72 MB).",
   "looksLike": "Parece:",
   "remove": "Quitar",
   "saveFailed": "No se pudo guardar: {error}",

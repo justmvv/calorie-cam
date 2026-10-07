@@ -134,7 +134,7 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get recognizing => 'Распознаю… При первом запуске загружается модель (~23 МБ).';
+  String get recognizing => 'Распознаю… При первом запуске загружается модель (~72 МБ).';
 
   @override
   String get looksLike => 'Похоже на:';

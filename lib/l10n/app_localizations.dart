@@ -307,7 +307,7 @@ abstract class AppLocalizations {
   /// No description provided for @recognizing.
   ///
   /// In en, this message translates to:
-  /// **'Recognizing… The first run downloads the model (~23 MB).'**
+  /// **'Recognizing… The first run downloads the model (~72 MB).'**
   String get recognizing;
 
   /// No description provided for @looksLike.

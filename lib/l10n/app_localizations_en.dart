@@ -134,7 +134,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get recognizing => 'Recognizing… The first run downloads the model (~23 MB).';
+  String get recognizing => 'Recognizing… The first run downloads the model (~72 MB).';
 
   @override
   String get looksLike => 'Looks like:';

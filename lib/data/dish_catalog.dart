@@ -204,10 +204,11 @@ class DishCatalog {
   /// salad, drink).
   static const maxPreselected = 5;
 
-  // Memory tuning (tools/eval_set.mjs, Wikipedia photos; the user's own repeated meals look much
-  // more alike than different photos of a dish, so real matches are stronger than these).
+  // Memory tuning for MobileCLIP-S2 (tools/eval_set.mjs on 763 Wikipedia photos; different
+  // dishes exceed 0.767 photo similarity in only 0.1% of pairs). The user's own repeated meals
+  // look much more alike than different photos of a dish, so real matches are stronger.
   /// Below this photo-to-photo similarity a past photo says nothing.
-  static const memoryFloor = 0.6;
+  static const memoryFloor = 0.65;
 
   /// Logit bonus per unit of similarity above [memoryFloor], in units of the logit scale.
   static const memoryWeight = 1.0; // grid search: 4 hurt, 1 best (+2.7 pp top-1)
