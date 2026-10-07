@@ -567,6 +567,180 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Share'**
   String get share;
+
+  /// No description provided for @addPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Add photo'**
+  String get addPhoto;
+
+  /// No description provided for @lookingForSides.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking for a side dish and other items on the plate…'**
+  String get lookingForSides;
+
+  /// No description provided for @enterManually.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter calories manually'**
+  String get enterManually;
+
+  /// No description provided for @enterManuallyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'E.g. from the package label'**
+  String get enterManuallyHint;
+
+  /// No description provided for @myProducts.
+  ///
+  /// In en, this message translates to:
+  /// **'My products'**
+  String get myProducts;
+
+  /// No description provided for @mySets.
+  ///
+  /// In en, this message translates to:
+  /// **'My sets'**
+  String get mySets;
+
+  /// No description provided for @catalogSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Catalog'**
+  String get catalogSection;
+
+  /// No description provided for @nutritionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nutrition'**
+  String get nutritionTitle;
+
+  /// No description provided for @productName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get productName;
+
+  /// No description provided for @per100Mode.
+  ///
+  /// In en, this message translates to:
+  /// **'per 100 g'**
+  String get per100Mode;
+
+  /// No description provided for @perPortionMode.
+  ///
+  /// In en, this message translates to:
+  /// **'per portion ({grams})'**
+  String perPortionMode(String grams);
+
+  /// No description provided for @proteinLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Protein'**
+  String get proteinLabel;
+
+  /// No description provided for @fatLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Fat'**
+  String get fatLabel;
+
+  /// No description provided for @carbsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Carbs'**
+  String get carbsLabel;
+
+  /// No description provided for @saveToMyProducts.
+  ///
+  /// In en, this message translates to:
+  /// **'Save to My products'**
+  String get saveToMyProducts;
+
+  /// No description provided for @kcalRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the calories'**
+  String get kcalRequired;
+
+  /// No description provided for @nameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a name'**
+  String get nameRequired;
+
+  /// No description provided for @editNutrition.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit calories'**
+  String get editNutrition;
+
+  /// No description provided for @saveAsSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Save as set'**
+  String get saveAsSet;
+
+  /// No description provided for @setName.
+  ///
+  /// In en, this message translates to:
+  /// **'Set name'**
+  String get setName;
+
+  /// No description provided for @setSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Set “{name}” saved'**
+  String setSaved(String name);
+
+  /// No description provided for @customItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom item'**
+  String get customItem;
+
+  /// No description provided for @deleteItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get deleteItem;
+
+  /// No description provided for @webSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search the web'**
+  String get webSearch;
+
+  /// No description provided for @webSearchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by photo'**
+  String get webSearchTitle;
+
+  /// No description provided for @webSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The photo is sent to the search engine you choose. Find out what the dish is and its calories, then add it with “Enter calories manually”.'**
+  String get webSearchHint;
+
+  /// No description provided for @otherApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Another app…'**
+  String get otherApp;
+
+  /// No description provided for @otherAppHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Lens, Yandex and other apps on the phone'**
+  String get otherAppHint;
+
+  /// No description provided for @shareDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Share the day'**
+  String get shareDay;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

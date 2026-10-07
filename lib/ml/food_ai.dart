@@ -8,6 +8,8 @@ external _FoodAIJs? get _foodAI;
 extension type _FoodAIJs._(JSObject _) implements JSObject {
   external JSPromise<JSAny?> warmUp();
   external JSPromise<_AnalysisJs> analyze(JSUint8Array bytes);
+  external JSPromise<JSFloat32Array> analyzeRegions(JSUint8Array bytes);
+  external JSPromise<JSUint8Array> resize(JSUint8Array bytes, int maxSide);
 }
 
 extension type _AnalysisJs._(JSObject _) implements JSObject {
@@ -40,6 +42,17 @@ class FoodAI {
     final r = await _js.analyze(imageBytes.toJS).toDart;
     return PhotoAnalysis(r.embedding.toDart, r.thumbnail.toDart);
   }
+
+  /// Embeddings of several overlapping parts of the photo (see REGIONS in web/food_ai.js),
+  /// used to find a side dish or salad next to the main dish.
+  Future<List<Float32List>> analyzeRegions(Uint8List imageBytes, {int dim = 512}) async {
+    final all = (await _js.analyzeRegions(imageBytes.toJS).toDart).toDart;
+    return [for (var i = 0; i < all.length; i += dim) Float32List.sublistView(all, i, i + dim)];
+  }
+
+  /// The photo re-encoded as a JPEG no larger than [maxSide] pixels.
+  Future<Uint8List> resize(Uint8List imageBytes, int maxSide) async =>
+      (await _js.resize(imageBytes.toJS, maxSide).toDart).toDart;
 
   _FoodAIJs get _js => _foodAI ?? (throw StateError('food_ai.js is not loaded'));
 }

@@ -130,6 +130,76 @@ void main() {
     expect(await allMeals(db), hasLength(1));
   });
 
+  test('products and sets travel with the backup and merge by uuid', () async {
+    final bar = await db.saveProduct(name: 'Protein bar X', per100: const Per100(kcal: 350, protein: 30), portion: 55);
+    await db.saveSet('Set lunch', [
+      const SetItem(dishId: 'borscht', name: 'Borscht', grams: 300, per100: Per100(kcal: 49)),
+      SetItem(dishId: 'product:${bar.uuid}', name: bar.name, grams: 55, per100: const Per100(kcal: 350)),
+    ]);
+    final json = await Backup.export(db, settings: settings);
+
+    final other = memoryDb();
+    addTearDown(other.close);
+    final result = await Backup.import(other, json);
+    expect(result.added, 2); // no diary entries, one product, one set
+    final products = await other.watchProducts().first;
+    expect(products.single.name, 'Protein bar X');
+    expect(products.single.uuid, bar.uuid);
+    final sets = await other.watchSets().first;
+    expect(SetItem.listFromJson(sets.single.items).map((i) => i.grams), [300, 55]);
+
+    // A product deleted on one side stays deleted after merging the old backup back.
+    await db.deleteProduct(bar);
+    await Backup.import(db, json);
+    expect(await db.watchProducts().first, isEmpty);
+  });
+
+  test('backups of format version 1 (no products, no sets) still import', () async {
+    final v1 = jsonDecode(await Backup.export(db, settings: settings)) as Map<String, dynamic>
+      ..['version'] = 1
+      ..remove('products')
+      ..remove('sets');
+    (v1['meals'] as List).add({
+      'uuid': 'f0e1d2c3-0000-4000-8000-000000000001',
+      'eatenAt': '2026-10-01T10:00:00.000Z',
+      'dishId': 'tea',
+      'name': 'Tea',
+      'grams': 250,
+      'kcal': 2.5,
+      'protein': 0,
+      'fat': 0,
+      'carbs': 0.5,
+      'photo': null,
+      'createdAt': '2026-10-01T10:00:00.000Z',
+      'updatedAt': '2026-10-01T10:00:00.000Z',
+      'deleted': false,
+    });
+    final result = await Backup.import(db, jsonEncode(v1));
+    expect(result.added, 1);
+  });
+
+  test('items from different photos keep their own photo; equal photos are stored once', () async {
+    final photoA = Uint8List.fromList([1]), photoB = Uint8List.fromList([2]);
+    await db.addMeals(DateTime(2026, 10, 10, 13), [
+      NewMeal(dishId: 'kotleta', name: 'k', grams: 100, kcal: 240, protein: 1, fat: 1, carbs: 1, thumbnail: photoA),
+      NewMeal(
+        dishId: 'mashed_potatoes',
+        name: 'm',
+        grams: 200,
+        kcal: 200,
+        protein: 1,
+        fat: 1,
+        carbs: 1,
+        thumbnail: photoA,
+      ),
+      NewMeal(dishId: 'kompot', name: 'c', grams: 250, kcal: 112, protein: 0, fat: 0, carbs: 1, thumbnail: photoB),
+    ]);
+    final meals = {for (final m in await allMeals(db)) m.dishId: m};
+    expect(meals['kotleta']!.photoId, meals['mashed_potatoes']!.photoId);
+    expect(meals['kompot']!.photoId, isNot(meals['kotleta']!.photoId));
+    expect(await db.select(db.photos).get(), hasLength(2));
+  });
+
   test('migration from schema v1 keeps the data and assigns uuids', () async {
     final v1 = AppDatabase(
       NativeDatabase.memory(

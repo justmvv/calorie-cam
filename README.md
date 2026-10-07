@@ -15,13 +15,21 @@ photo ──► web/food_ai.js ────────────────�
 user picks the dish and portion ──► kcal = kcal/100 g × grams ──► Drift (SQLite WASM)
 ```
 
-- **Recognition:** zero-shot [MobileCLIP-S0](https://github.com/apple/ml-mobileclip) (fp16 vision encoder, ~23 MB). A dish is recognized if it's in the catalog; no model retraining is needed.
+- **Recognition:** zero-shot [MobileCLIP-S0](https://github.com/apple/ml-mobileclip) (fp16 vision encoder, ~23 MB). A dish is recognized if it's in the catalog; no model retraining is needed. Besides the whole photo, five overlapping parts of it are analyzed in one batch, so a side dish or salad next to the main dish is put on the plate too (`DishCatalog.suggestPlate`: one dish per role — main, side, salad, … — with per-role confidence thresholds; tune with `tools/eval_plate.mjs`).
 - **Catalog:** [`assets/dishes.tsv`](assets/dishes.tsv), ~250 dishes — Russian, Spanish, Dutch (including the Indonesian-Dutch classics) and international — with names in every UI language, calories/protein/fat/carbs per 100 g and a typical portion. Text embeddings are precomputed in `assets/dish_embeddings.*`.
-- **Database:** [`lib/data/db.dart`](lib/data/db.dart), two tables: `meals` (what, how much, when; nutrition already scaled to the portion) and `photos` (~15 KB JPEG thumbnails). Rows have global UUIDs, a millisecond `updated_at_ms` and soft deletes (tombstones), so backups from different moments or devices merge cleanly.
+- **Database:** [`lib/data/db.dart`](lib/data/db.dart): `meals` (what, how much, when; nutrition already scaled to the portion), `photos` (~15 KB JPEG thumbnails), `products` (the user's own products, per 100 g) and `meal_sets` (saved sets of items). Rows have global UUIDs, a millisecond `updated_at_ms` and soft deletes (tombstones), so backups from different moments or devices merge cleanly.
 - **Localization:** ARB files in [`lib/l10n/`](lib/l10n/) (`flutter gen-l10n`). Logged entries are shown with the catalog name in the current language.
 - **Offline and updates:** see the section below.
 
 Portion weight is not estimated from the photo — that isn't reliable. The user sets the portion; the ½/×1/×1.5/×2 presets are relative to the dish's typical portion.
+
+## Adding a meal
+
+- **Photo** → the main dish and, if visible, a side/salad are preselected; other options are chips. **Add photo** puts more photos into the same meal (e.g. a set lunch: soup, main, drink); each item keeps the thumbnail of its photo.
+- **Edit calories** (tap the "kcal per 100 g" line of an item): type the numbers from the package, per 100 g or per portion; optionally save as one of **My products**.
+- **Search** lists **Enter calories manually**, **My sets**, **My products** (swipe to delete) and the catalog. The bookmark button saves the current plate as a set.
+- **Search the web** sends the photo to Google Lens or Bing (a form upload in a new tab, no API keys) or to another app through the share sheet (Google Lens, Yandex…), for dishes the catalog doesn't know.
+- **Share the day** (share icon on the day) renders a picture of the day — total, macros, dishes — and hands it as a PNG to the share sheet.
 
 ## Running
 
@@ -49,8 +57,8 @@ The first load is ≈ 45 MB (23 MB model + 12 MB ONNX runtime + the app); after 
 
 Settings → Backup:
 
-- **Export diary** writes a JSON file (`calorie-cam-backup-<date>.json`: entries, photos as base64, daily goal and language) and opens the system share sheet — on Android pick Google Drive, Files or a messenger. Where file sharing isn't available it is downloaded instead.
-- **Import from file** merges a backup by UUID: new entries are added, an entry present on both sides keeps the newer edit, deletions stay deleted, and importing the same file twice changes nothing. Settings are restored only into an empty diary (e.g. a new phone).
+- **Export diary** writes a JSON file (`calorie-cam-backup-<date>.json`, format version 2: entries, photos as base64, My products, My sets, daily goal and language) and opens the system share sheet — on Android pick Google Drive, Files or a messenger. Where file sharing isn't available it is downloaded instead. The file is prepared when Settings opens: Chrome opens the share sheet only within a few seconds of a tap.
+- **Import from file** (version 1 or 2) merges a backup by UUID: new entries are added, an entry present on both sides keeps the newer edit, deletions stay deleted, and importing the same file twice changes nothing. Settings are restored only into an empty diary (e.g. a new phone).
 - On start the app calls `navigator.storage.persist()` so the browser doesn't evict the diary when space runs low; Settings shows whether it was granted (Chrome grants it to installed PWAs).
 
 Format and merge rules: [`lib/data/backup.dart`](lib/data/backup.dart); tests (including the v1 → v2 schema migration): [`test/backup_test.dart`](test/backup_test.dart).
@@ -95,6 +103,6 @@ flutter test
 
 ## Known limitations
 
-- A photo may contain several dishes: the model suggests options, and extra items can be added to the plate manually. There is no separate object detector.
+- There is no real object detector: sides are found by looking at parts of the photo, which works when the side takes a noticeable part of the plate; small items (a sauce, a slice of bread) may need adding by hand.
 - Similar dishes (pelmeni, manti, khinkali) get confused, which is why the top 5 options are always shown.
-- Safari may clear data of a site that hasn't been opened for a long time. The risk is lower for a PWA installed to the home screen, but export and backup are the next step.
+- Safari may clear data of a site that hasn't been opened for a long time. The risk is lower for a PWA installed to the home screen; export a backup regularly.

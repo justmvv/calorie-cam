@@ -32,8 +32,8 @@ vareniki_cottage	Вареники с творогом	Vareniki with cottage chee
 khinkali	Хинкали	Khinkali	Jinkali	Chinkali	khinkali, large georgian twisted dumplings	220	10.0	9.0	25.0	300	main
 manti	Манты	Manti	Manti	Manti	manti, large steamed meat dumplings	210	10.0	10.0	20.0	300	main
 golubtsy	Голубцы	Golubtsy (cabbage rolls)	Golubtsy (rollitos de col)	Golubtsy (koolrolletjes)	golubtsy, cabbage rolls stuffed with meat and rice in tomato sauce	110	6.0	6.0	7.0	300	main
-kotleta	Котлета мясная	Meat cutlet	Filete ruso	Gehaktschijf	pan-fried minced meat cutlet patty	240	14.0	17.0	9.0	100	main
-kotleta_chicken	Котлета куриная	Chicken cutlet	Hamburguesa de pollo	Kipschijf	chicken cutlet patty	190	16.0	10.0	8.0	100	main
+kotleta	Котлета мясная	Meat cutlet	Filete ruso	Gehaktschijf	pan-fried minced meat cutlet patty | russian kotleta, oval fried meat patty with a golden crust	240	14.0	17.0	9.0	100	main
+kotleta_chicken	Котлета куриная	Chicken cutlet	Hamburguesa de pollo	Kipschijf	chicken cutlet patty | pozharsky cutlet, breaded chicken cutlet with a crispy crumb coating	190	16.0	10.0	8.0	100	main
 beef_stroganoff	Бефстроганов	Beef stroganoff	Ternera Stroganoff	Beef stroganoff	beef stroganoff, beef strips in creamy sauce	190	15.0	13.0	3.5	200	main
 plov	Плов	Plov (pilaf)	Plov (arroz pilaf)	Plov (pilav)	plov, pilaf rice with meat and carrots	190	7.0	9.0	20.0	300	main
 shashlik_pork	Шашлык из свинины	Pork shashlik	Pinchos de cerdo	Varkenssjasliek	pork shashlik, grilled meat chunks on skewers	260	18.0	20.0	1.0	200	main
@@ -260,4 +260,4 @@ raf	Раф-кофе	Raf coffee	Café raf	Raf-koffie	raf coffee, creamy whipped c
 sugar	Сахар (1 ч. л. = 5 г)	Sugar (1 tsp = 5 g)	Azúcar (1 cdta. = 5 g)	Suiker (1 tl = 5 g)	sugar cubes and a teaspoon of white sugar	399	0	0	99.8	5	snack
 pumpkin_porridge	Тыквенная каша	Pumpkin porridge	Gachas de calabaza	Pompoenpap	pumpkin porridge, orange millet porridge with pumpkin pieces in a bowl | thick creamy orange pumpkin and rice porridge | pumpkin kasha baked in a clay pot	95	2.8	3	14	250	breakfast
 millet_porridge	Пшённая каша на молоке	Millet porridge	Gachas de mijo	Gierstpap	millet porridge, yellow millet kasha with a piece of butter in a bowl	110	3.5	3.2	17	250	breakfast
-liver_fritters	Печёночные оладьи	Liver fritters	Tortitas de hígado	Leverpannenkoekjes	liver fritters, small dark brown fried liver pancakes on a plate | pechenochnye oladyi, round fried chicken liver patties with sour cream	190	15	10	10	150	main
+liver_fritters	Печёночные оладьи	Liver fritters	Tortitas de hígado	Leverpannenkoekjes	liver fritters, thin soft dark brown liver pancakes without breading | pechenochnye oladyi, flat dark liver pancakes with sour cream	190	15	10	10	150	main

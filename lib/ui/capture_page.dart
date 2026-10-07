@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../data/db.dart';
 import '../data/dish_catalog.dart';
@@ -8,20 +9,80 @@ import '../ml/food_ai.dart';
 import '../services.dart';
 import 'dish_search.dart';
 import 'format.dart';
+import 'nutrition_dialog.dart';
 import 'palette.dart';
+import 'web_search.dart';
 
-/// An item on the plate: a dish and its portion.
+/// An item on the plate. Nutrition is per 100 g and may be overridden by the user.
 class _PlateItem {
-  _PlateItem(this.dish) : gramsCtl = TextEditingController(text: dish.portion.round().toString());
+  _PlateItem({
+    required this.dishId,
+    required this.name,
+    required this.per100,
+    required double grams,
+    required this.portion,
+    this.photo,
+  }) : gramsCtl = TextEditingController(text: grams.round().toString());
 
-  final Dish dish;
+  _PlateItem.dish(Dish d, {_Photo? photo})
+    : this(
+        dishId: d.id,
+        name: d.name('en'),
+        per100: Per100(kcal: d.kcal, protein: d.protein, fat: d.fat, carbs: d.carbs),
+        grams: d.portion,
+        portion: d.portion,
+        photo: photo,
+      );
+
+  _PlateItem.product(Product p)
+    : this(
+        dishId: _productId(p.uuid),
+        name: p.name,
+        per100: Per100(kcal: p.kcal, protein: p.protein, fat: p.fat, carbs: p.carbs),
+        grams: p.portion,
+        portion: p.portion,
+      );
+
+  _PlateItem.setItem(SetItem i)
+    : this(dishId: i.dishId, name: i.name, per100: i.per100, grams: i.grams, portion: i.grams);
+
+  /// Catalog dish id, `product:<uuid>` for the user's products, or `custom`.
+  String dishId;
+  String name;
+  Per100 per100;
+  final double portion;
+
+  /// The photo the item was recognized on; its thumbnail is stored with the entry.
+  final _Photo? photo;
   final TextEditingController gramsCtl;
 
+  static String _productId(String uuid) => 'product:$uuid';
+
   double get grams => double.tryParse(gramsCtl.text.replaceAll(',', '.')) ?? 0;
-  double get kcal => dish.kcal * grams / 100;
+  double get kcal => per100.kcal * grams / 100;
+
+  /// Catalog dishes are shown in the current language (unless the user renamed them).
+  String displayName(AppLocalizations l10n) => switch (services.catalog.byId(dishId)) {
+    final dish? => l10n.dishName(dish),
+    null => name,
+  };
+}
+
+/// One photo of the meal and what was recognized on it.
+class _Photo {
+  _Photo(this.bytes);
+
+  final Uint8List bytes;
+  PhotoAnalysis? analysis;
+  PlateSuggestion? suggestion;
+  bool regionsDone = false;
+  Object? error;
+
+  bool get analyzing => analysis == null && error == null;
 }
 
 /// Photo recognition result (or manual entry when [image] is null) and confirmation.
+/// A meal may consist of several photos (e.g. a set lunch: soup, main, dessert).
 class CapturePage extends StatefulWidget {
   const CapturePage({super.key, this.image, this.initialTime});
 
@@ -34,27 +95,21 @@ class CapturePage extends StatefulWidget {
 
 class _CapturePageState extends State<CapturePage> {
   late DateTime _eatenAt = widget.initialTime ?? DateTime.now();
-  PhotoAnalysis? _analysis;
-  List<DishMatch> _matches = const [];
+  final _photos = <_Photo>[];
   final _plate = <_PlateItem>[];
-  Object? _error;
-  var _saving = false;
 
-  bool get _analyzing => widget.image != null && _analysis == null && _error == null;
+  /// Dishes the user removed from the plate: late region results must not put them back.
+  final _removed = <String>{};
+  var _saving = false;
 
   @override
   void initState() {
     super.initState();
-    if (widget.image != null) {
-      _analyze();
+    if (widget.image case final image?) {
+      _addPhoto(image);
     } else {
       WidgetsBinding.instance.addPostFrameCallback((_) => _searchDish());
     }
-  }
-
-  Future<void> _searchDish() async {
-    final dish = await showDishSearch(context);
-    if (dish != null && !_plate.any((p) => p.dish.id == dish.id)) _toggle(dish);
   }
 
   @override
@@ -65,29 +120,151 @@ class _CapturePageState extends State<CapturePage> {
     super.dispose();
   }
 
-  Future<void> _analyze() async {
+  void _addPhoto(Uint8List bytes) {
+    final photo = _Photo(bytes);
+    setState(() => _photos.add(photo));
+    _analyze(photo);
+  }
+
+  Future<void> _analyze(_Photo photo) async {
     try {
-      final analysis = await services.ai.analyze(widget.image!);
-      final matches = services.catalog.classify(analysis.embedding);
+      // The whole photo first, so the main dish shows up quickly…
+      final analysis = await services.ai.analyze(photo.bytes);
       if (!mounted) return;
       setState(() {
-        _analysis = analysis;
-        _matches = matches;
-        if (matches.isNotEmpty) _plate.add(_PlateItem(matches.first.dish));
+        photo.analysis = analysis;
+        photo.suggestion = services.catalog.suggestPlate(analysis.embedding, const []);
+        _preselect(photo);
+      });
+      // …then parts of it, to find a side dish or salad next to the main one.
+      final regions = await services.ai.analyzeRegions(photo.bytes);
+      if (!mounted) return;
+      setState(() {
+        photo.suggestion = services.catalog.suggestPlate(analysis.embedding, regions);
+        photo.regionsDone = true;
+        _preselect(photo);
       });
     } catch (e) {
-      if (mounted) setState(() => _error = e);
+      if (mounted) setState(() => photo.error = e);
     }
   }
 
-  void _toggle(Dish dish) => setState(() {
-    final i = _plate.indexWhere((p) => p.dish.id == dish.id);
+  void _preselect(_Photo photo) {
+    for (final dish in photo.suggestion!.preselected) {
+      if (_removed.contains(dish.id) || _onPlate(dish.id)) continue;
+      _plate.add(_PlateItem.dish(dish, photo: photo));
+    }
+  }
+
+  bool _onPlate(String dishId) => _plate.any((p) => p.dishId == dishId);
+
+  void _toggle(Dish dish, {_Photo? photo}) => setState(() {
+    final i = _plate.indexWhere((p) => p.dishId == dish.id);
     if (i >= 0) {
-      _plate.removeAt(i).gramsCtl.dispose();
+      _remove(_plate[i]);
     } else {
-      _plate.add(_PlateItem(dish));
+      _removed.remove(dish.id);
+      _plate.add(_PlateItem.dish(dish, photo: photo));
     }
   });
+
+  void _remove(_PlateItem item) {
+    _removed.add(item.dishId);
+    _plate.remove(item);
+    item.gramsCtl.dispose();
+  }
+
+  Future<void> _pickPhoto(ImageSource source) async {
+    final file = await ImagePicker().pickImage(source: source);
+    if (file == null) return;
+    final bytes = await file.readAsBytes();
+    if (mounted) _addPhoto(bytes);
+  }
+
+  Future<void> _searchDish() async {
+    final choice = await showDishSearch(context);
+    if (!mounted || choice == null) return;
+    switch (choice) {
+      case CatalogChoice(:final dish):
+        if (!_onPlate(dish.id)) _toggle(dish);
+      case ProductChoice(:final product):
+        setState(() => _plate.add(_PlateItem.product(product)));
+      case SetChoice(:final set):
+        setState(() => _plate.addAll(SetItem.listFromJson(set.items).map(_PlateItem.setItem)));
+      case ManualChoice():
+        await _addManual();
+    }
+  }
+
+  /// A custom item: the user types the calories in (e.g. from the package).
+  Future<void> _addManual() async {
+    final l10n = context.l10n;
+    final input = await showNutritionDialog(context, name: '', grams: 100);
+    if (input == null || !mounted) return;
+    final name = input.name.isEmpty ? l10n.customItem : input.name;
+    var dishId = 'custom';
+    if (input.saveAsProduct) {
+      final product = await services.db.saveProduct(name: name, per100: input.per100, portion: 100);
+      dishId = _PlateItem._productId(product.uuid);
+    }
+    if (!mounted) return;
+    setState(() => _plate.add(_PlateItem(dishId: dishId, name: name, per100: input.per100, grams: 100, portion: 100)));
+  }
+
+  Future<void> _editNutrition(_PlateItem item) async {
+    final l10n = context.l10n;
+    final input = await showNutritionDialog(
+      context,
+      name: item.displayName(l10n),
+      initial: item.per100,
+      grams: item.grams > 0 ? item.grams : item.portion,
+    );
+    if (input == null || !mounted) return;
+    final renamed = input.name.isNotEmpty && input.name != item.displayName(l10n);
+    String? productId;
+    if (input.saveAsProduct) {
+      final name = input.name.isEmpty ? item.displayName(l10n) : input.name;
+      final product = await services.db.saveProduct(name: name, per100: input.per100, portion: item.portion);
+      productId = _PlateItem._productId(product.uuid);
+    }
+    if (!mounted) return;
+    setState(() {
+      item.per100 = input.per100;
+      if (renamed) {
+        item.name = input.name;
+        if (services.catalog.byId(item.dishId) != null) item.dishId = 'custom';
+      }
+      if (productId != null) item.dishId = productId;
+    });
+  }
+
+  Future<void> _saveAsSet() async {
+    final l10n = context.l10n;
+    final controller = TextEditingController();
+    final name = await showDialog<String>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.saveAsSet),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          textCapitalization: TextCapitalization.sentences,
+          decoration: InputDecoration(labelText: l10n.setName),
+          onSubmitted: (v) => Navigator.pop(context, v),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: Text(l10n.cancel)),
+          FilledButton(onPressed: () => Navigator.pop(context, controller.text), child: Text(l10n.save)),
+        ],
+      ),
+    );
+    if (name == null || name.trim().isEmpty || !mounted) return;
+    await services.db.saveSet(name.trim(), [
+      for (final p in _plate)
+        if (p.grams > 0) SetItem(dishId: p.dishId, name: p.displayName(l10n), grams: p.grams, per100: p.per100),
+    ]);
+    if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.setSaved(name.trim()))));
+  }
 
   Future<void> _pickTime() async {
     final date = await showDatePicker(
@@ -109,17 +286,18 @@ class _CapturePageState extends State<CapturePage> {
       for (final p in _plate)
         if (p.grams > 0)
           NewMeal(
-            dishId: p.dish.id,
-            name: l10n.dishName(p.dish),
+            dishId: p.dishId,
+            name: p.displayName(l10n),
             grams: p.grams,
             kcal: p.kcal,
-            protein: p.dish.protein * p.grams / 100,
-            fat: p.dish.fat * p.grams / 100,
-            carbs: p.dish.carbs * p.grams / 100,
+            protein: p.per100.protein * p.grams / 100,
+            fat: p.per100.fat * p.grams / 100,
+            carbs: p.per100.carbs * p.grams / 100,
+            thumbnail: p.photo?.analysis?.thumbnail ?? _photos.firstOrNull?.analysis?.thumbnail,
           ),
     ];
     try {
-      await services.db.addMeals(_eatenAt, items, thumbnail: _analysis?.thumbnail);
+      await services.db.addMeals(_eatenAt, items);
     } catch (e, st) {
       debugPrint('Save failed: $e\n$st');
       if (!mounted) return;
@@ -136,19 +314,40 @@ class _CapturePageState extends State<CapturePage> {
     final total = _plate.fold(0.0, (a, p) => a + p.kcal);
     final canSave = !_saving && _plate.any((p) => p.grams > 0);
     return Scaffold(
-      appBar: AppBar(title: Text(widget.image == null ? l10n.addManually : l10n.whatsInPhoto)),
+      appBar: AppBar(
+        title: Text(_photos.isEmpty ? l10n.addManually : l10n.whatsInPhoto),
+        actions: [
+          IconButton(
+            tooltip: l10n.saveAsSet,
+            onPressed: _plate.isEmpty ? null : _saveAsSet,
+            icon: const Icon(Icons.bookmark_add_outlined),
+          ),
+        ],
+      ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          if (widget.image != null) ...[
+          for (final (i, photo) in _photos.indexed) ...[
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
-              child: Image.memory(widget.image!, height: 240, fit: BoxFit.cover),
+              child: Image.memory(photo.bytes, height: i == 0 ? 240 : 160, fit: BoxFit.cover),
             ),
+            const SizedBox(height: 12),
+            _recognition(l10n, photo),
             const SizedBox(height: 16),
-            _recognition(l10n),
           ],
-          TextButton.icon(onPressed: _searchDish, icon: const Icon(Icons.search), label: Text(l10n.searchCatalog)),
+          Wrap(
+            spacing: 4,
+            children: [
+              TextButton.icon(onPressed: _searchDish, icon: const Icon(Icons.search), label: Text(l10n.searchCatalog)),
+              TextButton.icon(
+                onPressed: () => _pickPhoto(ImageSource.camera),
+                onLongPress: () => _pickPhoto(ImageSource.gallery),
+                icon: const Icon(Icons.add_a_photo_outlined),
+                label: Text(l10n.addPhoto),
+              ),
+            ],
+          ),
           for (final item in _plate) _plateCard(l10n, item),
           const SizedBox(height: 8),
           ListTile(
@@ -177,23 +376,31 @@ class _CapturePageState extends State<CapturePage> {
     );
   }
 
-  Widget _recognition(AppLocalizations l10n) {
-    if (_error != null) {
-      return ListTile(
-        leading: const Icon(Icons.error_outline),
-        title: Text(l10n.recognitionFailed),
-        subtitle: Text(l10n.chooseManually('$_error')),
+  Widget _recognition(AppLocalizations l10n, _Photo photo) {
+    final webSearch = Align(
+      alignment: Alignment.centerLeft,
+      child: TextButton.icon(
+        onPressed: () => showWebImageSearch(context, photo.bytes),
+        icon: const Icon(Icons.travel_explore),
+        label: Text(l10n.webSearch),
+      ),
+    );
+    if (photo.error != null) {
+      return Column(
+        children: [
+          ListTile(
+            leading: const Icon(Icons.error_outline),
+            title: Text(l10n.recognitionFailed),
+            subtitle: Text(l10n.chooseManually('${photo.error}')),
+          ),
+          webSearch,
+        ],
       );
     }
-    if (_analyzing) {
+    if (photo.analyzing) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const LinearProgressIndicator(),
-          const SizedBox(height: 8),
-          Text(l10n.recognizing),
-          const SizedBox(height: 8),
-        ],
+        children: [const LinearProgressIndicator(), const SizedBox(height: 8), Text(l10n.recognizing)],
       );
     }
     return Column(
@@ -205,21 +412,32 @@ class _CapturePageState extends State<CapturePage> {
           spacing: 8,
           runSpacing: 4,
           children: [
-            for (final m in _matches)
+            for (final m in photo.suggestion!.options)
               FilterChip(
                 label: Text('${l10n.dishName(m.dish)} · ${l10n.percent(m.probability)}'),
-                selected: _plate.any((p) => p.dish.id == m.dish.id),
-                onSelected: (_) => _toggle(m.dish),
+                selected: _onPlate(m.dish.id),
+                onSelected: (_) => _toggle(m.dish, photo: photo),
               ),
           ],
         ),
+        if (!photo.regionsDone) ...[
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              const SizedBox.square(dimension: 14, child: CircularProgressIndicator(strokeWidth: 2)),
+              const SizedBox(width: 8),
+              Expanded(child: Text(l10n.lookingForSides, style: Theme.of(context).textTheme.bodySmall)),
+            ],
+          ),
+        ],
+        webSearch,
       ],
     );
   }
 
   Widget _plateCard(AppLocalizations l10n, _PlateItem item) {
-    final d = item.dish;
     void setGrams(double g) => setState(() => item.gramsCtl.text = g.round().toString());
+    final textTheme = Theme.of(context).textTheme;
     return Card(
       margin: const EdgeInsets.only(top: 8),
       child: Padding(
@@ -229,14 +447,35 @@ class _CapturePageState extends State<CapturePage> {
           children: [
             Row(
               children: [
-                Expanded(child: Text(l10n.dishName(d), style: Theme.of(context).textTheme.titleMedium)),
-                Text(l10n.kcal(item.kcal), style: Theme.of(context).textTheme.titleMedium),
-                IconButton(onPressed: () => _toggle(d), icon: const Icon(Icons.close), tooltip: l10n.remove),
+                Expanded(child: Text(item.displayName(l10n), style: textTheme.titleMedium)),
+                Text(l10n.kcal(item.kcal), style: textTheme.titleMedium),
+                IconButton(
+                  onPressed: () => setState(() => _remove(item)),
+                  icon: const Icon(Icons.close),
+                  tooltip: l10n.remove,
+                ),
               ],
             ),
-            Text(
-              '${l10n.per100g(l10n.kcal(d.kcal))} · ${l10n.macrosOf(d.protein, d.fat, d.carbs)}',
-              style: Theme.of(context).textTheme.bodySmall,
+            // Tapping the nutrition line lets the user type in the numbers from the package.
+            InkWell(
+              onTap: () => _editNutrition(item),
+              borderRadius: BorderRadius.circular(4),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                child: Row(
+                  children: [
+                    Flexible(
+                      child: Text(
+                        '${l10n.per100g(l10n.kcal(item.per100.kcal))} · '
+                        '${l10n.macrosOf(item.per100.protein, item.per100.fat, item.per100.carbs)}',
+                        style: textTheme.bodySmall,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    Icon(Icons.edit_outlined, size: 16, semanticLabel: l10n.editNutrition),
+                  ],
+                ),
+              ),
             ),
             const SizedBox(height: 8),
             Row(
@@ -265,8 +504,8 @@ class _CapturePageState extends State<CapturePage> {
                             padding: const EdgeInsets.only(right: 4),
                             child: ActionChip(
                               label: Text(label),
-                              tooltip: l10n.grams(d.portion * k),
-                              onPressed: () => setGrams(d.portion * k),
+                              tooltip: l10n.grams(item.portion * k),
+                              onPressed: () => setGrams(item.portion * k),
                             ),
                           ),
                       ],

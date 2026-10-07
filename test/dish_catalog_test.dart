@@ -53,6 +53,38 @@ void main() {
     expect(catalog.search('  '), hasLength(catalog.dishes.length));
   });
 
+  group('plate suggestion', () {
+    test('adds a side found in a part of the photo', () {
+      final s = catalog.suggestPlate(catalog.embeddingOf('kotleta'), [
+        catalog.embeddingOf('mashed_potatoes'),
+        catalog.embeddingOf('kotleta'),
+      ]);
+      expect(s.preselected.map((d) => d.id), ['kotleta', 'mashed_potatoes']);
+      expect(s.options.map((m) => m.dish.id), contains('mashed_potatoes'));
+    });
+
+    test('one dish per role: two mains or two sides are not both preselected', () {
+      final s = catalog.suggestPlate(catalog.embeddingOf('steak'), [
+        catalog.embeddingOf('pelmeni'),
+        catalog.embeddingOf('french_fries'),
+        catalog.embeddingOf('rice'),
+        catalog.embeddingOf('greek_salad'),
+      ]);
+      final ids = s.preselected.map((d) => d.id).toList();
+      expect(ids.first, 'steak');
+      expect(ids, hasLength(3));
+      expect(ids, isNot(contains('pelmeni'))); // a second main
+      expect(ids.where((id) => id == 'french_fries' || id == 'rice'), hasLength(1)); // one side
+      expect(ids, contains('greek_salad'));
+    });
+
+    test('a single dish stays a single dish', () {
+      final borscht = catalog.embeddingOf('borscht');
+      final s = catalog.suggestPlate(borscht, [borscht, borscht]);
+      expect(s.preselected.map((d) => d.id), ['borscht']);
+    });
+  });
+
   group('localization', () {
     final en = lookupAppLocalizations(const Locale('en'));
     final ru = lookupAppLocalizations(const Locale('ru'));

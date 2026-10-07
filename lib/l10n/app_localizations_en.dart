@@ -277,4 +277,96 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get share => 'Share';
+
+  @override
+  String get addPhoto => 'Add photo';
+
+  @override
+  String get lookingForSides => 'Looking for a side dish and other items on the plate…';
+
+  @override
+  String get enterManually => 'Enter calories manually';
+
+  @override
+  String get enterManuallyHint => 'E.g. from the package label';
+
+  @override
+  String get myProducts => 'My products';
+
+  @override
+  String get mySets => 'My sets';
+
+  @override
+  String get catalogSection => 'Catalog';
+
+  @override
+  String get nutritionTitle => 'Nutrition';
+
+  @override
+  String get productName => 'Name';
+
+  @override
+  String get per100Mode => 'per 100 g';
+
+  @override
+  String perPortionMode(String grams) {
+    return 'per portion ($grams)';
+  }
+
+  @override
+  String get proteinLabel => 'Protein';
+
+  @override
+  String get fatLabel => 'Fat';
+
+  @override
+  String get carbsLabel => 'Carbs';
+
+  @override
+  String get saveToMyProducts => 'Save to My products';
+
+  @override
+  String get kcalRequired => 'Enter the calories';
+
+  @override
+  String get nameRequired => 'Enter a name';
+
+  @override
+  String get editNutrition => 'Edit calories';
+
+  @override
+  String get saveAsSet => 'Save as set';
+
+  @override
+  String get setName => 'Set name';
+
+  @override
+  String setSaved(String name) {
+    return 'Set “$name” saved';
+  }
+
+  @override
+  String get customItem => 'Custom item';
+
+  @override
+  String get deleteItem => 'Delete';
+
+  @override
+  String get webSearch => 'Search the web';
+
+  @override
+  String get webSearchTitle => 'Search by photo';
+
+  @override
+  String get webSearchHint =>
+      'The photo is sent to the search engine you choose. Find out what the dish is and its calories, then add it with “Enter calories manually”.';
+
+  @override
+  String get otherApp => 'Another app…';
+
+  @override
+  String get otherAppHint => 'Google Lens, Yandex and other apps on the phone';
+
+  @override
+  String get shareDay => 'Share the day';
 }

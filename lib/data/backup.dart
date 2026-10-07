@@ -10,20 +10,26 @@ import 'db.dart';
 /// {"format": "calorie-cam-backup", "version": 1, "exportedAt": "…",
 ///  "settings": {"dailyGoal": 2000, "language": "en"},
 ///  "meals": [{"uuid": "…", "eatenAt": "…", "dishId": "borscht", …, "photo": "<photo uuid>"}],
-///  "photos": [{"uuid": "…", "jpeg": "<base64>"}]}
+///  "photos": [{"uuid": "…", "jpeg": "<base64>"}],
+///  "products": [{"uuid": "…", "name": "…", "kcal": 360, …}],          // since version 2
+///  "sets": [{"uuid": "…", "name": "…", "items": [{"dishId": …}]}]}    // since version 2
 /// ```
+///
+/// Version 1 files (no products and sets) are still imported.
 ///
 /// Items are identified by their uuid, so importing is a merge: new items are added, an item
 /// present on both sides keeps the version with the newer `updatedAt` (millisecond precision), and deletions
 /// (tombstones) are carried over so deleted items don't come back.
 abstract final class Backup {
   static const format = 'calorie-cam-backup';
-  static const version = 1;
+  static const version = 2;
 
   static Future<String> export(AppDatabase db, {required BackupSettings settings}) async {
     final photos = await db.select(db.photos).get();
     final photoUuid = {for (final p in photos) p.id: p.uuid};
     final meals = await (db.select(db.meals)..orderBy([(m) => OrderingTerm.asc(m.eatenAt)])).get();
+    final products = await db.select(db.products).get();
+    final sets = await db.select(db.mealSets).get();
     return const JsonEncoder.withIndent(' ').convert({
       'format': format,
       'version': version,
@@ -49,6 +55,30 @@ abstract final class Backup {
       ],
       'photos': [
         for (final p in photos) {'uuid': p.uuid, 'jpeg': base64Encode(p.jpeg)},
+      ],
+      'products': [
+        for (final p in products)
+          {
+            'uuid': p.uuid,
+            'name': p.name,
+            'kcal': p.kcal,
+            'protein': p.protein,
+            'fat': p.fat,
+            'carbs': p.carbs,
+            'portion': p.portion,
+            'updatedAt': _iso(DateTime.fromMillisecondsSinceEpoch(p.updatedAtMs)),
+            'deleted': p.deleted,
+          },
+      ],
+      'sets': [
+        for (final s in sets)
+          {
+            'uuid': s.uuid,
+            'name': s.name,
+            'items': jsonDecode(s.items),
+            'updatedAt': _iso(DateTime.fromMillisecondsSinceEpoch(s.updatedAtMs)),
+            'deleted': s.deleted,
+          },
       ],
     });
   }
@@ -90,8 +120,8 @@ abstract final class Backup {
             .insert(PhotosCompanion.insert(uuid: Value(uuid), jpeg: base64Decode(p['jpeg'] as String)));
       }
 
-      final local = {for (final m in await db.select(db.meals).get()) m.uuid: m};
-      var added = 0, updated = 0, unchanged = 0;
+      final counts = _Counts();
+      final localMeals = {for (final m in await db.select(db.meals).get()) m.uuid: (m.id, m.updatedAtMs)};
       for (final j in (doc['meals'] as List).cast<Map<String, dynamic>>()) {
         final row = MealsCompanion(
           uuid: Value(j['uuid'] as String),
@@ -108,24 +138,59 @@ abstract final class Backup {
           updatedAtMs: Value(DateTime.parse(j['updatedAt'] as String).millisecondsSinceEpoch),
           deleted: Value(j['deleted'] as bool? ?? false),
         );
-        final existing = local[row.uuid.value];
-        if (existing == null) {
-          await db.into(db.meals).insert(row);
-          added++;
-        } else if (row.updatedAtMs.value > existing.updatedAtMs) {
-          await (db.update(db.meals)..where((m) => m.id.equals(existing.id))).write(row);
-          updated++;
-        } else {
-          unchanged++;
-        }
+        await counts.merge(
+          localMeals[row.uuid.value],
+          row.updatedAtMs.value,
+          insert: () => db.into(db.meals).insert(row),
+          update: (id) => (db.update(db.meals)..where((m) => m.id.equals(id))).write(row),
+        );
       }
       await db.deleteOrphanPhotos();
 
+      final localProducts = {for (final p in await db.select(db.products).get()) p.uuid: (p.id, p.updatedAtMs)};
+      for (final j in (doc['products'] as List? ?? const []).cast<Map<String, dynamic>>()) {
+        final row = ProductsCompanion(
+          uuid: Value(j['uuid'] as String),
+          name: Value(j['name'] as String),
+          kcal: Value((j['kcal'] as num).toDouble()),
+          protein: Value((j['protein'] as num).toDouble()),
+          fat: Value((j['fat'] as num).toDouble()),
+          carbs: Value((j['carbs'] as num).toDouble()),
+          portion: Value((j['portion'] as num).toDouble()),
+          updatedAtMs: Value(DateTime.parse(j['updatedAt'] as String).millisecondsSinceEpoch),
+          deleted: Value(j['deleted'] as bool? ?? false),
+        );
+        await counts.merge(
+          localProducts[row.uuid.value],
+          row.updatedAtMs.value,
+          insert: () => db.into(db.products).insert(row),
+          update: (id) => (db.update(db.products)..where((p) => p.id.equals(id))).write(row),
+        );
+      }
+
+      final localSets = {for (final s in await db.select(db.mealSets).get()) s.uuid: (s.id, s.updatedAtMs)};
+      for (final j in (doc['sets'] as List? ?? const []).cast<Map<String, dynamic>>()) {
+        final items = [for (final i in (j['items'] as List).cast<Map<String, dynamic>>()) SetItem.fromJson(i)];
+        final row = MealSetsCompanion(
+          uuid: Value(j['uuid'] as String),
+          name: Value(j['name'] as String),
+          items: Value(jsonEncode([for (final i in items) i.toJson()])),
+          updatedAtMs: Value(DateTime.parse(j['updatedAt'] as String).millisecondsSinceEpoch),
+          deleted: Value(j['deleted'] as bool? ?? false),
+        );
+        await counts.merge(
+          localSets[row.uuid.value],
+          row.updatedAtMs.value,
+          insert: () => db.into(db.mealSets).insert(row),
+          update: (id) => (db.update(db.mealSets)..where((s) => s.id.equals(id))).write(row),
+        );
+      }
+
       final settings = doc['settings'];
       return ImportResult(
-        added: added,
-        updated: updated,
-        unchanged: unchanged,
+        added: counts.added,
+        updated: counts.updated,
+        unchanged: counts.unchanged,
         // Settings are only taken over when restoring onto an empty diary (e.g. a new phone),
         // so importing an old backup never overrides choices made since.
         settings: wasEmpty && settings is Map<String, dynamic> ? BackupSettings.fromJson(settings) : null,
@@ -134,6 +199,29 @@ abstract final class Backup {
   }
 
   static String _iso(DateTime t) => t.toUtc().toIso8601String();
+}
+
+/// Last-writer-wins merge of one row, with counters for the import summary.
+class _Counts {
+  var added = 0, updated = 0, unchanged = 0;
+
+  /// [local] is (local id, updatedAtMs) of the row with the same uuid, if there is one.
+  Future<void> merge(
+    (int, int)? local,
+    int incomingUpdatedAtMs, {
+    required Future<Object?> Function() insert,
+    required Future<Object?> Function(int id) update,
+  }) async {
+    if (local == null) {
+      await insert();
+      added++;
+    } else if (incomingUpdatedAtMs > local.$2) {
+      await update(local.$1);
+      updated++;
+    } else {
+      unchanged++;
+    }
+  }
 }
 
 class BackupSettings {
@@ -148,6 +236,7 @@ class BackupSettings {
   Map<String, Object?> toJson() => {'dailyGoal': dailyGoal, 'language': language};
 }
 
+/// Counts cover diary entries, products and sets together.
 class ImportResult {
   const ImportResult({required this.added, required this.updated, required this.unchanged, this.settings});
 

@@ -277,4 +277,96 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get share => 'Поделиться';
+
+  @override
+  String get addPhoto => 'Ещё фото';
+
+  @override
+  String get lookingForSides => 'Ищу гарнир и другие блюда на тарелке…';
+
+  @override
+  String get enterManually => 'Ввести калории вручную';
+
+  @override
+  String get enterManuallyHint => 'Например, с упаковки продукта';
+
+  @override
+  String get myProducts => 'Мои продукты';
+
+  @override
+  String get mySets => 'Мои наборы';
+
+  @override
+  String get catalogSection => 'Справочник';
+
+  @override
+  String get nutritionTitle => 'Пищевая ценность';
+
+  @override
+  String get productName => 'Название';
+
+  @override
+  String get per100Mode => 'на 100 г';
+
+  @override
+  String perPortionMode(String grams) {
+    return 'на порцию ($grams)';
+  }
+
+  @override
+  String get proteinLabel => 'Белки';
+
+  @override
+  String get fatLabel => 'Жиры';
+
+  @override
+  String get carbsLabel => 'Углеводы';
+
+  @override
+  String get saveToMyProducts => 'Сохранить в «Мои продукты»';
+
+  @override
+  String get kcalRequired => 'Укажите калории';
+
+  @override
+  String get nameRequired => 'Укажите название';
+
+  @override
+  String get editNutrition => 'Изменить калории';
+
+  @override
+  String get saveAsSet => 'Сохранить как набор';
+
+  @override
+  String get setName => 'Название набора';
+
+  @override
+  String setSaved(String name) {
+    return 'Набор «$name» сохранён';
+  }
+
+  @override
+  String get customItem => 'Свой продукт';
+
+  @override
+  String get deleteItem => 'Удалить';
+
+  @override
+  String get webSearch => 'Найти в интернете';
+
+  @override
+  String get webSearchTitle => 'Поиск по фото';
+
+  @override
+  String get webSearchHint =>
+      'Фото уйдёт в выбранный поисковик. Узнайте, что это за блюдо и его калорийность, и добавьте его через «Ввести калории вручную».';
+
+  @override
+  String get otherApp => 'Другое приложение…';
+
+  @override
+  String get otherAppHint => 'Google Lens, Яндекс и другие приложения на телефоне';
+
+  @override
+  String get shareDay => 'Поделиться днём';
 }

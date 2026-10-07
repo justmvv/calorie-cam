@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'day_meals_view.dart';
+import 'day_share.dart';
 import 'format.dart';
 import 'home_page.dart';
 
@@ -15,7 +16,16 @@ class DayPage extends StatelessWidget {
     final l10n = context.l10n;
     final now = DateTime.now();
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.dayTitle(day))),
+      appBar: AppBar(
+        title: Text(l10n.dayTitle(day)),
+        actions: [
+          IconButton(
+            tooltip: l10n.shareDay,
+            icon: const Icon(Icons.ios_share),
+            onPressed: () => showDayShare(context, day),
+          ),
+        ],
+      ),
       body: DayMealsView(day: day, bottomPadding: 72),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () =>

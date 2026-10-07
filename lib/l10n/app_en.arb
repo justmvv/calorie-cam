@@ -206,5 +206,48 @@
   "storagePersistent": "Storage is protected from automatic clearing",
   "storageNotPersistent": "The browser may clear data when space runs low: install the app and export regularly",
   "fileReady": "The file is ready",
-  "share": "Share"
+  "share": "Share",
+  "addPhoto": "Add photo",
+  "lookingForSides": "Looking for a side dish and other items on the plate…",
+  "enterManually": "Enter calories manually",
+  "enterManuallyHint": "E.g. from the package label",
+  "myProducts": "My products",
+  "mySets": "My sets",
+  "catalogSection": "Catalog",
+  "nutritionTitle": "Nutrition",
+  "productName": "Name",
+  "per100Mode": "per 100 g",
+  "perPortionMode": "per portion ({grams})",
+  "@perPortionMode": {
+    "placeholders": {
+      "grams": {
+        "type": "String"
+      }
+    }
+  },
+  "proteinLabel": "Protein",
+  "fatLabel": "Fat",
+  "carbsLabel": "Carbs",
+  "saveToMyProducts": "Save to My products",
+  "kcalRequired": "Enter the calories",
+  "nameRequired": "Enter a name",
+  "editNutrition": "Edit calories",
+  "saveAsSet": "Save as set",
+  "setName": "Set name",
+  "setSaved": "Set “{name}” saved",
+  "@setSaved": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "customItem": "Custom item",
+  "deleteItem": "Delete",
+  "webSearch": "Search the web",
+  "webSearchTitle": "Search by photo",
+  "webSearchHint": "The photo is sent to the search engine you choose. Find out what the dish is and its calories, then add it with “Enter calories manually”.",
+  "otherApp": "Another app…",
+  "otherAppHint": "Google Lens, Yandex and other apps on the phone",
+  "shareDay": "Share the day"
 }

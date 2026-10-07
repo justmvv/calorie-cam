@@ -277,4 +277,96 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get share => 'Delen';
+
+  @override
+  String get addPhoto => 'Foto toevoegen';
+
+  @override
+  String get lookingForSides => 'Bijgerecht en andere items zoeken…';
+
+  @override
+  String get enterManually => 'Calorieën handmatig invoeren';
+
+  @override
+  String get enterManuallyHint => 'Bijvoorbeeld van het etiket';
+
+  @override
+  String get myProducts => 'Mijn producten';
+
+  @override
+  String get mySets => 'Mijn sets';
+
+  @override
+  String get catalogSection => 'Catalogus';
+
+  @override
+  String get nutritionTitle => 'Voedingswaarde';
+
+  @override
+  String get productName => 'Naam';
+
+  @override
+  String get per100Mode => 'per 100 g';
+
+  @override
+  String perPortionMode(String grams) {
+    return 'per portie ($grams)';
+  }
+
+  @override
+  String get proteinLabel => 'Eiwit';
+
+  @override
+  String get fatLabel => 'Vet';
+
+  @override
+  String get carbsLabel => 'Koolhydraten';
+
+  @override
+  String get saveToMyProducts => 'Opslaan in Mijn producten';
+
+  @override
+  String get kcalRequired => 'Vul de calorieën in';
+
+  @override
+  String get nameRequired => 'Vul een naam in';
+
+  @override
+  String get editNutrition => 'Calorieën bewerken';
+
+  @override
+  String get saveAsSet => 'Opslaan als set';
+
+  @override
+  String get setName => 'Naam van de set';
+
+  @override
+  String setSaved(String name) {
+    return 'Set ‘$name’ opgeslagen';
+  }
+
+  @override
+  String get customItem => 'Eigen product';
+
+  @override
+  String get deleteItem => 'Verwijderen';
+
+  @override
+  String get webSearch => 'Zoeken op internet';
+
+  @override
+  String get webSearchTitle => 'Zoeken met foto';
+
+  @override
+  String get webSearchHint =>
+      'De foto gaat naar de zoekmachine die je kiest. Zoek uit wat het gerecht is en hoeveel calorieën het heeft en voeg het toe met ‘Calorieën handmatig invoeren’.';
+
+  @override
+  String get otherApp => 'Andere app…';
+
+  @override
+  String get otherAppHint => 'Google Lens, Yandex en andere apps op de telefoon';
+
+  @override
+  String get shareDay => 'Dag delen';
 }

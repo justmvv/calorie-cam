@@ -277,4 +277,96 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get share => 'Compartir';
+
+  @override
+  String get addPhoto => 'Añadir foto';
+
+  @override
+  String get lookingForSides => 'Buscando guarnición y otros platos…';
+
+  @override
+  String get enterManually => 'Introducir calorías manualmente';
+
+  @override
+  String get enterManuallyHint => 'Por ejemplo, de la etiqueta del envase';
+
+  @override
+  String get myProducts => 'Mis productos';
+
+  @override
+  String get mySets => 'Mis menús';
+
+  @override
+  String get catalogSection => 'Catálogo';
+
+  @override
+  String get nutritionTitle => 'Valor nutricional';
+
+  @override
+  String get productName => 'Nombre';
+
+  @override
+  String get per100Mode => 'por 100 g';
+
+  @override
+  String perPortionMode(String grams) {
+    return 'por ración ($grams)';
+  }
+
+  @override
+  String get proteinLabel => 'Proteínas';
+
+  @override
+  String get fatLabel => 'Grasas';
+
+  @override
+  String get carbsLabel => 'Hidratos';
+
+  @override
+  String get saveToMyProducts => 'Guardar en Mis productos';
+
+  @override
+  String get kcalRequired => 'Introduce las calorías';
+
+  @override
+  String get nameRequired => 'Introduce un nombre';
+
+  @override
+  String get editNutrition => 'Editar calorías';
+
+  @override
+  String get saveAsSet => 'Guardar como menú';
+
+  @override
+  String get setName => 'Nombre del menú';
+
+  @override
+  String setSaved(String name) {
+    return 'Menú «$name» guardado';
+  }
+
+  @override
+  String get customItem => 'Producto propio';
+
+  @override
+  String get deleteItem => 'Eliminar';
+
+  @override
+  String get webSearch => 'Buscar en internet';
+
+  @override
+  String get webSearchTitle => 'Buscar por foto';
+
+  @override
+  String get webSearchHint =>
+      'La foto se envía al buscador que elijas. Averigua qué plato es y sus calorías, y añádelo con «Introducir calorías manualmente».';
+
+  @override
+  String get otherApp => 'Otra aplicación…';
+
+  @override
+  String get otherAppHint => 'Google Lens, Yandex y otras apps del teléfono';
+
+  @override
+  String get shareDay => 'Compartir el día';
 }

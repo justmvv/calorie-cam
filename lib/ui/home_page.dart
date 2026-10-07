@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'calendar_page.dart';
 import 'capture_page.dart';
 import 'day_meals_view.dart';
+import 'day_share.dart';
 import 'format.dart';
 import 'palette.dart';
 import 'settings_page.dart';
@@ -21,6 +22,11 @@ class HomePage extends StatelessWidget {
         titleSpacing: 16,
         title: Row(children: [const HeartLogo(), const SizedBox(width: 10), Text(l10n.today)]),
         actions: [
+          IconButton(
+            tooltip: l10n.shareDay,
+            icon: const Icon(Icons.ios_share),
+            onPressed: () => showDayShare(context, DateTime.now()),
+          ),
           IconButton(
             tooltip: l10n.calendar,
             icon: const Icon(Icons.calendar_month),
