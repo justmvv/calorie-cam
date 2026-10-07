@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../data/context_prior.dart';
 import '../data/db.dart';
 import '../data/dish_catalog.dart';
 import '../ml/food_ai.dart';
@@ -47,8 +48,8 @@ class _PlateItem {
         portion: p.portion,
       );
 
-  _PlateItem.setItem(SetItem i)
-    : this(dishId: i.dishId, name: i.name, per100: i.per100, grams: i.grams, portion: i.grams);
+  _PlateItem.setItem(SetItem i, {_Photo? photo})
+    : this(dishId: i.dishId, name: i.name, per100: i.per100, grams: i.grams, portion: i.grams, photo: photo);
 
   /// Catalog dish id, `product:<uuid>` for the user's products, or `custom`.
   String dishId;
@@ -132,6 +133,11 @@ class _CapturePageState extends State<CapturePage> {
   final _removed = <String>{};
   var _saving = false;
 
+  /// Context nudges (time of day, familiar dishes over the last 90 days).
+  late final Future<Map<String, double>> _prior = services.db
+      .dishCounts(DateTime.now().subtract(const Duration(days: 90)))
+      .then((counts) => contextPrior(services.catalog, _eatenAt, counts));
+
   @override
   void initState() {
     super.initState();
@@ -160,17 +166,19 @@ class _CapturePageState extends State<CapturePage> {
     try {
       // The whole photo first, so the main dish shows up quickly…
       final analysis = await services.ai.analyze(photo.bytes);
+      final prior = await _prior;
+      final memory = services.memories.value;
       if (!mounted) return;
       setState(() {
         photo.analysis = analysis;
-        photo.suggestion = services.catalog.suggestPlate(analysis.embedding, const []);
+        photo.suggestion = services.catalog.suggestPlate(analysis.embedding, const [], memory: memory, prior: prior);
         _preselect(photo);
       });
       // …then parts of it, to find a side dish or salad next to the main one.
       final regions = await services.ai.analyzeRegions(photo.bytes);
       if (!mounted) return;
       setState(() {
-        photo.suggestion = services.catalog.suggestPlate(analysis.embedding, regions);
+        photo.suggestion = services.catalog.suggestPlate(analysis.embedding, regions, memory: memory, prior: prior);
         photo.regionsDone = true;
         _preselect(photo);
       });
@@ -180,6 +188,14 @@ class _CapturePageState extends State<CapturePage> {
   }
 
   void _preselect(_Photo photo) {
+    // A near-identical past photo: put exactly what was logged then (incl. own products).
+    if (photo.suggestion!.memory case final m? when m.confident) {
+      for (final item in m.items) {
+        if (_removed.contains(item.dishId) || _onPlate(item.dishId)) continue;
+        _plate.add(_PlateItem.setItem(item, photo: photo));
+      }
+      return;
+    }
     for (final dish in photo.suggestion!.preselected) {
       if (_removed.contains(dish.id) || _onPlate(dish.id)) continue;
       _plate.add(_PlateItem.dish(dish, photo: photo));
@@ -356,6 +372,16 @@ class _CapturePageState extends State<CapturePage> {
     ];
     try {
       await services.db.addMeals(_eatenAt, items);
+      // Remember what each photo turned out to be, for recognizing it next time.
+      for (final photo in _photos) {
+        final embedding = photo.analysis?.embedding;
+        final onPhoto = [
+          for (final p in _plate)
+            if (p.grams > 0 && (p.photo == photo || _photos.length == 1))
+              SetItem(dishId: p.dishId, name: p.displayName(l10n), grams: p.grams, per100: p.per100),
+        ];
+        if (embedding != null && onPhoto.isNotEmpty) await services.db.addMemory(embedding, onPhoto);
+      }
     } catch (e, st) {
       debugPrint('Save failed: $e\n$st');
       if (!mounted) return;

@@ -6,10 +6,10 @@
   const MODEL_URL = 'models/vision_model.onnx';
   const INPUT_SIZE = 256; // preprocessor_config.json: shortest_edge=256, center crop 256
   const THUMB_SIZE = 320;
-  // Parts of the photo: windows of 60% × 60% at the corners and the center (origins as fractions).
-  // Keep in sync with tools/eval_plate.mjs.
-  const REGIONS = [[0, 0], [0.4, 0], [0, 0.4], [0.4, 0.4], [0.2, 0.2]];
-  const REGION_SIZE = 0.6;
+  // Parts of the photo: a 3 × 3 grid of overlapping half-size windows (origins as fractions), so
+  // each dish of a set lunch tray gets a window of its own. Keep in sync with tools/eval_plate.mjs.
+  const REGIONS = [0, 0.25, 0.5].flatMap((y) => [0, 0.25, 0.5].map((x) => [x, y]));
+  const REGION_SIZE = 0.5;
 
   let sessionPromise = null;
 

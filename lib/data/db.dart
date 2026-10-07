@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data' show Float32List;
 
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
@@ -72,6 +73,21 @@ class MealSets extends Table {
   BoolColumn get deleted => boolean().withDefault(const Constant(false))();
 }
 
+/// The personal memory: for every photo the user logged, its image embedding and what was
+/// finally put on the plate. New photos that look like a past one get the same items suggested
+/// (see DishCatalog.suggestPlate), so regular meals and the user's own products are recognized
+/// after one confirmation. [embedding] is float32 (little-endian), [items] a JSON list of
+/// [SetItem].
+class Memories extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get uuid => text().clientDefault(newUuid)();
+  BlobColumn get embedding => blob()();
+  TextColumn get items => text()();
+  IntColumn get createdAtMs => integer().clientDefault(_nowMs)();
+  IntColumn get updatedAtMs => integer().clientDefault(_nowMs)();
+  BoolColumn get deleted => boolean().withDefault(const Constant(false))();
+}
+
 int _nowMs() => DateTime.now().millisecondsSinceEpoch;
 
 /// Nutrition per 100 g.
@@ -141,7 +157,7 @@ class NewMeal {
   final Uint8List? thumbnail;
 }
 
-@DriftDatabase(tables: [Photos, Meals, Products, MealSets])
+@DriftDatabase(tables: [Photos, Meals, Products, MealSets, Memories])
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor])
     : super(
@@ -153,7 +169,7 @@ class AppDatabase extends _$AppDatabase {
       );
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -185,6 +201,11 @@ class AppDatabase extends _$AppDatabase {
         await m.createTable(mealSets);
         await _createV3Indexes();
       }
+      if (from < 4) {
+        // v4: the personal memory of logged photos.
+        await m.createTable(memories);
+        await _createV4Indexes();
+      }
     },
   );
 
@@ -193,7 +214,11 @@ class AppDatabase extends _$AppDatabase {
     await customStatement('CREATE UNIQUE INDEX meals_uuid ON meals (uuid)');
     // On a fresh install all tables exist already.
     if (await _hasTable('products')) await _createV3Indexes();
+    if (await _hasTable('memories')) await _createV4Indexes();
   }
+
+  Future<void> _createV4Indexes() =>
+      customStatement('CREATE UNIQUE INDEX IF NOT EXISTS memories_uuid ON memories (uuid)');
 
   Future<void> _createV3Indexes() async {
     await customStatement('CREATE UNIQUE INDEX IF NOT EXISTS products_uuid ON products (uuid)');
@@ -326,6 +351,38 @@ class AppDatabase extends _$AppDatabase {
   ).insertReturning(MealSetsCompanion.insert(name: name, items: jsonEncode([for (final i in items) i.toJson()])));
 
   Future<void> deleteSet(MealSet s) => update(mealSets).replace(s.copyWith(deleted: true, updatedAtMs: _nowMs()));
+
+  /// How many examples the memory keeps (≈ 2.5 KB each); the oldest are dropped first.
+  static const memoryLimit = 3000;
+
+  Stream<List<Memory>> watchMemories() => (select(memories)..where((m) => m.deleted.equals(false))).watch();
+
+  /// Remembers what was logged for a photo with this [embedding].
+  Future<void> addMemory(Float32List embedding, List<SetItem> items) => transaction(() async {
+    await into(memories).insert(
+      MemoriesCompanion.insert(
+        embedding: embedding.buffer.asUint8List(embedding.offsetInBytes, embedding.lengthInBytes),
+        items: jsonEncode([for (final i in items) i.toJson()]),
+      ),
+    );
+    await customStatement(
+      'DELETE FROM memories WHERE id NOT IN (SELECT id FROM memories ORDER BY created_at_ms DESC LIMIT ?)',
+      [memoryLimit],
+    );
+  });
+
+  /// Forgets everything remembered (the diary itself is not touched).
+  Future<void> clearMemories() =>
+      update(memories).write(MemoriesCompanion(deleted: const Value(true), updatedAtMs: Value(_nowMs())));
+
+  /// How often each dish was logged since [since] (for ranking familiar dishes higher).
+  Future<Map<String, int>> dishCounts(DateTime since) async {
+    final rows = await customSelect(
+      'SELECT dish_id, COUNT(*) AS n FROM meals WHERE deleted = 0 AND eaten_at >= ? GROUP BY dish_id',
+      variables: [Variable(since)],
+    ).get();
+    return {for (final r in rows) r.read<String>('dish_id'): r.read<int>('n')};
+  }
 
   /// Removes photos that no item refers to any more.
   Future<void> deleteOrphanPhotos() =>

@@ -49,11 +49,21 @@ class Services {
   /// Whether the browser agreed not to clear the diary when the device runs low on space.
   final storagePersisted = ValueNotifier(false);
 
+  /// The personal memory of logged photos, kept in sync with the database.
+  final memories = ValueNotifier<List<MemoryExample>>(const []);
+
+  static MemoryExample _example(Memory m) => MemoryExample(
+    // Copy: a blob view may not be 4-byte aligned for a Float32List.
+    Uint8List.fromList(m.embedding).buffer.asFloat32List(),
+    SetItem.listFromJson(m.items),
+  );
+
   static Future<Services> init() async {
     final ai = FoodAI();
     if (ai.available) ai.warmUp().ignore(); // the model loads in the background
     final services = Services._(AppDatabase(), await DishCatalog.load(), ai, await SharedPreferences.getInstance());
     requestPersistentStorage().then((granted) => services.storagePersisted.value = granted).ignore();
+    services.db.watchMemories().listen((rows) => services.memories.value = [for (final m in rows) _example(m)]);
     return services;
   }
 

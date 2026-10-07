@@ -1,6 +1,6 @@
 // Multi-item plate detection check on tools/testimg/combo: node eval_plate.mjs
-// Mirrors the app: the whole photo plus 5 overlapping windows (corners and center, 60% of each
-// side); see web/food_ai.js (regions) and DishCatalog.suggestPlate.
+// Mirrors the app: the whole photo plus a 3 × 3 grid of half-size windows, combined the way
+// DishCatalog.suggestPlate does (one dish per role, per-role thresholds, at most 5 items).
 import fs from 'node:fs';
 import path from 'node:path';
 import { AutoProcessor, CLIPVisionModelWithProjection, RawImage } from '@huggingface/transformers';
@@ -24,7 +24,12 @@ function classify(v) {
   return meta.ids.map((id, i) => ({ id, p: exps[i] / sum })).sort((a, b) => b.p - a.p);
 }
 
-export const WINDOWS = [[0, 0], [0.4, 0], [0, 0.4], [0.4, 0.4], [0.2, 0.2]]; // origins; size 0.6 × 0.6
+// Keep in sync with REGIONS in web/food_ai.js and DishCatalog.suggestPlate.
+const WINDOWS = [0, 0.25, 0.5].flatMap((y) => [0, 0.25, 0.5].map((x) => [x, y]));
+const SIZE = 0.5;
+const MIN = { soup: 0.4, main: 0.3, side: 0.15, salad: 0.15, bread: 0.3, fruit: 0.3, drink: 0.4, dessert: 0.4 };
+const role = (d) => d.id === 'french_fries' ? 'side' : ({ soup: 'soup', side: 'side', salad: 'salad', vegetable: 'salad',
+  bread: 'bread', fruit: 'fruit', drink: 'drink', dessert: 'dessert' })[d.category] ?? 'main';
 
 const processor = await AutoProcessor.from_pretrained(MODEL_ID);
 const model = await CLIPVisionModelWithProjection.from_pretrained(MODEL_ID, { dtype: 'fp16' });
@@ -34,16 +39,25 @@ async function embed(image) {
 }
 
 const dir = path.join(ROOT, 'tools/testimg/combo');
-for (const f of fs.readdirSync(dir).sort()) {
+for (const f of fs.readdirSync(dir).filter((f) => f.endsWith('.jpg')).sort()) {
   const image = await RawImage.read(path.join(dir, f));
   const full = classify(await embed(image));
-  const regions = [];
+  const tops = [];
   for (const [x, y] of WINDOWS) {
     const x0 = Math.round(x * image.width), y0 = Math.round(y * image.height);
-    const crop = await image.crop([x0, y0, x0 + Math.round(0.6 * image.width) - 1, y0 + Math.round(0.6 * image.height) - 1]);
-    regions.push(classify(await embed(crop))[0]);
+    const crop = await image.crop([x0, y0, x0 + Math.round(SIZE * image.width) - 1, y0 + Math.round(SIZE * image.height) - 1]);
+    tops.push(classify(await embed(crop))[0]);
+  }
+  tops.sort((a, b) => b.p - a.p);
+  const picked = [full[0]];
+  const roles = new Set([role(byId[full[0].id])]);
+  for (const m of tops) {
+    const r = role(byId[m.id]);
+    if (roles.has(r) || m.p < MIN[r]) continue;
+    if (picked.length >= 5) break;
+    picked.push(m); roles.add(r);
   }
   const name = (id) => byId[id].name_en;
-  console.log(`\n${f}\n  full:    ${full.slice(0, 4).map((m) => `${name(m.id)} ${(m.p * 100).toFixed(0)}%`).join(' | ')}`);
-  console.log(`  regions: ${regions.map((m) => `${name(m.id)} ${(m.p * 100).toFixed(0)}% [${byId[m.id].category}]`).join(' | ')}`);
+  console.log(`\n${f}\n  plate:   ${picked.map((m) => `${name(m.id)} ${(m.p * 100).toFixed(0)}%`).join(' + ')}`);
+  console.log(`  regions: ${tops.map((m) => `${name(m.id)} ${(m.p * 100).toFixed(0)}%`).join(' | ')}`);
 }

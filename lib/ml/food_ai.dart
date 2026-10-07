@@ -42,8 +42,8 @@ class FoodAI {
     return PhotoAnalysis(r.embedding.toDart, r.thumbnail.toDart);
   }
 
-  /// Embeddings of several overlapping parts of the photo (see REGIONS in web/food_ai.js),
-  /// used to find a side dish or salad next to the main dish.
+  /// Embeddings of overlapping parts of the photo (a 3 × 3 grid, see REGIONS in web/food_ai.js),
+  /// used to find a side dish, salad, soup… next to the main dish.
   Future<List<Float32List>> analyzeRegions(Uint8List imageBytes, {int dim = 512}) async {
     final all = (await _js.analyzeRegions(imageBytes.toJS).toDart).toDart;
     return [for (var i = 0; i < all.length; i += dim) Float32List.sublistView(all, i, i + dim)];

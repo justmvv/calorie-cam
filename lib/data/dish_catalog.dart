@@ -4,6 +4,8 @@ import 'dart:math' as math;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
+import 'db.dart' show SetItem;
+
 /// A catalog dish. Nutrition values are per 100 g.
 class Dish {
   const Dish({
@@ -42,16 +44,38 @@ class DishMatch {
   final double probability;
 }
 
-/// What a photo of a plate most likely contains: options to show, and the items to put on the
-/// plate right away (a main dish plus, when they're visible, a side, a salad, …).
-class PlateSuggestion {
-  const PlateSuggestion(this.options, this.preselected);
-  final List<DishMatch> options;
-  final List<Dish> preselected;
+/// A photo the user logged before and what ended up on the plate (see Memories in db.dart).
+class MemoryExample {
+  const MemoryExample(this.embedding, this.items);
+  final Float32List embedding;
+  final List<SetItem> items;
 }
 
-/// Role of a dish on a plate; at most one of each is preselected.
-enum PlateRole { main, side, salad, bread, fruit, drink, dessert }
+/// A past photo that looks like the new one.
+class MemoryMatch {
+  const MemoryMatch(this.items, this.similarity);
+  final List<SetItem> items;
+
+  /// Cosine similarity of the two photos' embeddings.
+  final double similarity;
+
+  /// So similar that the same items are put on the plate right away.
+  bool get confident => similarity >= DishCatalog.memoryConfident;
+}
+
+/// What a photo of a plate most likely contains: options to show, the items to put on the
+/// plate right away (a main dish plus, when they're visible, a side, a salad, …), and the most
+/// similar photo from the user's history.
+class PlateSuggestion {
+  const PlateSuggestion(this.options, this.preselected, {this.memory});
+  final List<DishMatch> options;
+  final List<Dish> preselected;
+  final MemoryMatch? memory;
+}
+
+/// Role of a dish on a plate; at most one of each is preselected, so a set lunch can get a soup,
+/// a main, a side, a salad, bread and a drink at once.
+enum PlateRole { soup, main, side, salad, bread, fruit, drink, dessert }
 
 /// Dish catalog (assets/dishes.tsv) plus MobileCLIP text embeddings
 /// (assets/dish_embeddings.*, built by tools/build_embeddings.mjs).
@@ -106,14 +130,17 @@ class DishCatalog {
   Dish? byId(String id) => _byId[id];
 
   /// Top [limit] dishes most similar to the photo.
-  List<DishMatch> classify(Float32List image, {int limit = 5}) {
+  ///
+  /// [bonus] is added to the logits of the given dishes (memory of similar past photos,
+  /// time of day, how often a dish is eaten — see [memoryBonus] and context_prior.dart).
+  List<DishMatch> classify(Float32List image, {int limit = 5, Map<String, double> bonus = const {}}) {
     final logits = List<double>.generate(_ids.length, (i) {
       var s = 0.0;
       final off = i * _dim;
       for (var k = 0; k < _dim; k++) {
         s += image[k] * _embeddings[off + k];
       }
-      return s * _logitScale;
+      return s * _logitScale + (bonus[_ids[i]] ?? 0);
     });
     final maxLogit = logits.reduce(math.max);
     final exps = logits.map((l) => math.exp(l - maxLogit)).toList();
@@ -129,10 +156,21 @@ class DishCatalog {
   /// Combines the whole-photo result with results for parts of the photo (web/food_ai.js
   /// regions): the main dish comes from the whole photo; a side, salad, … found confidently in
   /// some part is added too, so "cutlet with mashed potatoes" isn't logged as just a cutlet.
-  PlateSuggestion suggestPlate(Float32List whole, List<Float32List> regions) {
-    final options = classify(whole);
-    if (options.isEmpty) return const PlateSuggestion([], []);
-    final regionTops = [for (final r in regions) ?classify(r, limit: 1).firstOrNull]
+  ///
+  /// [memory] are the user's past photos; [prior] a per-dish logit bonus from the context.
+  PlateSuggestion suggestPlate(
+    Float32List whole,
+    List<Float32List> regions, {
+    List<MemoryExample> memory = const [],
+    Map<String, double> prior = const {},
+  }) {
+    final (bonus, match) = memoryBonus(whole, memory);
+    for (final MapEntry(:key, :value) in prior.entries) {
+      bonus.update(key, (v) => v + value, ifAbsent: () => value);
+    }
+    final options = classify(whole, bonus: bonus);
+    if (options.isEmpty) return PlateSuggestion(const [], const [], memory: match);
+    final regionTops = [for (final r in regions) ?classify(r, limit: 1, bonus: prior).firstOrNull]
       ..sort((a, b) => b.probability.compareTo(a.probability));
 
     final preselected = [options.first.dish];
@@ -141,23 +179,68 @@ class DishCatalog {
     for (final m in regionTops) {
       final role = roleOf(m.dish);
       if (roles.contains(role) || m.probability < _minRegionProbability[role]!) continue;
-      if (preselected.length >= 3) break;
+      if (preselected.length >= maxPreselected) break;
       preselected.add(m.dish);
       roles.add(role);
       if (!options.any((o) => o.dish.id == m.dish.id)) extra.add(m);
     }
     // A dish may score low on the whole photo but high on its own part: show the higher score.
     final best = {for (final m in regionTops.reversed) m.dish.id: m.probability};
-    return PlateSuggestion([
-      for (final o in [...options, ...extra])
-        DishMatch(o.dish, (best[o.dish.id] ?? 0) > o.probability ? best[o.dish.id]! : o.probability),
-    ], preselected);
+    return PlateSuggestion(
+      [
+        for (final o in [...options, ...extra])
+          DishMatch(o.dish, (best[o.dish.id] ?? 0) > o.probability ? best[o.dish.id]! : o.probability),
+      ],
+      preselected,
+      memory: match,
+    );
+  }
+
+  /// At most this many items are put on the plate automatically (a set lunch: soup, main, side,
+  /// salad, drink).
+  static const maxPreselected = 5;
+
+  // Memory tuning (tools/eval_set.mjs, Wikipedia photos; the user's own repeated meals look much
+  // more alike than different photos of a dish, so real matches are stronger than these).
+  /// Below this photo-to-photo similarity a past photo says nothing.
+  static const memoryFloor = 0.6;
+
+  /// Logit bonus per unit of similarity above [memoryFloor], in units of the logit scale.
+  static const memoryWeight = 4.0;
+
+  /// From this similarity on, the past plate is suggested as a whole.
+  static const memorySuggest = 0.8;
+
+  /// From this similarity on, the past plate is put on the plate right away.
+  static const memoryConfident = 0.9;
+
+  /// Logit bonuses for catalog dishes seen on similar past photos, and the most similar past
+  /// photo if it is similar enough to suggest its whole plate.
+  (Map<String, double>, MemoryMatch?) memoryBonus(Float32List image, List<MemoryExample> memory) {
+    final bonus = <String, double>{};
+    MemoryExample? best;
+    var bestSim = -1.0;
+    for (final m in memory) {
+      var sim = 0.0;
+      for (var k = 0; k < _dim; k++) {
+        sim += image[k] * m.embedding[k];
+      }
+      if (sim > bestSim) (best, bestSim) = (m, sim);
+      if (sim <= memoryFloor) continue;
+      final b = memoryWeight * (sim - memoryFloor) * _logitScale;
+      for (final item in m.items) {
+        if (_byId.containsKey(item.dishId) && b > (bonus[item.dishId] ?? 0)) bonus[item.dishId] = b;
+      }
+    }
+    final match = best != null && bestSim >= memorySuggest ? MemoryMatch(best.items, bestSim) : null;
+    return (bonus, match);
   }
 
   /// How sure a part of the photo must be before its dish is added to the plate. Sides and
   /// salads are often small and get low scores; drinks and desserts are easy to hallucinate.
   static const _minRegionProbability = {
-    PlateRole.main: 1.1, // never: the main dish comes from the whole photo
+    PlateRole.main: 0.3, // next to a soup, e.g. on a set lunch tray
+    PlateRole.soup: 0.4, // lower lets sauces pass for soups
     PlateRole.side: 0.15,
     PlateRole.salad: 0.15,
     PlateRole.bread: 0.3,
@@ -170,6 +253,7 @@ class DishCatalog {
 
   static PlateRole roleOf(Dish d) => switch (d.category) {
     _ when _sideDishIds.contains(d.id) => PlateRole.side,
+    'soup' => PlateRole.soup,
     'side' => PlateRole.side,
     'salad' || 'vegetable' => PlateRole.salad,
     'bread' => PlateRole.bread,

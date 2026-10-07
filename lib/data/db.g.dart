@@ -1688,6 +1688,378 @@ class MealSetsCompanion extends UpdateCompanion<MealSet> {
   }
 }
 
+class $MemoriesTable extends Memories with TableInfo<$MemoriesTable, Memory> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MemoriesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'),
+  );
+  static const VerificationMeta _uuidMeta = const VerificationMeta('uuid');
+  @override
+  late final GeneratedColumn<String> uuid = GeneratedColumn<String>(
+    'uuid',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    clientDefault: newUuid,
+  );
+  static const VerificationMeta _embeddingMeta = const VerificationMeta('embedding');
+  @override
+  late final GeneratedColumn<Uint8List> embedding = GeneratedColumn<Uint8List>(
+    'embedding',
+    aliasedName,
+    false,
+    type: DriftSqlType.blob,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _itemsMeta = const VerificationMeta('items');
+  @override
+  late final GeneratedColumn<String> items = GeneratedColumn<String>(
+    'items',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMsMeta = const VerificationMeta('createdAtMs');
+  @override
+  late final GeneratedColumn<int> createdAtMs = GeneratedColumn<int>(
+    'created_at_ms',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    clientDefault: _nowMs,
+  );
+  static const VerificationMeta _updatedAtMsMeta = const VerificationMeta('updatedAtMs');
+  @override
+  late final GeneratedColumn<int> updatedAtMs = GeneratedColumn<int>(
+    'updated_at_ms',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    clientDefault: _nowMs,
+  );
+  static const VerificationMeta _deletedMeta = const VerificationMeta('deleted');
+  @override
+  late final GeneratedColumn<bool> deleted = GeneratedColumn<bool>(
+    'deleted',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('CHECK ("deleted" IN (0, 1))'),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, uuid, embedding, items, createdAtMs, updatedAtMs, deleted];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'memories';
+  @override
+  VerificationContext validateIntegrity(Insertable<Memory> instance, {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('uuid')) {
+      context.handle(_uuidMeta, uuid.isAcceptableOrUnknown(data['uuid']!, _uuidMeta));
+    }
+    if (data.containsKey('embedding')) {
+      context.handle(_embeddingMeta, embedding.isAcceptableOrUnknown(data['embedding']!, _embeddingMeta));
+    } else if (isInserting) {
+      context.missing(_embeddingMeta);
+    }
+    if (data.containsKey('items')) {
+      context.handle(_itemsMeta, items.isAcceptableOrUnknown(data['items']!, _itemsMeta));
+    } else if (isInserting) {
+      context.missing(_itemsMeta);
+    }
+    if (data.containsKey('created_at_ms')) {
+      context.handle(_createdAtMsMeta, createdAtMs.isAcceptableOrUnknown(data['created_at_ms']!, _createdAtMsMeta));
+    }
+    if (data.containsKey('updated_at_ms')) {
+      context.handle(_updatedAtMsMeta, updatedAtMs.isAcceptableOrUnknown(data['updated_at_ms']!, _updatedAtMsMeta));
+    }
+    if (data.containsKey('deleted')) {
+      context.handle(_deletedMeta, deleted.isAcceptableOrUnknown(data['deleted']!, _deletedMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Memory map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Memory(
+      id: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      uuid: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}uuid'])!,
+      embedding: attachedDatabase.typeMapping.read(DriftSqlType.blob, data['${effectivePrefix}embedding'])!,
+      items: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}items'])!,
+      createdAtMs: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}created_at_ms'])!,
+      updatedAtMs: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}updated_at_ms'])!,
+      deleted: attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}deleted'])!,
+    );
+  }
+
+  @override
+  $MemoriesTable createAlias(String alias) {
+    return $MemoriesTable(attachedDatabase, alias);
+  }
+}
+
+class Memory extends DataClass implements Insertable<Memory> {
+  final int id;
+  final String uuid;
+  final Uint8List embedding;
+  final String items;
+  final int createdAtMs;
+  final int updatedAtMs;
+  final bool deleted;
+  const Memory({
+    required this.id,
+    required this.uuid,
+    required this.embedding,
+    required this.items,
+    required this.createdAtMs,
+    required this.updatedAtMs,
+    required this.deleted,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['uuid'] = Variable<String>(uuid);
+    map['embedding'] = Variable<Uint8List>(embedding);
+    map['items'] = Variable<String>(items);
+    map['created_at_ms'] = Variable<int>(createdAtMs);
+    map['updated_at_ms'] = Variable<int>(updatedAtMs);
+    map['deleted'] = Variable<bool>(deleted);
+    return map;
+  }
+
+  MemoriesCompanion toCompanion(bool nullToAbsent) {
+    return MemoriesCompanion(
+      id: Value(id),
+      uuid: Value(uuid),
+      embedding: Value(embedding),
+      items: Value(items),
+      createdAtMs: Value(createdAtMs),
+      updatedAtMs: Value(updatedAtMs),
+      deleted: Value(deleted),
+    );
+  }
+
+  factory Memory.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Memory(
+      id: serializer.fromJson<int>(json['id']),
+      uuid: serializer.fromJson<String>(json['uuid']),
+      embedding: serializer.fromJson<Uint8List>(json['embedding']),
+      items: serializer.fromJson<String>(json['items']),
+      createdAtMs: serializer.fromJson<int>(json['createdAtMs']),
+      updatedAtMs: serializer.fromJson<int>(json['updatedAtMs']),
+      deleted: serializer.fromJson<bool>(json['deleted']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'uuid': serializer.toJson<String>(uuid),
+      'embedding': serializer.toJson<Uint8List>(embedding),
+      'items': serializer.toJson<String>(items),
+      'createdAtMs': serializer.toJson<int>(createdAtMs),
+      'updatedAtMs': serializer.toJson<int>(updatedAtMs),
+      'deleted': serializer.toJson<bool>(deleted),
+    };
+  }
+
+  Memory copyWith({
+    int? id,
+    String? uuid,
+    Uint8List? embedding,
+    String? items,
+    int? createdAtMs,
+    int? updatedAtMs,
+    bool? deleted,
+  }) => Memory(
+    id: id ?? this.id,
+    uuid: uuid ?? this.uuid,
+    embedding: embedding ?? this.embedding,
+    items: items ?? this.items,
+    createdAtMs: createdAtMs ?? this.createdAtMs,
+    updatedAtMs: updatedAtMs ?? this.updatedAtMs,
+    deleted: deleted ?? this.deleted,
+  );
+  Memory copyWithCompanion(MemoriesCompanion data) {
+    return Memory(
+      id: data.id.present ? data.id.value : this.id,
+      uuid: data.uuid.present ? data.uuid.value : this.uuid,
+      embedding: data.embedding.present ? data.embedding.value : this.embedding,
+      items: data.items.present ? data.items.value : this.items,
+      createdAtMs: data.createdAtMs.present ? data.createdAtMs.value : this.createdAtMs,
+      updatedAtMs: data.updatedAtMs.present ? data.updatedAtMs.value : this.updatedAtMs,
+      deleted: data.deleted.present ? data.deleted.value : this.deleted,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Memory(')
+          ..write('id: $id, ')
+          ..write('uuid: $uuid, ')
+          ..write('embedding: $embedding, ')
+          ..write('items: $items, ')
+          ..write('createdAtMs: $createdAtMs, ')
+          ..write('updatedAtMs: $updatedAtMs, ')
+          ..write('deleted: $deleted')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, uuid, $driftBlobEquality.hash(embedding), items, createdAtMs, updatedAtMs, deleted);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Memory &&
+          other.id == this.id &&
+          other.uuid == this.uuid &&
+          $driftBlobEquality.equals(other.embedding, this.embedding) &&
+          other.items == this.items &&
+          other.createdAtMs == this.createdAtMs &&
+          other.updatedAtMs == this.updatedAtMs &&
+          other.deleted == this.deleted);
+}
+
+class MemoriesCompanion extends UpdateCompanion<Memory> {
+  final Value<int> id;
+  final Value<String> uuid;
+  final Value<Uint8List> embedding;
+  final Value<String> items;
+  final Value<int> createdAtMs;
+  final Value<int> updatedAtMs;
+  final Value<bool> deleted;
+  const MemoriesCompanion({
+    this.id = const Value.absent(),
+    this.uuid = const Value.absent(),
+    this.embedding = const Value.absent(),
+    this.items = const Value.absent(),
+    this.createdAtMs = const Value.absent(),
+    this.updatedAtMs = const Value.absent(),
+    this.deleted = const Value.absent(),
+  });
+  MemoriesCompanion.insert({
+    this.id = const Value.absent(),
+    this.uuid = const Value.absent(),
+    required Uint8List embedding,
+    required String items,
+    this.createdAtMs = const Value.absent(),
+    this.updatedAtMs = const Value.absent(),
+    this.deleted = const Value.absent(),
+  }) : embedding = Value(embedding),
+       items = Value(items);
+  static Insertable<Memory> custom({
+    Expression<int>? id,
+    Expression<String>? uuid,
+    Expression<Uint8List>? embedding,
+    Expression<String>? items,
+    Expression<int>? createdAtMs,
+    Expression<int>? updatedAtMs,
+    Expression<bool>? deleted,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (uuid != null) 'uuid': uuid,
+      if (embedding != null) 'embedding': embedding,
+      if (items != null) 'items': items,
+      if (createdAtMs != null) 'created_at_ms': createdAtMs,
+      if (updatedAtMs != null) 'updated_at_ms': updatedAtMs,
+      if (deleted != null) 'deleted': deleted,
+    });
+  }
+
+  MemoriesCompanion copyWith({
+    Value<int>? id,
+    Value<String>? uuid,
+    Value<Uint8List>? embedding,
+    Value<String>? items,
+    Value<int>? createdAtMs,
+    Value<int>? updatedAtMs,
+    Value<bool>? deleted,
+  }) {
+    return MemoriesCompanion(
+      id: id ?? this.id,
+      uuid: uuid ?? this.uuid,
+      embedding: embedding ?? this.embedding,
+      items: items ?? this.items,
+      createdAtMs: createdAtMs ?? this.createdAtMs,
+      updatedAtMs: updatedAtMs ?? this.updatedAtMs,
+      deleted: deleted ?? this.deleted,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (uuid.present) {
+      map['uuid'] = Variable<String>(uuid.value);
+    }
+    if (embedding.present) {
+      map['embedding'] = Variable<Uint8List>(embedding.value);
+    }
+    if (items.present) {
+      map['items'] = Variable<String>(items.value);
+    }
+    if (createdAtMs.present) {
+      map['created_at_ms'] = Variable<int>(createdAtMs.value);
+    }
+    if (updatedAtMs.present) {
+      map['updated_at_ms'] = Variable<int>(updatedAtMs.value);
+    }
+    if (deleted.present) {
+      map['deleted'] = Variable<bool>(deleted.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MemoriesCompanion(')
+          ..write('id: $id, ')
+          ..write('uuid: $uuid, ')
+          ..write('embedding: $embedding, ')
+          ..write('items: $items, ')
+          ..write('createdAtMs: $createdAtMs, ')
+          ..write('updatedAtMs: $updatedAtMs, ')
+          ..write('deleted: $deleted')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -1695,10 +2067,11 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $MealsTable meals = $MealsTable(this);
   late final $ProductsTable products = $ProductsTable(this);
   late final $MealSetsTable mealSets = $MealSetsTable(this);
+  late final $MemoriesTable memories = $MemoriesTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables => allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [photos, meals, products, mealSets];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [photos, meals, products, mealSets, memories];
 }
 
 typedef $$PhotosTableCreateCompanionBuilder =
@@ -2654,6 +3027,193 @@ typedef $$MealSetsTableProcessedTableManager =
       MealSet,
       PrefetchHooks Function()
     >;
+typedef $$MemoriesTableCreateCompanionBuilder =
+    MemoriesCompanion Function({
+      Value<int> id,
+      Value<String> uuid,
+      required Uint8List embedding,
+      required String items,
+      Value<int> createdAtMs,
+      Value<int> updatedAtMs,
+      Value<bool> deleted,
+    });
+typedef $$MemoriesTableUpdateCompanionBuilder =
+    MemoriesCompanion Function({
+      Value<int> id,
+      Value<String> uuid,
+      Value<Uint8List> embedding,
+      Value<String> items,
+      Value<int> createdAtMs,
+      Value<int> updatedAtMs,
+      Value<bool> deleted,
+    });
+
+class $$MemoriesTableFilterComposer extends Composer<_$AppDatabase, $MemoriesTable> {
+  $$MemoriesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get uuid => $composableBuilder(column: $table.uuid, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<Uint8List> get embedding =>
+      $composableBuilder(column: $table.embedding, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get items =>
+      $composableBuilder(column: $table.items, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get createdAtMs =>
+      $composableBuilder(column: $table.createdAtMs, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get updatedAtMs =>
+      $composableBuilder(column: $table.updatedAtMs, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get deleted =>
+      $composableBuilder(column: $table.deleted, builder: (column) => ColumnFilters(column));
+}
+
+class $$MemoriesTableOrderingComposer extends Composer<_$AppDatabase, $MemoriesTable> {
+  $$MemoriesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get uuid =>
+      $composableBuilder(column: $table.uuid, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<Uint8List> get embedding =>
+      $composableBuilder(column: $table.embedding, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get items =>
+      $composableBuilder(column: $table.items, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get createdAtMs =>
+      $composableBuilder(column: $table.createdAtMs, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get updatedAtMs =>
+      $composableBuilder(column: $table.updatedAtMs, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get deleted =>
+      $composableBuilder(column: $table.deleted, builder: (column) => ColumnOrderings(column));
+}
+
+class $$MemoriesTableAnnotationComposer extends Composer<_$AppDatabase, $MemoriesTable> {
+  $$MemoriesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get uuid => $composableBuilder(column: $table.uuid, builder: (column) => column);
+
+  GeneratedColumn<Uint8List> get embedding => $composableBuilder(column: $table.embedding, builder: (column) => column);
+
+  GeneratedColumn<String> get items => $composableBuilder(column: $table.items, builder: (column) => column);
+
+  GeneratedColumn<int> get createdAtMs => $composableBuilder(column: $table.createdAtMs, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedAtMs => $composableBuilder(column: $table.updatedAtMs, builder: (column) => column);
+
+  GeneratedColumn<bool> get deleted => $composableBuilder(column: $table.deleted, builder: (column) => column);
+}
+
+class $$MemoriesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $MemoriesTable,
+          Memory,
+          $$MemoriesTableFilterComposer,
+          $$MemoriesTableOrderingComposer,
+          $$MemoriesTableAnnotationComposer,
+          $$MemoriesTableCreateCompanionBuilder,
+          $$MemoriesTableUpdateCompanionBuilder,
+          (Memory, BaseReferences<_$AppDatabase, $MemoriesTable, Memory>),
+          Memory,
+          PrefetchHooks Function()
+        > {
+  $$MemoriesTableTableManager(_$AppDatabase db, $MemoriesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () => $$MemoriesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () => $$MemoriesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () => $$MemoriesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> uuid = const Value.absent(),
+                Value<Uint8List> embedding = const Value.absent(),
+                Value<String> items = const Value.absent(),
+                Value<int> createdAtMs = const Value.absent(),
+                Value<int> updatedAtMs = const Value.absent(),
+                Value<bool> deleted = const Value.absent(),
+              }) => MemoriesCompanion(
+                id: id,
+                uuid: uuid,
+                embedding: embedding,
+                items: items,
+                createdAtMs: createdAtMs,
+                updatedAtMs: updatedAtMs,
+                deleted: deleted,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> uuid = const Value.absent(),
+                required Uint8List embedding,
+                required String items,
+                Value<int> createdAtMs = const Value.absent(),
+                Value<int> updatedAtMs = const Value.absent(),
+                Value<bool> deleted = const Value.absent(),
+              }) => MemoriesCompanion.insert(
+                id: id,
+                uuid: uuid,
+                embedding: embedding,
+                items: items,
+                createdAtMs: createdAtMs,
+                updatedAtMs: updatedAtMs,
+                deleted: deleted,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$MemoriesTable, Memory>(table),
+                  BaseReferences<_$AppDatabase, $MemoriesTable, Memory>(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$MemoriesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $MemoriesTable,
+      Memory,
+      $$MemoriesTableFilterComposer,
+      $$MemoriesTableOrderingComposer,
+      $$MemoriesTableAnnotationComposer,
+      $$MemoriesTableCreateCompanionBuilder,
+      $$MemoriesTableUpdateCompanionBuilder,
+      (Memory, BaseReferences<_$AppDatabase, $MemoriesTable, Memory>),
+      Memory,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -2662,4 +3222,5 @@ class $AppDatabaseManager {
   $$MealsTableTableManager get meals => $$MealsTableTableManager(_db, _db.meals);
   $$ProductsTableTableManager get products => $$ProductsTableTableManager(_db, _db.products);
   $$MealSetsTableTableManager get mealSets => $$MealSetsTableTableManager(_db, _db.mealSets);
+  $$MemoriesTableTableManager get memories => $$MemoriesTableTableManager(_db, _db.memories);
 }
