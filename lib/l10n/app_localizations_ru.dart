@@ -352,22 +352,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get deleteItem => 'Удалить';
 
   @override
-  String get webSearch => 'Найти в интернете';
-
-  @override
-  String get webSearchTitle => 'Поиск по фото';
-
-  @override
-  String get webSearchHint =>
-      'Фото уйдёт в выбранный поисковик. Узнайте, что это за блюдо и его калорийность, и добавьте его через «Ввести калории вручную».';
-
-  @override
-  String get otherApp => 'Другое приложение…';
-
-  @override
-  String get otherAppHint => 'Google Lens, Яндекс и другие приложения на телефоне';
-
-  @override
   String get shareDay => 'Поделиться днём';
 
   @override

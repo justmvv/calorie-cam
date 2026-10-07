@@ -352,22 +352,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteItem => 'Delete';
 
   @override
-  String get webSearch => 'Search the web';
-
-  @override
-  String get webSearchTitle => 'Search by photo';
-
-  @override
-  String get webSearchHint =>
-      'The photo is sent to the search engine you choose. Find out what the dish is and its calories, then add it with “Enter calories manually”.';
-
-  @override
-  String get otherApp => 'Another app…';
-
-  @override
-  String get otherAppHint => 'Google Lens, Yandex and other apps on the phone';
-
-  @override
   String get shareDay => 'Share the day';
 
   @override

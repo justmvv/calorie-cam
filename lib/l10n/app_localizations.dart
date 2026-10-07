@@ -706,36 +706,6 @@ abstract class AppLocalizations {
   /// **'Delete'**
   String get deleteItem;
 
-  /// No description provided for @webSearch.
-  ///
-  /// In en, this message translates to:
-  /// **'Search the web'**
-  String get webSearch;
-
-  /// No description provided for @webSearchTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Search by photo'**
-  String get webSearchTitle;
-
-  /// No description provided for @webSearchHint.
-  ///
-  /// In en, this message translates to:
-  /// **'The photo is sent to the search engine you choose. Find out what the dish is and its calories, then add it with “Enter calories manually”.'**
-  String get webSearchHint;
-
-  /// No description provided for @otherApp.
-  ///
-  /// In en, this message translates to:
-  /// **'Another app…'**
-  String get otherApp;
-
-  /// No description provided for @otherAppHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Google Lens, Yandex and other apps on the phone'**
-  String get otherAppHint;
-
   /// No description provided for @shareDay.
   ///
   /// In en, this message translates to:

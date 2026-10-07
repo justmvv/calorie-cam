@@ -352,22 +352,6 @@ class AppLocalizationsNl extends AppLocalizations {
   String get deleteItem => 'Verwijderen';
 
   @override
-  String get webSearch => 'Zoeken op internet';
-
-  @override
-  String get webSearchTitle => 'Zoeken met foto';
-
-  @override
-  String get webSearchHint =>
-      'De foto gaat naar de zoekmachine die je kiest. Zoek uit wat het gerecht is en hoeveel calorieën het heeft en voeg het toe met ‘Calorieën handmatig invoeren’.';
-
-  @override
-  String get otherApp => 'Andere app…';
-
-  @override
-  String get otherAppHint => 'Google Lens, Yandex en andere apps op de telefoon';
-
-  @override
   String get shareDay => 'Dag delen';
 
   @override

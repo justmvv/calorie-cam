@@ -103,20 +103,6 @@
       }));
     },
 
-    // The photo as a JPEG no larger than maxSide (for sending to an image search engine).
-    resize(bytes, maxSide) {
-      return withBitmap(bytes, async (b) => {
-        const scale = Math.min(1, maxSide / Math.max(b.width, b.height));
-        const w = Math.round(b.width * scale), h = Math.round(b.height * scale);
-        const c = canvas(w, h);
-        c.getContext('2d').drawImage(b, 0, 0, w, h);
-        const blob = c.convertToBlob
-          ? await c.convertToBlob({ type: 'image/jpeg', quality: 0.85 })
-          : await new Promise((r) => c.toBlob(r, 'image/jpeg', 0.85));
-        return new Uint8Array(await blob.arrayBuffer());
-      });
-    },
-
     // Parts of the photo: REGIONS.length embeddings, concatenated.
     analyzeRegions(bytes) {
       return withBitmap(bytes, (b) => embed(b, REGIONS.map(([x, y]) => [

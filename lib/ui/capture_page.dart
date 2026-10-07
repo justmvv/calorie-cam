@@ -11,7 +11,6 @@ import 'dish_search.dart';
 import 'format.dart';
 import 'nutrition_dialog.dart';
 import 'palette.dart';
-import 'web_search.dart';
 
 /// An item on the plate. Nutrition is per 100 g and may be overridden by the user.
 class _PlateItem {
@@ -436,24 +435,11 @@ class _CapturePageState extends State<CapturePage> {
   }
 
   Widget _recognition(AppLocalizations l10n, _Photo photo) {
-    final webSearch = Align(
-      alignment: Alignment.centerLeft,
-      child: TextButton.icon(
-        onPressed: () => showWebImageSearch(context, photo.bytes),
-        icon: const Icon(Icons.travel_explore),
-        label: Text(l10n.webSearch),
-      ),
-    );
     if (photo.error != null) {
-      return Column(
-        children: [
-          ListTile(
-            leading: const Icon(Icons.error_outline),
-            title: Text(l10n.recognitionFailed),
-            subtitle: Text(l10n.chooseManually('${photo.error}')),
-          ),
-          webSearch,
-        ],
+      return ListTile(
+        leading: const Icon(Icons.error_outline),
+        title: Text(l10n.recognitionFailed),
+        subtitle: Text(l10n.chooseManually('${photo.error}')),
       );
     }
     if (photo.analyzing) {
@@ -494,7 +480,6 @@ class _CapturePageState extends State<CapturePage> {
             ],
           ),
         ],
-        webSearch,
       ],
     );
   }

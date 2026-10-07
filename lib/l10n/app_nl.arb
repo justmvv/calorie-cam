@@ -102,11 +102,6 @@
   "setSaved": "Set ‘{name}’ opgeslagen",
   "customItem": "Eigen product",
   "deleteItem": "Verwijderen",
-  "webSearch": "Zoeken op internet",
-  "webSearchTitle": "Zoeken met foto",
-  "webSearchHint": "De foto gaat naar de zoekmachine die je kiest. Zoek uit wat het gerecht is en hoeveel calorieën het heeft en voeg het toe met ‘Calorieën handmatig invoeren’.",
-  "otherApp": "Andere app…",
-  "otherAppHint": "Google Lens, Yandex en andere apps op de telefoon",
   "shareDay": "Dag delen",
   "chipsHint": "Tik om het voorgestelde gerecht te vervangen, houd vast om er een toe te voegen"
 }

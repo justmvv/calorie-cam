@@ -352,22 +352,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get deleteItem => 'Eliminar';
 
   @override
-  String get webSearch => 'Buscar en internet';
-
-  @override
-  String get webSearchTitle => 'Buscar por foto';
-
-  @override
-  String get webSearchHint =>
-      'La foto se envía al buscador que elijas. Averigua qué plato es y sus calorías, y añádelo con «Introducir calorías manualmente».';
-
-  @override
-  String get otherApp => 'Otra aplicación…';
-
-  @override
-  String get otherAppHint => 'Google Lens, Yandex y otras apps del teléfono';
-
-  @override
   String get shareDay => 'Compartir el día';
 
   @override

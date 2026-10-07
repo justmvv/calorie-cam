@@ -29,7 +29,6 @@ Portion weight is not estimated from the photo — that isn't reliable. The user
 - **Portion in grams or in kcal**: the amount field of an item (and of a diary entry when editing it) switches between grams and calories for the whole item — when the total is known exactly, type it in; the grams and macros follow from the dish's calorie density.
 - **Edit calories** (tap the "kcal per 100 g" line of an item): type the numbers from the package, per 100 g or per portion; optionally save as one of **My products**.
 - **Search** lists **Enter calories manually**, **My sets**, **My products** (swipe to delete) and the catalog. The bookmark button saves the current plate as a set.
-- **Search the web** sends the photo to Google Lens or Bing (a form upload in a new tab, no API keys) or to another app through the share sheet (Google Lens, Yandex…), for dishes the catalog doesn't know.
 - **Share the day** (share icon on the day) renders a picture of the day — total, macros, dishes — and hands it as a PNG to the share sheet.
 
 ## Running
