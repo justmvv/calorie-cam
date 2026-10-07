@@ -105,5 +105,11 @@
   "shareDay": "Compartir el día",
   "chipsHint": "Toca para cambiar el plato sugerido, mantén pulsado para añadir otro",
   "versionLabel": "Versión {version} · compilación {build}",
-  "devBuild": "Compilación de desarrollo"
+  "devBuild": "Compilación de desarrollo",
+  "memoryMatch": "Como la última vez · parecido {similarity}",
+  "memoryUse": "Usar",
+  "memoryTitle": "Memoria de reconocimiento",
+  "memoryCount": "Fotos recordadas: {count}. Con ellas se reconocen tus comidas y productos habituales",
+  "memoryClear": "Olvidar",
+  "memoryClearConfirm": "¿Olvidar todas las fotos recordadas? El diario no cambia."
 }

@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'dart:convert';
 
 import 'package:calorie_cam/data/backup.dart';
@@ -152,6 +153,21 @@ void main() {
     await db.deleteProduct(bar);
     await Backup.import(db, json);
     expect(await db.watchProducts().first, isEmpty);
+  });
+
+  test('the recognition memory travels with the backup', () async {
+    final emb = Float32List.fromList(List.generate(512, (i) => i / 512));
+    await db.addMemory(emb, const [
+      SetItem(dishId: 'latte', name: 'Latte', grams: 300, per100: Per100(kcal: 40)),
+    ], model: 'Xenova/mobileclip_s2');
+    final other = memoryDb();
+    addTearDown(other.close);
+    final result = await Backup.import(other, await Backup.export(db, settings: settings));
+    expect(result.added, 1);
+    final m = (await other.watchMemories().first).single;
+    expect(m.model, 'Xenova/mobileclip_s2');
+    expect(Uint8List.fromList(m.embedding).buffer.asFloat32List()[511], closeTo(511 / 512, 1e-6));
+    expect(SetItem.listFromJson(m.items).single.dishId, 'latte');
   });
 
   test('backups of format version 1 (no products, no sets) still import', () async {

@@ -364,4 +364,26 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get devBuild => 'Development build';
+
+  @override
+  String memoryMatch(String similarity) {
+    return 'As last time · $similarity alike';
+  }
+
+  @override
+  String get memoryUse => 'Use';
+
+  @override
+  String get memoryTitle => 'Recognition memory';
+
+  @override
+  String memoryCount(int count) {
+    return '$count remembered photos: your usual meals and products are recognized from them';
+  }
+
+  @override
+  String get memoryClear => 'Forget';
+
+  @override
+  String get memoryClearConfirm => 'Forget all remembered photos? The diary stays as it is.';
 }

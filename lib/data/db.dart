@@ -82,6 +82,10 @@ class Memories extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get uuid => text().clientDefault(newUuid)();
   BlobColumn get embedding => blob()();
+
+  /// The recognition model that computed [embedding]; embeddings of different models can't be
+  /// compared, so after a model change old examples are ignored (and new ones accumulate).
+  TextColumn get model => text()();
   TextColumn get items => text()();
   IntColumn get createdAtMs => integer().clientDefault(_nowMs)();
   IntColumn get updatedAtMs => integer().clientDefault(_nowMs)();
@@ -358,10 +362,11 @@ class AppDatabase extends _$AppDatabase {
   Stream<List<Memory>> watchMemories() => (select(memories)..where((m) => m.deleted.equals(false))).watch();
 
   /// Remembers what was logged for a photo with this [embedding].
-  Future<void> addMemory(Float32List embedding, List<SetItem> items) => transaction(() async {
+  Future<void> addMemory(Float32List embedding, List<SetItem> items, {required String model}) => transaction(() async {
     await into(memories).insert(
       MemoriesCompanion.insert(
         embedding: embedding.buffer.asUint8List(embedding.offsetInBytes, embedding.lengthInBytes),
+        model: model,
         items: jsonEncode([for (final i in items) i.toJson()]),
       ),
     );

@@ -80,7 +80,10 @@ enum PlateRole { soup, main, side, salad, bread, fruit, drink, dessert }
 /// Dish catalog (assets/dishes.tsv) plus MobileCLIP text embeddings
 /// (assets/dish_embeddings.*, built by tools/build_embeddings.mjs).
 class DishCatalog {
-  DishCatalog._(this.dishes, this._byId, this._ids, this._embeddings, this._dim);
+  DishCatalog._(this.dishes, this._byId, this._ids, this._embeddings, this._dim, this.model);
+
+  /// The recognition model the embeddings belong to (e.g. "Xenova/mobileclip_s2").
+  final String model;
 
   final List<Dish> dishes;
   final Map<String, Dish> _byId;
@@ -113,6 +116,7 @@ class DishCatalog {
       List<String>.from(meta['ids'] as List),
       embeddings,
       meta['dim'] as int,
+      meta['model'] as String,
     );
   }
 

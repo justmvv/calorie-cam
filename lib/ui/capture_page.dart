@@ -380,7 +380,9 @@ class _CapturePageState extends State<CapturePage> {
             if (p.grams > 0 && (p.photo == photo || _photos.length == 1))
               SetItem(dishId: p.dishId, name: p.displayName(l10n), grams: p.grams, per100: p.per100),
         ];
-        if (embedding != null && onPhoto.isNotEmpty) await services.db.addMemory(embedding, onPhoto);
+        if (embedding != null && onPhoto.isNotEmpty) {
+          await services.db.addMemory(embedding, onPhoto, model: services.catalog.model);
+        }
       }
     } catch (e, st) {
       debugPrint('Save failed: $e\n$st');
@@ -474,9 +476,11 @@ class _CapturePageState extends State<CapturePage> {
         children: [const LinearProgressIndicator(), const SizedBox(height: 8), Text(l10n.recognizing)],
       );
     }
+    final memory = photo.suggestion!.memory;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        if (memory != null) _memoryCard(l10n, photo, memory),
         Text(l10n.looksLike, style: Theme.of(context).textTheme.titleSmall),
         const SizedBox(height: 8),
         Wrap(
@@ -509,6 +513,36 @@ class _CapturePageState extends State<CapturePage> {
       ],
     );
   }
+
+  /// A past photo that looks like this one: what was logged then, and a button to take it over
+  /// (when the match is confident, it is on the plate already).
+  Widget _memoryCard(AppLocalizations l10n, _Photo photo, MemoryMatch memory) {
+    final kcal = memory.items.fold(0.0, (a, i) => a + i.per100.kcal * i.grams / 100);
+    final names = memory.items.map((i) => _PlateItem.setItem(i).displayName(l10n)).join(', ');
+    final applied = memory.items.every((i) => _onPlate(i.dishId));
+    return Card(
+      elevation: 0,
+      color: Theme.of(context).colorScheme.secondaryContainer,
+      margin: const EdgeInsets.only(bottom: 12),
+      child: ListTile(
+        leading: const Icon(Icons.history),
+        title: Text(l10n.memoryMatch(l10n.percent(memory.similarity))),
+        subtitle: Text('$names · ${l10n.kcal(kcal)}'),
+        trailing: applied
+            ? const Icon(Icons.check)
+            : FilledButton.tonal(onPressed: () => _applyMemory(photo, memory), child: Text(l10n.memoryUse)),
+      ),
+    );
+  }
+
+  /// Replaces what was recognized on [photo] by what was logged for the similar past photo.
+  void _applyMemory(_Photo photo, MemoryMatch memory) => setState(() {
+    _plate.where((p) => p.photo == photo).toList().forEach(_remove);
+    for (final item in memory.items) {
+      _removed.remove(item.dishId);
+      if (!_onPlate(item.dishId)) _plate.add(_PlateItem.setItem(item, photo: photo));
+    }
+  });
 
   Widget _plateCard(AppLocalizations l10n, _PlateItem item) {
     final textTheme = Theme.of(context).textTheme;

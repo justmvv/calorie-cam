@@ -63,7 +63,12 @@ class Services {
     if (ai.available) ai.warmUp().ignore(); // the model loads in the background
     final services = Services._(AppDatabase(), await DishCatalog.load(), ai, await SharedPreferences.getInstance());
     requestPersistentStorage().then((granted) => services.storagePersisted.value = granted).ignore();
-    services.db.watchMemories().listen((rows) => services.memories.value = [for (final m in rows) _example(m)]);
+    services.db.watchMemories().listen(
+      (rows) => services.memories.value = [
+        for (final m in rows)
+          if (m.model == services.catalog.model) _example(m),
+      ],
+    );
     return services;
   }
 

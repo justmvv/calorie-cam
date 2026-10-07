@@ -364,4 +364,26 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get devBuild => 'Ontwikkelversie';
+
+  @override
+  String memoryMatch(String similarity) {
+    return 'Zoals vorige keer · $similarity gelijk';
+  }
+
+  @override
+  String get memoryUse => 'Gebruiken';
+
+  @override
+  String get memoryTitle => 'Herkenningsgeheugen';
+
+  @override
+  String memoryCount(int count) {
+    return 'Onthouden foto\'s: $count. Daarmee worden je vaste maaltijden en producten herkend';
+  }
+
+  @override
+  String get memoryClear => 'Vergeten';
+
+  @override
+  String get memoryClearConfirm => 'Alle onthouden foto\'s vergeten? Het dagboek blijft zoals het is.';
 }

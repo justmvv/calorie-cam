@@ -105,5 +105,11 @@
   "shareDay": "Dag delen",
   "chipsHint": "Tik om het voorgestelde gerecht te vervangen, houd vast om er een toe te voegen",
   "versionLabel": "Versie {version} · build {build}",
-  "devBuild": "Ontwikkelversie"
+  "devBuild": "Ontwikkelversie",
+  "memoryMatch": "Zoals vorige keer · {similarity} gelijk",
+  "memoryUse": "Gebruiken",
+  "memoryTitle": "Herkenningsgeheugen",
+  "memoryCount": "Onthouden foto's: {count}. Daarmee worden je vaste maaltijden en producten herkend",
+  "memoryClear": "Vergeten",
+  "memoryClearConfirm": "Alle onthouden foto's vergeten? Het dagboek blijft zoals het is."
 }

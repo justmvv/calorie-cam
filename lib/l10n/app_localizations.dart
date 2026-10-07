@@ -729,6 +729,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Development build'**
   String get devBuild;
+
+  /// No description provided for @memoryMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'As last time · {similarity} alike'**
+  String memoryMatch(String similarity);
+
+  /// No description provided for @memoryUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Use'**
+  String get memoryUse;
+
+  /// No description provided for @memoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recognition memory'**
+  String get memoryTitle;
+
+  /// No description provided for @memoryCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} remembered photos: your usual meals and products are recognized from them'**
+  String memoryCount(int count);
+
+  /// No description provided for @memoryClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Forget'**
+  String get memoryClear;
+
+  /// No description provided for @memoryClearConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Forget all remembered photos? The diary stays as it is.'**
+  String get memoryClearConfirm;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

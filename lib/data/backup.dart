@@ -12,17 +12,18 @@ import 'db.dart';
 ///  "meals": [{"uuid": "…", "eatenAt": "…", "dishId": "borscht", …, "photo": "<photo uuid>"}],
 ///  "photos": [{"uuid": "…", "jpeg": "<base64>"}],
 ///  "products": [{"uuid": "…", "name": "…", "kcal": 360, …}],          // since version 2
-///  "sets": [{"uuid": "…", "name": "…", "items": [{"dishId": …}]}]}    // since version 2
+///  "sets": [{"uuid": "…", "name": "…", "items": [{"dishId": …}]}],    // since version 2
+///  "memories": [{"uuid": "…", "model": "…", "embedding": "<base64 float32>", "items": […]}]}  // since 3
 /// ```
 ///
-/// Version 1 files (no products and sets) are still imported.
+/// Older files (without products, sets or memories) are still imported.
 ///
 /// Items are identified by their uuid, so importing is a merge: new items are added, an item
 /// present on both sides keeps the version with the newer `updatedAt` (millisecond precision), and deletions
 /// (tombstones) are carried over so deleted items don't come back.
 abstract final class Backup {
   static const format = 'calorie-cam-backup';
-  static const version = 2;
+  static const version = 3;
 
   static Future<String> export(AppDatabase db, {required BackupSettings settings}) async {
     final photos = await db.select(db.photos).get();
@@ -30,6 +31,7 @@ abstract final class Backup {
     final meals = await (db.select(db.meals)..orderBy([(m) => OrderingTerm.asc(m.eatenAt)])).get();
     final products = await db.select(db.products).get();
     final sets = await db.select(db.mealSets).get();
+    final memories = await db.select(db.memories).get();
     return const JsonEncoder.withIndent(' ').convert({
       'format': format,
       'version': version,
@@ -78,6 +80,18 @@ abstract final class Backup {
             'items': jsonDecode(s.items),
             'updatedAt': _iso(DateTime.fromMillisecondsSinceEpoch(s.updatedAtMs)),
             'deleted': s.deleted,
+          },
+      ],
+      'memories': [
+        for (final m in memories)
+          {
+            'uuid': m.uuid,
+            'model': m.model,
+            'embedding': base64Encode(m.embedding),
+            'items': jsonDecode(m.items),
+            'createdAt': _iso(DateTime.fromMillisecondsSinceEpoch(m.createdAtMs)),
+            'updatedAt': _iso(DateTime.fromMillisecondsSinceEpoch(m.updatedAtMs)),
+            'deleted': m.deleted,
           },
       ],
     });
@@ -186,6 +200,26 @@ abstract final class Backup {
         );
       }
 
+      final localMemories = {for (final m in await db.select(db.memories).get()) m.uuid: (m.id, m.updatedAtMs)};
+      for (final j in (doc['memories'] as List? ?? const []).cast<Map<String, dynamic>>()) {
+        final items = [for (final i in (j['items'] as List).cast<Map<String, dynamic>>()) SetItem.fromJson(i)];
+        final row = MemoriesCompanion(
+          uuid: Value(j['uuid'] as String),
+          model: Value(j['model'] as String),
+          embedding: Value(base64Decode(j['embedding'] as String)),
+          items: Value(jsonEncode([for (final i in items) i.toJson()])),
+          createdAtMs: Value(DateTime.parse(j['createdAt'] as String).millisecondsSinceEpoch),
+          updatedAtMs: Value(DateTime.parse(j['updatedAt'] as String).millisecondsSinceEpoch),
+          deleted: Value(j['deleted'] as bool? ?? false),
+        );
+        await counts.merge(
+          localMemories[row.uuid.value],
+          row.updatedAtMs.value,
+          insert: () => db.into(db.memories).insert(row),
+          update: (id) => (db.update(db.memories)..where((m) => m.id.equals(id))).write(row),
+        );
+      }
+
       final settings = doc['settings'];
       return ImportResult(
         added: counts.added,
@@ -236,7 +270,7 @@ class BackupSettings {
   Map<String, Object?> toJson() => {'dailyGoal': dailyGoal, 'language': language};
 }
 
-/// Counts cover diary entries, products and sets together.
+/// Counts cover diary entries, products, sets and remembered photos together.
 class ImportResult {
   const ImportResult({required this.added, required this.updated, required this.unchanged, this.settings});
 

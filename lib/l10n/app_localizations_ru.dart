@@ -364,4 +364,26 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get devBuild => 'Сборка для разработки';
+
+  @override
+  String memoryMatch(String similarity) {
+    return 'Как в прошлый раз · сходство $similarity';
+  }
+
+  @override
+  String get memoryUse => 'Взять';
+
+  @override
+  String get memoryTitle => 'Память распознавания';
+
+  @override
+  String memoryCount(int count) {
+    return 'Запомнено фото: $count. По ним узнаются ваши обычные блюда и продукты';
+  }
+
+  @override
+  String get memoryClear => 'Забыть';
+
+  @override
+  String get memoryClearConfirm => 'Забыть все запомненные фото? Дневник не изменится.';
 }

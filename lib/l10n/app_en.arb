@@ -257,5 +257,25 @@
       }
     }
   },
-  "devBuild": "Development build"
+  "devBuild": "Development build",
+  "memoryMatch": "As last time · {similarity} alike",
+  "@memoryMatch": {
+    "placeholders": {
+      "similarity": {
+        "type": "String"
+      }
+    }
+  },
+  "memoryUse": "Use",
+  "memoryTitle": "Recognition memory",
+  "memoryCount": "{count} remembered photos: your usual meals and products are recognized from them",
+  "@memoryCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "memoryClear": "Forget",
+  "memoryClearConfirm": "Forget all remembered photos? The diary stays as it is."
 }

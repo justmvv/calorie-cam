@@ -3,7 +3,11 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-export const MODEL_ID = 'Xenova/mobileclip_s0';
+// Override for experiments: MODEL=Xenova/mobileclip_s2 node …
+export const MODEL_ID = process.env.MODEL ?? 'Xenova/mobileclip_s0';
+
+// Vision model precision: fp16 (default; int8/q8 broke MobileCLIP-S0 completely).
+export const VISION_DTYPE = process.env.DTYPE ?? 'fp16';
 
 // Several phrasings per dish; their embeddings are averaged (prompt ensembling).
 export const TEMPLATES = [

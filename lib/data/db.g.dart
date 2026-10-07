@@ -1723,6 +1723,15 @@ class $MemoriesTable extends Memories with TableInfo<$MemoriesTable, Memory> {
     type: DriftSqlType.blob,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _modelMeta = const VerificationMeta('model');
+  @override
+  late final GeneratedColumn<String> model = GeneratedColumn<String>(
+    'model',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _itemsMeta = const VerificationMeta('items');
   @override
   late final GeneratedColumn<String> items = GeneratedColumn<String>(
@@ -1764,7 +1773,7 @@ class $MemoriesTable extends Memories with TableInfo<$MemoriesTable, Memory> {
     defaultValue: const Constant(false),
   );
   @override
-  List<GeneratedColumn> get $columns => [id, uuid, embedding, items, createdAtMs, updatedAtMs, deleted];
+  List<GeneratedColumn> get $columns => [id, uuid, embedding, model, items, createdAtMs, updatedAtMs, deleted];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1784,6 +1793,11 @@ class $MemoriesTable extends Memories with TableInfo<$MemoriesTable, Memory> {
       context.handle(_embeddingMeta, embedding.isAcceptableOrUnknown(data['embedding']!, _embeddingMeta));
     } else if (isInserting) {
       context.missing(_embeddingMeta);
+    }
+    if (data.containsKey('model')) {
+      context.handle(_modelMeta, model.isAcceptableOrUnknown(data['model']!, _modelMeta));
+    } else if (isInserting) {
+      context.missing(_modelMeta);
     }
     if (data.containsKey('items')) {
       context.handle(_itemsMeta, items.isAcceptableOrUnknown(data['items']!, _itemsMeta));
@@ -1811,6 +1825,7 @@ class $MemoriesTable extends Memories with TableInfo<$MemoriesTable, Memory> {
       id: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       uuid: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}uuid'])!,
       embedding: attachedDatabase.typeMapping.read(DriftSqlType.blob, data['${effectivePrefix}embedding'])!,
+      model: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}model'])!,
       items: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}items'])!,
       createdAtMs: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}created_at_ms'])!,
       updatedAtMs: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}updated_at_ms'])!,
@@ -1828,6 +1843,10 @@ class Memory extends DataClass implements Insertable<Memory> {
   final int id;
   final String uuid;
   final Uint8List embedding;
+
+  /// The recognition model that computed [embedding]; embeddings of different models can't be
+  /// compared, so after a model change old examples are ignored (and new ones accumulate).
+  final String model;
   final String items;
   final int createdAtMs;
   final int updatedAtMs;
@@ -1836,6 +1855,7 @@ class Memory extends DataClass implements Insertable<Memory> {
     required this.id,
     required this.uuid,
     required this.embedding,
+    required this.model,
     required this.items,
     required this.createdAtMs,
     required this.updatedAtMs,
@@ -1847,6 +1867,7 @@ class Memory extends DataClass implements Insertable<Memory> {
     map['id'] = Variable<int>(id);
     map['uuid'] = Variable<String>(uuid);
     map['embedding'] = Variable<Uint8List>(embedding);
+    map['model'] = Variable<String>(model);
     map['items'] = Variable<String>(items);
     map['created_at_ms'] = Variable<int>(createdAtMs);
     map['updated_at_ms'] = Variable<int>(updatedAtMs);
@@ -1859,6 +1880,7 @@ class Memory extends DataClass implements Insertable<Memory> {
       id: Value(id),
       uuid: Value(uuid),
       embedding: Value(embedding),
+      model: Value(model),
       items: Value(items),
       createdAtMs: Value(createdAtMs),
       updatedAtMs: Value(updatedAtMs),
@@ -1872,6 +1894,7 @@ class Memory extends DataClass implements Insertable<Memory> {
       id: serializer.fromJson<int>(json['id']),
       uuid: serializer.fromJson<String>(json['uuid']),
       embedding: serializer.fromJson<Uint8List>(json['embedding']),
+      model: serializer.fromJson<String>(json['model']),
       items: serializer.fromJson<String>(json['items']),
       createdAtMs: serializer.fromJson<int>(json['createdAtMs']),
       updatedAtMs: serializer.fromJson<int>(json['updatedAtMs']),
@@ -1885,6 +1908,7 @@ class Memory extends DataClass implements Insertable<Memory> {
       'id': serializer.toJson<int>(id),
       'uuid': serializer.toJson<String>(uuid),
       'embedding': serializer.toJson<Uint8List>(embedding),
+      'model': serializer.toJson<String>(model),
       'items': serializer.toJson<String>(items),
       'createdAtMs': serializer.toJson<int>(createdAtMs),
       'updatedAtMs': serializer.toJson<int>(updatedAtMs),
@@ -1896,6 +1920,7 @@ class Memory extends DataClass implements Insertable<Memory> {
     int? id,
     String? uuid,
     Uint8List? embedding,
+    String? model,
     String? items,
     int? createdAtMs,
     int? updatedAtMs,
@@ -1904,6 +1929,7 @@ class Memory extends DataClass implements Insertable<Memory> {
     id: id ?? this.id,
     uuid: uuid ?? this.uuid,
     embedding: embedding ?? this.embedding,
+    model: model ?? this.model,
     items: items ?? this.items,
     createdAtMs: createdAtMs ?? this.createdAtMs,
     updatedAtMs: updatedAtMs ?? this.updatedAtMs,
@@ -1914,6 +1940,7 @@ class Memory extends DataClass implements Insertable<Memory> {
       id: data.id.present ? data.id.value : this.id,
       uuid: data.uuid.present ? data.uuid.value : this.uuid,
       embedding: data.embedding.present ? data.embedding.value : this.embedding,
+      model: data.model.present ? data.model.value : this.model,
       items: data.items.present ? data.items.value : this.items,
       createdAtMs: data.createdAtMs.present ? data.createdAtMs.value : this.createdAtMs,
       updatedAtMs: data.updatedAtMs.present ? data.updatedAtMs.value : this.updatedAtMs,
@@ -1927,6 +1954,7 @@ class Memory extends DataClass implements Insertable<Memory> {
           ..write('id: $id, ')
           ..write('uuid: $uuid, ')
           ..write('embedding: $embedding, ')
+          ..write('model: $model, ')
           ..write('items: $items, ')
           ..write('createdAtMs: $createdAtMs, ')
           ..write('updatedAtMs: $updatedAtMs, ')
@@ -1937,7 +1965,7 @@ class Memory extends DataClass implements Insertable<Memory> {
 
   @override
   int get hashCode =>
-      Object.hash(id, uuid, $driftBlobEquality.hash(embedding), items, createdAtMs, updatedAtMs, deleted);
+      Object.hash(id, uuid, $driftBlobEquality.hash(embedding), model, items, createdAtMs, updatedAtMs, deleted);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1945,6 +1973,7 @@ class Memory extends DataClass implements Insertable<Memory> {
           other.id == this.id &&
           other.uuid == this.uuid &&
           $driftBlobEquality.equals(other.embedding, this.embedding) &&
+          other.model == this.model &&
           other.items == this.items &&
           other.createdAtMs == this.createdAtMs &&
           other.updatedAtMs == this.updatedAtMs &&
@@ -1955,6 +1984,7 @@ class MemoriesCompanion extends UpdateCompanion<Memory> {
   final Value<int> id;
   final Value<String> uuid;
   final Value<Uint8List> embedding;
+  final Value<String> model;
   final Value<String> items;
   final Value<int> createdAtMs;
   final Value<int> updatedAtMs;
@@ -1963,6 +1993,7 @@ class MemoriesCompanion extends UpdateCompanion<Memory> {
     this.id = const Value.absent(),
     this.uuid = const Value.absent(),
     this.embedding = const Value.absent(),
+    this.model = const Value.absent(),
     this.items = const Value.absent(),
     this.createdAtMs = const Value.absent(),
     this.updatedAtMs = const Value.absent(),
@@ -1972,16 +2003,19 @@ class MemoriesCompanion extends UpdateCompanion<Memory> {
     this.id = const Value.absent(),
     this.uuid = const Value.absent(),
     required Uint8List embedding,
+    required String model,
     required String items,
     this.createdAtMs = const Value.absent(),
     this.updatedAtMs = const Value.absent(),
     this.deleted = const Value.absent(),
   }) : embedding = Value(embedding),
+       model = Value(model),
        items = Value(items);
   static Insertable<Memory> custom({
     Expression<int>? id,
     Expression<String>? uuid,
     Expression<Uint8List>? embedding,
+    Expression<String>? model,
     Expression<String>? items,
     Expression<int>? createdAtMs,
     Expression<int>? updatedAtMs,
@@ -1991,6 +2025,7 @@ class MemoriesCompanion extends UpdateCompanion<Memory> {
       if (id != null) 'id': id,
       if (uuid != null) 'uuid': uuid,
       if (embedding != null) 'embedding': embedding,
+      if (model != null) 'model': model,
       if (items != null) 'items': items,
       if (createdAtMs != null) 'created_at_ms': createdAtMs,
       if (updatedAtMs != null) 'updated_at_ms': updatedAtMs,
@@ -2002,6 +2037,7 @@ class MemoriesCompanion extends UpdateCompanion<Memory> {
     Value<int>? id,
     Value<String>? uuid,
     Value<Uint8List>? embedding,
+    Value<String>? model,
     Value<String>? items,
     Value<int>? createdAtMs,
     Value<int>? updatedAtMs,
@@ -2011,6 +2047,7 @@ class MemoriesCompanion extends UpdateCompanion<Memory> {
       id: id ?? this.id,
       uuid: uuid ?? this.uuid,
       embedding: embedding ?? this.embedding,
+      model: model ?? this.model,
       items: items ?? this.items,
       createdAtMs: createdAtMs ?? this.createdAtMs,
       updatedAtMs: updatedAtMs ?? this.updatedAtMs,
@@ -2029,6 +2066,9 @@ class MemoriesCompanion extends UpdateCompanion<Memory> {
     }
     if (embedding.present) {
       map['embedding'] = Variable<Uint8List>(embedding.value);
+    }
+    if (model.present) {
+      map['model'] = Variable<String>(model.value);
     }
     if (items.present) {
       map['items'] = Variable<String>(items.value);
@@ -2051,6 +2091,7 @@ class MemoriesCompanion extends UpdateCompanion<Memory> {
           ..write('id: $id, ')
           ..write('uuid: $uuid, ')
           ..write('embedding: $embedding, ')
+          ..write('model: $model, ')
           ..write('items: $items, ')
           ..write('createdAtMs: $createdAtMs, ')
           ..write('updatedAtMs: $updatedAtMs, ')
@@ -3032,6 +3073,7 @@ typedef $$MemoriesTableCreateCompanionBuilder =
       Value<int> id,
       Value<String> uuid,
       required Uint8List embedding,
+      required String model,
       required String items,
       Value<int> createdAtMs,
       Value<int> updatedAtMs,
@@ -3042,6 +3084,7 @@ typedef $$MemoriesTableUpdateCompanionBuilder =
       Value<int> id,
       Value<String> uuid,
       Value<Uint8List> embedding,
+      Value<String> model,
       Value<String> items,
       Value<int> createdAtMs,
       Value<int> updatedAtMs,
@@ -3062,6 +3105,9 @@ class $$MemoriesTableFilterComposer extends Composer<_$AppDatabase, $MemoriesTab
 
   ColumnFilters<Uint8List> get embedding =>
       $composableBuilder(column: $table.embedding, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get model =>
+      $composableBuilder(column: $table.model, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get items =>
       $composableBuilder(column: $table.items, builder: (column) => ColumnFilters(column));
@@ -3092,6 +3138,9 @@ class $$MemoriesTableOrderingComposer extends Composer<_$AppDatabase, $MemoriesT
   ColumnOrderings<Uint8List> get embedding =>
       $composableBuilder(column: $table.embedding, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<String> get model =>
+      $composableBuilder(column: $table.model, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<String> get items =>
       $composableBuilder(column: $table.items, builder: (column) => ColumnOrderings(column));
 
@@ -3118,6 +3167,8 @@ class $$MemoriesTableAnnotationComposer extends Composer<_$AppDatabase, $Memorie
   GeneratedColumn<String> get uuid => $composableBuilder(column: $table.uuid, builder: (column) => column);
 
   GeneratedColumn<Uint8List> get embedding => $composableBuilder(column: $table.embedding, builder: (column) => column);
+
+  GeneratedColumn<String> get model => $composableBuilder(column: $table.model, builder: (column) => column);
 
   GeneratedColumn<String> get items => $composableBuilder(column: $table.items, builder: (column) => column);
 
@@ -3156,6 +3207,7 @@ class $$MemoriesTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<String> uuid = const Value.absent(),
                 Value<Uint8List> embedding = const Value.absent(),
+                Value<String> model = const Value.absent(),
                 Value<String> items = const Value.absent(),
                 Value<int> createdAtMs = const Value.absent(),
                 Value<int> updatedAtMs = const Value.absent(),
@@ -3164,6 +3216,7 @@ class $$MemoriesTableTableManager
                 id: id,
                 uuid: uuid,
                 embedding: embedding,
+                model: model,
                 items: items,
                 createdAtMs: createdAtMs,
                 updatedAtMs: updatedAtMs,
@@ -3174,6 +3227,7 @@ class $$MemoriesTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<String> uuid = const Value.absent(),
                 required Uint8List embedding,
+                required String model,
                 required String items,
                 Value<int> createdAtMs = const Value.absent(),
                 Value<int> updatedAtMs = const Value.absent(),
@@ -3182,6 +3236,7 @@ class $$MemoriesTableTableManager
                 id: id,
                 uuid: uuid,
                 embedding: embedding,
+                model: model,
                 items: items,
                 createdAtMs: createdAtMs,
                 updatedAtMs: updatedAtMs,

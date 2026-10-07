@@ -101,6 +101,18 @@ class _SettingsPageState extends State<SettingsPage> {
             subtitle: Text(l10n.importHint),
             onTap: () => _import(context),
           ),
+          ValueListenableBuilder(
+            valueListenable: services.memories,
+            builder: (context, memories, _) => ListTile(
+              leading: const Icon(Icons.history),
+              title: Text(l10n.memoryTitle),
+              subtitle: Text(l10n.memoryCount(memories.length)),
+              trailing: TextButton(
+                onPressed: memories.isEmpty ? null : () => _clearMemory(context),
+                child: Text(l10n.memoryClear),
+              ),
+            ),
+          ),
           ValueListenableBuilder<bool>(
             valueListenable: services.storagePersisted,
             builder: (context, persisted, _) => ListTile(
@@ -160,6 +172,25 @@ class _SettingsPageState extends State<SettingsPage> {
       messenger.showSnackBar(SnackBar(content: Text(l10n.importInvalid)));
     } catch (e) {
       messenger.showSnackBar(SnackBar(content: Text(l10n.importFailed('$e'))));
+    }
+  }
+
+  Future<void> _clearMemory(BuildContext context) async {
+    final l10n = context.l10n;
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.memoryTitle),
+        content: Text(l10n.memoryClearConfirm),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context, false), child: Text(l10n.cancel)),
+          FilledButton(onPressed: () => Navigator.pop(context, true), child: Text(l10n.memoryClear)),
+        ],
+      ),
+    );
+    if (ok == true) {
+      await services.db.clearMemories();
+      _prepareBackup();
     }
   }
 

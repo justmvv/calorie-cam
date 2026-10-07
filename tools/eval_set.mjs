@@ -1,18 +1,19 @@
 // Accuracy on the Wikipedia evaluation set (tools/fetch_eval.py) and simulation of the
 // personal memory: node eval_set.mjs
 //
-// Image embeddings are cached in tools/testimg/wiki/embeddings.json; delete it after changing
-// the model. Non-food article pictures (portraits, maps, buildings) are filtered out first.
+// Image embeddings are cached per model in tools/testimg/wiki/embeddings-<model>-<dtype>.json.
+// MODEL / DTYPE env vars select the model (see common.mjs); assets/dish_embeddings.* must be
+// built with the same model (build_embeddings.mjs). Non-food article pictures (portraits, maps, buildings) are filtered out first.
 import fs from 'node:fs';
 import path from 'node:path';
 import {
   AutoProcessor, AutoTokenizer, CLIPTextModelWithProjection, CLIPVisionModelWithProjection, RawImage,
 } from '@huggingface/transformers';
-import { ROOT, MODEL_ID, readDishes } from './common.mjs';
+import { ROOT, MODEL_ID, VISION_DTYPE, readDishes } from './common.mjs';
 
 const SCALE = 50; // DishCatalog._logitScale
 const WIKI = path.join(ROOT, 'tools/testimg/wiki');
-const CACHE = path.join(WIKI, 'embeddings.json');
+const CACHE = path.join(WIKI, `embeddings-${MODEL_ID.split('/').pop()}-${VISION_DTYPE}.json`);
 
 const dishes = readDishes();
 const byId = Object.fromEntries(dishes.map((d) => [d.id, d]));
@@ -29,7 +30,7 @@ const files = fs.readdirSync(WIKI).filter((d) => byId[d]).flatMap((d) =>
 const missing = files.filter((f) => !cache[f]);
 if (missing.length) {
   const processor = await AutoProcessor.from_pretrained(MODEL_ID);
-  const model = await CLIPVisionModelWithProjection.from_pretrained(MODEL_ID, { dtype: 'fp16' });
+  const model = await CLIPVisionModelWithProjection.from_pretrained(MODEL_ID, { dtype: VISION_DTYPE });
   for (const [i, f] of missing.entries()) {
     try {
       const { image_embeds } = await model(await processor(await RawImage.read(path.join(WIKI, f))));

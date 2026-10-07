@@ -4,7 +4,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { AutoProcessor, CLIPVisionModelWithProjection, RawImage } from '@huggingface/transformers';
-import { ROOT, MODEL_ID, readDishes } from './common.mjs';
+import { ROOT, MODEL_ID, VISION_DTYPE, readDishes } from './common.mjs';
 
 const SCALE = 50; // DishCatalog._logitScale
 const dishes = readDishes();
@@ -32,7 +32,7 @@ const role = (d) => d.id === 'french_fries' ? 'side' : ({ soup: 'soup', side: 's
   bread: 'bread', fruit: 'fruit', drink: 'drink', dessert: 'dessert' })[d.category] ?? 'main';
 
 const processor = await AutoProcessor.from_pretrained(MODEL_ID);
-const model = await CLIPVisionModelWithProjection.from_pretrained(MODEL_ID, { dtype: 'fp16' });
+const model = await CLIPVisionModelWithProjection.from_pretrained(MODEL_ID, { dtype: VISION_DTYPE });
 async function embed(image) {
   const { image_embeds } = await model(await processor(image));
   return image_embeds.normalize().data;
