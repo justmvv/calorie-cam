@@ -271,4 +271,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get storageNotPersistent =>
       'The browser may clear data when space runs low: install the app and export regularly';
+
+  @override
+  String get fileReady => 'The file is ready';
+
+  @override
+  String get share => 'Share';
 }

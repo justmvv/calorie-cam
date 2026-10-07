@@ -204,5 +204,7 @@
     }
   },
   "storagePersistent": "Storage is protected from automatic clearing",
-  "storageNotPersistent": "The browser may clear data when space runs low: install the app and export regularly"
+  "storageNotPersistent": "The browser may clear data when space runs low: install the app and export regularly",
+  "fileReady": "The file is ready",
+  "share": "Share"
 }

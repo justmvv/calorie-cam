@@ -555,6 +555,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The browser may clear data when space runs low: install the app and export regularly'**
   String get storageNotPersistent;
+
+  /// No description provided for @fileReady.
+  ///
+  /// In en, this message translates to:
+  /// **'The file is ready'**
+  String get fileReady;
+
+  /// No description provided for @share.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get share;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

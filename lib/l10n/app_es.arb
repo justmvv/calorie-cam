@@ -76,5 +76,7 @@
   "importInvalid": "Este archivo no es una copia de Calorie Cam",
   "importFailed": "No se pudo importar: {error}",
   "storagePersistent": "El almacenamiento está protegido contra el borrado automático",
-  "storageNotPersistent": "El navegador puede borrar los datos si falta espacio: instala la app y exporta con regularidad"
+  "storageNotPersistent": "El navegador puede borrar los datos si falta espacio: instala la app y exporta con regularidad",
+  "fileReady": "El archivo está listo",
+  "share": "Compartir"
 }

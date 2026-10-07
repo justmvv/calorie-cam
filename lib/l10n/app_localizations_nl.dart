@@ -271,4 +271,10 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get storageNotPersistent =>
       'De browser kan gegevens wissen bij te weinig ruimte: installeer de app en exporteer regelmatig';
+
+  @override
+  String get fileReady => 'Het bestand is klaar';
+
+  @override
+  String get share => 'Delen';
 }

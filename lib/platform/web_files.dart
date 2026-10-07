@@ -1,35 +1,72 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:js_interop';
+import 'dart:typed_data';
 
 import 'package:web/web.dart' as web;
 
-enum ExportOutcome { shared, downloaded, cancelled }
+enum ShareOutcome {
+  shared,
+  downloaded,
+  cancelled,
 
-/// Hands a text file to the user: the system share sheet where files can be shared
+  /// The browser refused because the call no longer counts as a response to a tap (it only
+  /// allows sharing for a few seconds after one). Ask the user to tap again and retry.
+  needsGesture,
+}
+
+/// A file to hand to the user.
+class ShareFile {
+  const ShareFile(this.name, this.bytes, this.type, {this.alternatives = const []});
+
+  ShareFile.text(String name, String text, String type, {List<(String, String)> alternatives = const []})
+    : this(name, Uint8List.fromList(utf8.encode(text)), type, alternatives: alternatives);
+
+  final String name;
+  final Uint8List bytes;
+  final String type;
+
+  /// Other (name, MIME type) pairs to try if the browser won't share [type]. Chrome only shares
+  /// an allow-list of file types: images and plain text are on it, JSON isn't.
+  final List<(String, String)> alternatives;
+}
+
+/// Hands a file to the user: the system share sheet where the browser can share files
 /// (Android: Google Drive, Files, messengers…), otherwise a regular download.
-Future<ExportOutcome> shareOrDownload(String fileName, String text) async {
+///
+/// Must be called right after a user tap, with as little async work in between as possible.
+Future<ShareOutcome> shareOrDownload(ShareFile file, {String? title}) async {
   final nav = web.window.navigator;
-  // Chrome only shares an allow-list of file types; .json isn't on it, plain text is.
-  for (final (name, type) in [(fileName, 'application/json'), ('$fileName.txt', 'text/plain')]) {
-    final file = web.File([text.toJS].toJS, name, web.FilePropertyBag(type: type));
-    final data = web.ShareData(files: [file].toJS);
+  for (final (name, type) in [(file.name, file.type), ...file.alternatives]) {
+    final data = web.ShareData(files: [_file(file.bytes, name, type)].toJS);
+    if (title != null) data.title = title;
     if (!_canShare(nav, data)) continue;
     try {
       await nav.share(data).toDart;
-      return ExportOutcome.shared;
+      return ShareOutcome.shared;
     } catch (e) {
-      if (e.toString().contains('AbortError')) return ExportOutcome.cancelled;
-      rethrow;
+      final error = e.toString();
+      if (error.contains('AbortError')) return ShareOutcome.cancelled;
+      if (error.contains('NotAllowedError')) return ShareOutcome.needsGesture;
+      break; // anything else: fall back to a download
     }
   }
-  final url = web.URL.createObjectURL(web.Blob([text.toJS].toJS, web.BlobPropertyBag(type: 'application/json')));
+  download(file);
+  return ShareOutcome.downloaded;
+}
+
+/// Saves a file through the browser's download mechanism.
+void download(ShareFile file) {
+  final url = web.URL.createObjectURL(web.Blob([file.bytes.toJS].toJS, web.BlobPropertyBag(type: file.type)));
   (web.HTMLAnchorElement()
         ..href = url
-        ..download = fileName)
+        ..download = file.name)
       .click();
   Timer(const Duration(seconds: 30), () => web.URL.revokeObjectURL(url));
-  return ExportOutcome.downloaded;
 }
+
+web.File _file(Uint8List bytes, String name, String type) =>
+    web.File([bytes.toJS].toJS, name, web.FilePropertyBag(type: type));
 
 bool _canShare(web.Navigator nav, web.ShareData data) {
   try {

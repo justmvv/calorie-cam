@@ -57,16 +57,15 @@ class Services {
     return services;
   }
 
-  /// Exports the diary as a JSON file via the share sheet (or a download).
-  Future<ExportOutcome> exportBackup() async {
+  /// Builds the backup file. Kept separate from sharing: the browser only opens the share
+  /// sheet right after a tap, so the file is prepared in advance (see SettingsPage).
+  Future<ShareFile> prepareBackup() async {
     final json = await Backup.export(
       db,
       settings: BackupSettings(dailyGoal: dailyGoal.value, language: language.value),
     );
-    final date = DateFormat('yyyy-MM-dd').format(DateTime.now());
-    final outcome = await shareOrDownload('calorie-cam-backup-$date.json', json);
-    if (outcome != ExportOutcome.cancelled) lastExport.value = DateTime.now();
-    return outcome;
+    final name = 'calorie-cam-backup-${DateFormat('yyyy-MM-dd').format(DateTime.now())}.json';
+    return ShareFile.text(name, json, 'application/json', alternatives: [('$name.txt', 'text/plain')]);
   }
 
   /// Lets the user pick a backup file and merges it; null if no file was chosen.

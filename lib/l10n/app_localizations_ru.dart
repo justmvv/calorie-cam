@@ -271,4 +271,10 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get storageNotPersistent =>
       'Браузер может очистить данные при нехватке места: установите приложение и делайте экспорт';
+
+  @override
+  String get fileReady => 'Файл готов';
+
+  @override
+  String get share => 'Поделиться';
 }

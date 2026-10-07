@@ -271,4 +271,10 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get storageNotPersistent =>
       'El navegador puede borrar los datos si falta espacio: instala la app y exporta con regularidad';
+
+  @override
+  String get fileReady => 'El archivo está listo';
+
+  @override
+  String get share => 'Compartir';
 }

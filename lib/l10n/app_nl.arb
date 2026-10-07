@@ -76,5 +76,7 @@
   "importInvalid": "Dit bestand is geen back-up van Calorie Cam",
   "importFailed": "Importeren mislukt: {error}",
   "storagePersistent": "Opslag is beschermd tegen automatisch wissen",
-  "storageNotPersistent": "De browser kan gegevens wissen bij te weinig ruimte: installeer de app en exporteer regelmatig"
+  "storageNotPersistent": "De browser kan gegevens wissen bij te weinig ruimte: installeer de app en exporteer regelmatig",
+  "fileReady": "Het bestand is klaar",
+  "share": "Delen"
 }

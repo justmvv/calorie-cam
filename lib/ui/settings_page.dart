@@ -4,13 +4,40 @@ import 'package:intl/intl.dart';
 import '../platform/web_files.dart';
 import '../services.dart';
 import 'format.dart';
+import 'share_flow.dart';
 
 /// Daily goal, UI language and diary backup.
-class SettingsPage extends StatelessWidget {
+class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
 
+  @override
+  State<SettingsPage> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
   /// Language names are shown in their own language so they are recognizable in any UI language.
   static const _languages = {'en': 'English', 'es': 'Español', 'nl': 'Nederlands', 'ru': 'Русский'};
+
+  /// The backup file, built ahead of time: Chrome opens the share sheet only within a few
+  /// seconds of a tap, and serializing a diary with photos may take longer than that.
+  late Future<ShareFile> _backup;
+
+  @override
+  void initState() {
+    super.initState();
+    _prepareBackup();
+    services.dailyGoal.addListener(_prepareBackup);
+    services.language.addListener(_prepareBackup);
+  }
+
+  @override
+  void dispose() {
+    services.dailyGoal.removeListener(_prepareBackup);
+    services.language.removeListener(_prepareBackup);
+    super.dispose();
+  }
+
+  void _prepareBackup() => _backup = services.prepareBackup();
 
   @override
   Widget build(BuildContext context) {
@@ -88,15 +115,21 @@ class SettingsPage extends StatelessWidget {
     final l10n = context.l10n;
     final messenger = ScaffoldMessenger.of(context);
     try {
-      final outcome = await services.exportBackup();
+      final file = await _backup;
+      if (!context.mounted) return;
+      final outcome = await shareWithRetry(context, file);
+      if (outcome == ShareOutcome.shared || outcome == ShareOutcome.downloaded) {
+        services.lastExport.value = DateTime.now();
+      }
       final message = switch (outcome) {
-        ExportOutcome.shared => l10n.exportShared,
-        ExportOutcome.downloaded => l10n.exportDownloaded,
-        ExportOutcome.cancelled => null,
+        ShareOutcome.shared => l10n.exportShared,
+        ShareOutcome.downloaded => l10n.exportDownloaded,
+        ShareOutcome.cancelled || ShareOutcome.needsGesture => null,
       };
       if (message != null) messenger.showSnackBar(SnackBar(content: Text(message)));
     } catch (e) {
       messenger.showSnackBar(SnackBar(content: Text(l10n.exportFailed('$e'))));
+      _prepareBackup(); // in case preparing it was what failed
     }
   }
 
@@ -106,6 +139,7 @@ class SettingsPage extends StatelessWidget {
     try {
       final result = await services.importBackup();
       if (result == null) return;
+      _prepareBackup();
       messenger.showSnackBar(SnackBar(content: Text(l10n.importDone(result.added, result.updated))));
     } on FormatException {
       messenger.showSnackBar(SnackBar(content: Text(l10n.importInvalid)));

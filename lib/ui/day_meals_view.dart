@@ -123,6 +123,9 @@ class _MealTile extends StatelessWidget {
           SnackBar(
             content: Text(l10n.mealDeleted(name)),
             action: SnackBarAction(label: l10n.undo, onPressed: () => services.db.restoreMeal(meal, photo)),
+            // Since Flutter 3.32 a SnackBar with an action stays until dismissed unless told otherwise.
+            persist: false,
+            duration: const Duration(seconds: 5),
           ),
         );
       },
