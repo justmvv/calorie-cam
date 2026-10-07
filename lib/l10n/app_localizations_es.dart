@@ -369,4 +369,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get shareDay => 'Compartir el día';
+
+  @override
+  String get chipsHint => 'Toca para cambiar el plato sugerido, mantén pulsado para añadir otro';
 }

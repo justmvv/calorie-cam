@@ -741,6 +741,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Share the day'**
   String get shareDay;
+
+  /// No description provided for @chipsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to replace the suggested dish, hold to add one more'**
+  String get chipsHint;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

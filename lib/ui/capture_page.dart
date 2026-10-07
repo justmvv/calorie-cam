@@ -158,15 +158,37 @@ class _CapturePageState extends State<CapturePage> {
 
   bool _onPlate(String dishId) => _plate.any((p) => p.dishId == dishId);
 
-  void _toggle(Dish dish, {_Photo? photo}) => setState(() {
-    final i = _plate.indexWhere((p) => p.dishId == dish.id);
-    if (i >= 0) {
-      _remove(_plate[i]);
-    } else {
-      _removed.remove(dish.id);
-      _plate.add(_PlateItem.dish(dish, photo: photo));
+  /// Tapping an option of a photo. If the dish is on the plate, it is removed. Otherwise it
+  /// replaces the item of the same role recognized on that photo — picking "Manti" instead of
+  /// the suggested "Pelmeni" swaps them, while the side dish next to them stays. With
+  /// [keepOthers] (long press) the dish is added alongside, for photos with two main dishes.
+  void _choose(Dish dish, _Photo photo, {bool keepOthers = false}) => setState(() {
+    final existing = _plate.indexWhere((p) => p.dishId == dish.id);
+    if (existing >= 0) {
+      _remove(_plate[existing]);
+      return;
     }
+    var at = _plate.length;
+    if (!keepOthers) {
+      final role = DishCatalog.roleOf(dish);
+      final replaced = _plate.where((p) => p.photo == photo && _roleOf(p) == role).toList();
+      if (replaced.isNotEmpty) at = _plate.indexOf(replaced.first);
+      replaced.forEach(_remove);
+    }
+    _removed.remove(dish.id);
+    _plate.insert(at.clamp(0, _plate.length), _PlateItem.dish(dish, photo: photo));
   });
+
+  /// Adds a dish picked in the catalog search (never replaces anything).
+  void _addDish(Dish dish) => setState(() {
+    _removed.remove(dish.id);
+    _plate.add(_PlateItem.dish(dish));
+  });
+
+  static PlateRole? _roleOf(_PlateItem item) => switch (services.catalog.byId(item.dishId)) {
+    final dish? => DishCatalog.roleOf(dish),
+    null => null, // own products and custom items are never replaced by a tap
+  };
 
   void _remove(_PlateItem item) {
     _removed.add(item.dishId);
@@ -186,7 +208,7 @@ class _CapturePageState extends State<CapturePage> {
     if (!mounted || choice == null) return;
     switch (choice) {
       case CatalogChoice(:final dish):
-        if (!_onPlate(dish.id)) _toggle(dish);
+        if (!_onPlate(dish.id)) _addDish(dish);
       case ProductChoice(:final product):
         setState(() => _plate.add(_PlateItem.product(product)));
       case SetChoice(:final set):
@@ -413,13 +435,18 @@ class _CapturePageState extends State<CapturePage> {
           runSpacing: 4,
           children: [
             for (final m in photo.suggestion!.options)
-              FilterChip(
-                label: Text('${l10n.dishName(m.dish)} · ${l10n.percent(m.probability)}'),
-                selected: _onPlate(m.dish.id),
-                onSelected: (_) => _toggle(m.dish, photo: photo),
+              GestureDetector(
+                onLongPress: () => _choose(m.dish, photo, keepOthers: true),
+                child: FilterChip(
+                  label: Text('${l10n.dishName(m.dish)} · ${l10n.percent(m.probability)}'),
+                  selected: _onPlate(m.dish.id),
+                  onSelected: (_) => _choose(m.dish, photo),
+                ),
               ),
           ],
         ),
+        const SizedBox(height: 4),
+        Text(l10n.chipsHint, style: Theme.of(context).textTheme.bodySmall),
         if (!photo.regionsDone) ...[
           const SizedBox(height: 8),
           Row(

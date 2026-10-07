@@ -249,5 +249,6 @@
   "webSearchHint": "The photo is sent to the search engine you choose. Find out what the dish is and its calories, then add it with “Enter calories manually”.",
   "otherApp": "Another app…",
   "otherAppHint": "Google Lens, Yandex and other apps on the phone",
-  "shareDay": "Share the day"
+  "shareDay": "Share the day",
+  "chipsHint": "Tap to replace the suggested dish, hold to add one more"
 }

@@ -107,5 +107,6 @@
   "webSearchHint": "La foto se envía al buscador que elijas. Averigua qué plato es y sus calorías, y añádelo con «Introducir calorías manualmente».",
   "otherApp": "Otra aplicación…",
   "otherAppHint": "Google Lens, Yandex y otras apps del teléfono",
-  "shareDay": "Compartir el día"
+  "shareDay": "Compartir el día",
+  "chipsHint": "Toca para cambiar el plato sugerido, mantén pulsado para añadir otro"
 }

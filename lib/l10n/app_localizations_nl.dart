@@ -369,4 +369,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get shareDay => 'Dag delen';
+
+  @override
+  String get chipsHint => 'Tik om het voorgestelde gerecht te vervangen, houd vast om er een toe te voegen';
 }

@@ -369,4 +369,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get shareDay => 'Поделиться днём';
+
+  @override
+  String get chipsHint => 'Нажмите, чтобы заменить блюдо, удерживайте — чтобы добавить ещё одно';
 }
