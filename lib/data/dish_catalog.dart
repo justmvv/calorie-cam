@@ -146,6 +146,8 @@ class DishCatalog {
       }
       return s * _logitScale + (bonus[_ids[i]] ?? 0);
     });
+    // Invalid numbers (a broken model run) must not turn into "the first dishes of the catalog".
+    if (logits.any((l) => !l.isFinite)) return const [];
     final maxLogit = logits.reduce(math.max);
     final exps = logits.map((l) => math.exp(l - maxLogit)).toList();
     final sum = exps.fold(0.0, (a, b) => a + b);

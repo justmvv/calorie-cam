@@ -129,6 +129,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   : [
                       l10n.versionLabel(appVersion, buildNumber),
                       if (buildId.isNotEmpty) '(${buildId.substring(0, buildId.length.clamp(0, 7))})',
+                      if (services.ai.backend case final b?) '· ${b == 'webgpu' ? 'GPU' : 'CPU'}',
                     ].join(' '),
               style: Theme.of(context).textTheme.bodySmall,
             ),

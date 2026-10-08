@@ -43,6 +43,11 @@ void main() {
     expect(top.fold(0.0, (a, m) => a + m.probability), lessThanOrEqualTo(1.0 + 1e-9));
   });
 
+  test('invalid numbers give no result instead of the first dishes of the catalog', () {
+    final broken = Float32List(512)..fillRange(0, 512, double.nan);
+    expect(catalog.classify(broken), isEmpty);
+  });
+
   test('search matches every language, ignoring case, accents and ё/е', () {
     expect(catalog.search('ЩИ').map((d) => d.id), contains('shchi'));
     expect(catalog.search('тушеная').map((d) => d.id), contains('stewed_cabbage'));

@@ -24,27 +24,90 @@
     });
   }
 
+  // Whether WebGPU gave the same result as the CPU on this device ('ok' / 'bad'), per model.
+  const GPU_CHECK_KEY = `calorie_cam.gpu_check:${MODEL_URL}:v1`;
+  const storage = {
+    get: (k) => { try { return localStorage.getItem(k); } catch (_) { return null; } },
+    set: (k, v) => { try { localStorage.setItem(k, v); } catch (_) {} },
+  };
+  const OPTIONS = { graphOptimizationLevel: 'all' };
+
   // The GPU is ~10× faster than the CPU for this model: use WebGPU where the browser offers an
   // adapter (most current Android phones in Chrome), otherwise the lighter CPU-only runtime.
+  // Mobile GPUs can compute this fp16 model wrongly (overflow → NaN or garbage), so on first use
+  // the GPU result for a test image is compared with the CPU's; the GPU is used only if they agree.
   async function createSession() {
-    const gpu = navigator.gpu ? await navigator.gpu.requestAdapter().catch(() => null) : null;
+    let gpu = navigator.gpu ? await navigator.gpu.requestAdapter().catch(() => null) : null;
+    if (storage.get(GPU_CHECK_KEY) === 'bad') gpu = null;
     await loadScript(gpu ? 'ort/ort.webgpu.min.js' : 'ort/ort.wasm.min.js');
     // Absolute URL: a relative path in dynamic import() is treated as a bare module specifier.
     ort.env.wasm.wasmPaths = new URL('ort/', document.baseURI).href;
     // Multithreading requires cross-origin isolation.
     ort.env.wasm.numThreads = self.crossOriginIsolated ? Math.min(4, navigator.hardwareConcurrency || 1) : 1;
-    const options = { graphOptimizationLevel: 'all' };
     if (gpu) {
       try {
-        const session = await ort.InferenceSession.create(MODEL_URL, { ...options, executionProviders: ['webgpu'] });
+        const session = await ort.InferenceSession.create(MODEL_URL, { ...OPTIONS, executionProviders: ['webgpu'] });
+        if (storage.get(GPU_CHECK_KEY) !== 'ok') {
+          const cpu = await cpuSession();
+          const agree = await sameResult(session, cpu);
+          storage.set(GPU_CHECK_KEY, agree ? 'ok' : 'bad');
+          if (!agree) {
+            console.warn('WebGPU result differs from the CPU on this device; using the CPU');
+            backend = 'wasm';
+            return cpu;
+          }
+        }
         backend = 'webgpu';
         return session;
       } catch (e) {
         console.warn('WebGPU unavailable, using the CPU:', e);
       }
     }
+    return cpuSession();
+  }
+
+  function cpuSession() {
     backend = 'wasm';
-    return ort.InferenceSession.create(MODEL_URL, { ...options, executionProviders: ['wasm'] });
+    return ort.InferenceSession.create(MODEL_URL, { ...OPTIONS, executionProviders: ['wasm'] });
+  }
+
+  // A smooth synthetic test picture (gradients and stripes), the same on every device.
+  function testInput() {
+    const plane = INPUT_SIZE * INPUT_SIZE;
+    const px = new Float32Array(3 * plane);
+    for (let y = 0; y < INPUT_SIZE; y++) {
+      for (let x = 0; x < INPUT_SIZE; x++) {
+        const i = y * INPUT_SIZE + x;
+        px[i] = x / INPUT_SIZE;
+        px[plane + i] = y / INPUT_SIZE;
+        px[2 * plane + i] = 0.5 + 0.5 * Math.sin((x + y) / 9);
+      }
+    }
+    return new ort.Tensor('float32', px, [1, 3, INPUT_SIZE, INPUT_SIZE]);
+  }
+
+  async function sameResult(a, b) {
+    const input = testInput();
+    const va = normalized((await a.run({ pixel_values: input })).image_embeds.data, 1);
+    const vb = normalized((await b.run({ pixel_values: input })).image_embeds.data, 1);
+    if (!va || !vb) return false;
+    let cos = 0;
+    for (let k = 0; k < va.length; k++) cos += va[k] * vb[k];
+    return cos >= 0.98;
+  }
+
+  // L2-normalizes each of `count` vectors; null if any value is NaN/infinite or a vector is zero.
+  function normalized(v, count) {
+    const dim = v.length / count;
+    const out = new Float32Array(v.length);
+    for (let r = 0; r < count; r++) {
+      let norm = 0;
+      for (let k = 0; k < dim; k++) norm += v[r * dim + k] ** 2;
+      norm = Math.sqrt(norm);
+      if (!Number.isFinite(norm) || norm < 1e-6) return null;
+      for (let k = 0; k < dim; k++) out[r * dim + k] = v[r * dim + k] / norm;
+    }
+    return out;
   }
 
   function loadSession() {
@@ -82,17 +145,17 @@
     const size = 3 * INPUT_SIZE * INPUT_SIZE;
     const pixels = new Float32Array(rects.length * size);
     rects.forEach((r, i) => writePixels(bitmap, r, pixels, i * size));
-    const session = await loadSession();
     const input = new ort.Tensor('float32', pixels, [rects.length, 3, INPUT_SIZE, INPUT_SIZE]);
-    const v = (await session.run({ pixel_values: input })).image_embeds.data;
-    const dim = v.length / rects.length;
-    const out = new Float32Array(v.length);
-    for (let r = 0; r < rects.length; r++) {
-      let norm = 0;
-      for (let k = 0; k < dim; k++) norm += v[r * dim + k] ** 2;
-      norm = Math.sqrt(norm);
-      for (let k = 0; k < dim; k++) out[r * dim + k] = v[r * dim + k] / norm;
+    const run = async () => normalized((await (await loadSession()).run({ pixel_values: input })).image_embeds.data, rects.length);
+    let out = await run();
+    if (!out && backend === 'webgpu') {
+      // The GPU passed the check but failed on this photo: switch to the CPU for good.
+      console.warn('Invalid WebGPU output; switching to the CPU');
+      storage.set(GPU_CHECK_KEY, 'bad');
+      sessionPromise = cpuSession();
+      out = await run();
     }
+    if (!out) throw new Error('the recognition model returned invalid numbers');
     return out;
   }
 

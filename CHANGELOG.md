@@ -3,6 +3,14 @@
 Versions follow `version:` in `pubspec.yaml`; the build number is the GitHub Actions run that
 published it. The running version is shown at the bottom of Settings.
 
+## 1.6.1 — 2026-10-08
+
+- Fixed: on some phones the GPU computed the model wrongly (invalid numbers), and the app showed
+  the first dishes of the catalog with no real percentages. Now the GPU is used only after its
+  result for a test picture matches the CPU's on that device, any invalid result switches to the
+  CPU for good, and invalid numbers can no longer turn into a list. Settings shows GPU or CPU next
+  to the version.
+
 ## 1.6.0 — 2026-10-08
 
 - Bigger recognition model: MobileCLIP-S2 instead of S0 — 55% vs 47% right on the first try,

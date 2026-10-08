@@ -166,6 +166,9 @@ class _CapturePageState extends State<CapturePage> {
     try {
       // The whole photo first, so the main dish shows up quickly…
       final analysis = await services.ai.analyze(photo.bytes);
+      if (services.catalog.classify(analysis.embedding, limit: 1).isEmpty) {
+        throw StateError('the recognition model returned invalid numbers');
+      }
       final prior = await _prior;
       final memory = services.memories.value;
       if (!mounted) return;

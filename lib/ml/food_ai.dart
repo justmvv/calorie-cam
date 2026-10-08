@@ -7,6 +7,7 @@ external _FoodAIJs? get _foodAI;
 
 extension type _FoodAIJs._(JSObject _) implements JSObject {
   external JSPromise<JSAny?> warmUp();
+  external String? get backend;
   external JSPromise<_AnalysisJs> analyze(JSUint8Array bytes);
   external JSPromise<JSFloat32Array> analyzeRegions(JSUint8Array bytes);
 }
@@ -30,6 +31,9 @@ class FoodAI {
   Future<void>? _warmUp;
 
   bool get available => _foodAI != null;
+
+  /// 'webgpu' or 'wasm' (CPU) once the model is loaded, for diagnostics.
+  String? get backend => _foodAI?.backend;
 
   /// Loads the model; repeated calls return the same Future.
   Future<void> warmUp() => _warmUp ??= _js.warmUp().toDart.then((_) {}).catchError((Object e) {
