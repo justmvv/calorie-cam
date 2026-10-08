@@ -225,6 +225,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get categoryDrink => 'Напитки';
 
   @override
+  String get categorySweets => 'Конфеты';
+
+  @override
   String get backup => 'Резервная копия';
 
   @override

@@ -4,7 +4,7 @@ A Flutter PWA food diary: take a photo of a dish, the app suggests what it is an
 
 Everything runs **locally in the browser**: recognition is done by an on-device model, and the diary is stored in SQLite (WASM) in browser storage. After the first load no network is needed.
 
-The UI is available in **English, Spanish, Dutch and Russian**. By default it follows the system language (unsupported languages fall back to English); it can be switched in Settings.
+The UI is available in **English, German, Spanish, Dutch and Russian**. By default it follows the system language (unsupported languages fall back to English); it can be switched in Settings.
 
 ## How it works
 
@@ -16,7 +16,7 @@ user picks the dish and portion ──► kcal = kcal/100 g × grams ──► D
 ```
 
 - **Recognition:** zero-shot [MobileCLIP-S2](https://github.com/apple/ml-mobileclip) (fp16 vision encoder, ~72 MB; S2 instead of S0: 55% vs 47% top-1 on 763 Wikipedia photos, `tools/eval_set.mjs`). A dish is recognized if it's in the catalog; no model retraining is needed. Besides the whole photo, five overlapping parts of it are analyzed in one batch, so a side dish or salad next to the main dish is put on the plate too (`DishCatalog.suggestPlate`: one dish per role — main, side, salad, … — with per-role confidence thresholds; tune with `tools/eval_plate.mjs`).
-- **Catalog:** [`assets/dishes.tsv`](assets/dishes.tsv), ~250 dishes — Russian, Spanish, Dutch (including the Indonesian-Dutch classics) and international — with names in every UI language, calories/protein/fat/carbs per 100 g and a typical portion. Text embeddings are precomputed in `assets/dish_embeddings.*`.
+- **Catalog:** [`assets/dishes.tsv`](assets/dishes.tsv), ~330 dishes — Russian, German, Spanish, Dutch (including the Indonesian-Dutch classics) and international, plus sweets recognized by their wrapper (Snickers, Raffaello, «Мишка косолапый», …) — with names in every UI language, calories/protein/fat/carbs per 100 g and a typical portion. Text embeddings are precomputed in `assets/dish_embeddings.*`.
 - **Database:** [`lib/data/db.dart`](lib/data/db.dart): `meals` (what, how much, when; nutrition already scaled to the portion), `photos` (~15 KB JPEG thumbnails), `products` (the user's own products, per 100 g) and `meal_sets` (saved sets of items). Rows have global UUIDs, a millisecond `updated_at_ms` and soft deletes (tombstones), so backups from different moments or devices merge cleanly.
 - **Localization:** ARB files in [`lib/l10n/`](lib/l10n/) (`flutter gen-l10n`). Logged entries are shown with the catalog name in the current language.
 - **Offline and updates:** see the section below.
@@ -107,7 +107,7 @@ Add `lib/l10n/app_<code>.arb` (copy `app_en.arb`), a `name_<code>` column to the
 
 ```bash
 python3 tools/fetch_eval.py                 # ~900 photos of catalog dishes from Wikipedia articles
-cd tools && node eval_set.mjs               # accuracy, confidence calibration, memory simulation
+cd tools && node eval_set.mjs               # accuracy (also per category; SHOW=sweets lists each photo), calibration, memory
 node eval_plate.mjs                         # plates with sides and set-lunch trays (testimg/combo)
 MODEL=Xenova/mobileclip_s0 node build_embeddings.mjs && MODEL=Xenova/mobileclip_s0 node eval_set.mjs  # compare models
 ```

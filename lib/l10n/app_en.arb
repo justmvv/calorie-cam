@@ -161,6 +161,7 @@
   "categorySnack": "Snacks",
   "categoryVegetable": "Vegetables",
   "categoryDrink": "Drinks",
+  "categorySweets": "Sweets",
   "backup": "Backup",
   "exportBackup": "Export diary",
   "lastExport": "Last export: {date}",

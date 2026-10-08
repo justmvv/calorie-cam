@@ -44,7 +44,8 @@ if (missing.length) {
 // --- food filter: keep photos that look like food rather than people, maps, buildings… ---
 const tokenizer = await AutoTokenizer.from_pretrained(MODEL_ID);
 const textModel = await CLIPTextModelWithProjection.from_pretrained(MODEL_ID, { dtype: 'fp32' });
-const FOOD = ['a photo of food', 'a photo of a dish on a plate', 'a photo of a drink', 'a photo of fruit or vegetables'];
+const FOOD = ['a photo of food', 'a photo of a dish on a plate', 'a photo of a drink', 'a photo of fruit or vegetables',
+  'a photo of candy or a chocolate bar in its wrapper'];
 const OTHER = ['a portrait photo of a person', 'a map', 'a photo of a building', 'a painting', 'a page of text',
   'a landscape photo', 'a photo of an animal', 'a photo of a plant in a field', 'a photo of a market or a shop'];
 const { text_embeds } = await textModel(tokenizer([...FOOD, ...OTHER], { padding: 'max_length', truncation: true }));
@@ -78,6 +79,16 @@ const acc = (ranks) => ({
 const zsRanks = photos.map((p) => rank(zeroShot(p.v), p.dish));
 console.log(`photos: ${photos.length} food (${dropped} non-food dropped), dishes: ${new Set(photos.map((p) => p.dish)).size}`);
 console.log('zero-shot:', acc(zsRanks));
+// Per category; SHOW=<category or id,…> also lists every photo of it with the top 3.
+const byCategory = {};
+photos.forEach((p, i) => (byCategory[byId[p.dish].category] ??= []).push(zsRanks[i]));
+console.log(Object.entries(byCategory).map(([c, r]) => `  ${c}: ${acc(r).top1}/${acc(r).top3} (${r.length})`).join('\n'));
+if (process.env.SHOW) {
+  for (const p of photos.filter((p) => process.env.SHOW.split(',').some((x) => x === byId[p.dish].category || x === p.dish))) {
+    const top = zeroShot(p.v).sort((a, b) => b.p - a.p).slice(0, 3);
+    console.log(`  ${top[0].id === p.dish ? '✓' : '✗'} ${p.file.padEnd(26)} ${top.map((t) => `${t.id} ${(100 * t.p).toFixed(0)}%`).join(', ')}`);
+  }
+}
 
 // Confidence calibration: how often is the top-1 right when its probability is ≥ x?
 for (const t of [0.2, 0.4, 0.6, 0.8]) {

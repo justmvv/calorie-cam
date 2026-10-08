@@ -266,7 +266,7 @@ class DishCatalog {
     'bread' => PlateRole.bread,
     'fruit' => PlateRole.fruit,
     'drink' => PlateRole.drink,
-    'dessert' => PlateRole.dessert,
+    'dessert' || 'sweets' => PlateRole.dessert,
     _ => PlateRole.main,
   };
 
@@ -307,6 +307,7 @@ class DishCatalog {
     'ü': 'u',
     'ñ': 'n',
     'ç': 'c',
+    'ß': 'ss',
     'ё': 'е',
   };
 

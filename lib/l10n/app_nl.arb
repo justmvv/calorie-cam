@@ -64,6 +64,7 @@
   "categorySnack": "Snacks",
   "categoryVegetable": "Groenten",
   "categoryDrink": "Dranken",
+  "categorySweets": "Snoep",
   "backup": "Back-up",
   "exportBackup": "Dagboek exporteren",
   "lastExport": "Laatste export: {date}",

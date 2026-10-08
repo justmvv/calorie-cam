@@ -64,6 +64,7 @@
   "categorySnack": "Aperitivos",
   "categoryVegetable": "Verduras",
   "categoryDrink": "Bebidas",
+  "categorySweets": "Dulces",
   "backup": "Copia de seguridad",
   "exportBackup": "Exportar diario",
   "lastExport": "Última exportación: {date}",

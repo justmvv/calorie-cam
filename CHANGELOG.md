@@ -3,6 +3,24 @@
 Versions follow `version:` in `pubspec.yaml`; the build number is the GitHub Actions run that
 published it. The running version is shown at the bottom of Settings.
 
+## 1.7.0 — 2026-10-08
+
+- German UI (Deutsch); the catalog has German names for every dish.
+- German cuisine: schnitzel, Jägerschnitzel, bratwurst, currywurst, Weißwurst, Leberkäse,
+  Sauerbraten, Schweinshaxe, Rouladen, Königsberger Klopse, Kasseler, Spätzle, Käsespätzle,
+  Maultaschen, Kartoffelsalat, Sauerkraut, Rotkohl, Knödel, potato soup, Linseneintopf, Brezel,
+  Brötchen, Flammkuchen, Black Forest cake, Apfelstrudel, Bienenstich, Käsekuchen, Streuselkuchen,
+  Berliner, Stollen, Lebkuchen, Rote Grütze, döner, Fischbrötchen, Rollmops, Labskaus, white
+  asparagus with hollandaise, Obatzda, Kräuterquark, Apfelschorle.
+- Sweets, recognized by the wrapper: Snickers, Mars, Twix, Bounty, KitKat, Milky Way, M&M's,
+  Kinder (Bueno, Chocolate, Surprise), Ferrero Rocher, Raffaello, Toffifee, Merci, Milka,
+  Ritter Sport, Lindor, Mozartkugel, gummy bears, Chupa Chups, Toblerone, Werther's, Tony's
+  Chocolonely, turrón, Alenka, «Мишка косолапый», «Красная шапочка», «Белочка», «Коровка»,
+  «Птичье молоко», «Рот Фронт», «Ласточка», plus assorted chocolates and hard candies. Distinctive
+  wrappers (Raffaello, Toffifee, Kinder Surprise, Toblerone, Milka, M&M's, Werther's, Tony's) are
+  recognized almost always; unwrapped bars (Mars, Twix) are often taken for a protein bar.
+  A new "Sweets" category; chocolate and liquorice moved there.
+
 ## 1.6.2 — 2026-10-08
 
 - Fixed: the camera could open with the front lens. Android's camera app ignores the browser's

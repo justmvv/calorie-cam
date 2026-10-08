@@ -64,6 +64,7 @@
   "categorySnack": "Снеки",
   "categoryVegetable": "Овощи",
   "categoryDrink": "Напитки",
+  "categorySweets": "Конфеты",
   "backup": "Резервная копия",
   "exportBackup": "Экспортировать дневник",
   "lastExport": "Последний экспорт: {date}",

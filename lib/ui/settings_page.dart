@@ -18,7 +18,7 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   /// Language names are shown in their own language so they are recognizable in any UI language.
-  static const _languages = {'en': 'English', 'es': 'Español', 'nl': 'Nederlands', 'ru': 'Русский'};
+  static const _languages = {'de': 'Deutsch', 'en': 'English', 'es': 'Español', 'nl': 'Nederlands', 'ru': 'Русский'};
 
   /// The backup file, built ahead of time: Chrome opens the share sheet only within a few
   /// seconds of a tap, and serializing a diary with photos may take longer than that.

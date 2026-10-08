@@ -49,6 +49,7 @@ extension Formatting on AppLocalizations {
     'snack' => categorySnack,
     'vegetable' => categoryVegetable,
     'drink' => categoryDrink,
+    'sweets' => categorySweets,
     _ => id,
   };
 }

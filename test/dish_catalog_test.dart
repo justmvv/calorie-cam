@@ -55,6 +55,8 @@ void main() {
     expect(catalog.search('jamon').map((d) => d.id), contains('jamon_serrano'));
     expect(catalog.search('stamppot').map((d) => d.id), contains('stamppot'));
     expect(catalog.search('aardappel').map((d) => d.id), contains('boiled_potatoes'));
+    expect(catalog.search('KNÖDEL').map((d) => d.id), contains('knoedel'));
+    expect(catalog.search('Gummibärchen').map((d) => d.id), contains('gummy_bears'));
     expect(catalog.search('  '), hasLength(catalog.dishes.length));
   });
 
@@ -119,6 +121,7 @@ void main() {
       expect(ru.kcal(149.6), '150 ккал');
       expect(en.macrosOf(10.4, 5, 20), 'P 10 · F 5 · C 20');
       expect(ru.macrosOf(10.4, 5, 20), 'Б 10 · Ж 5 · У 20');
+      expect(lookupAppLocalizations(const Locale('de')).macrosOf(10.4, 5, 20), 'E 10 · F 5 · K 20');
     });
   });
 }

@@ -1,5 +1,5 @@
 """Builds an evaluation photo set from Wikipedia: for every catalog dish, the photos of its
-English and Russian Wikipedia articles (free licenses, Wikimedia Commons).
+English, Russian and German Wikipedia articles (free licenses, Wikimedia Commons).
 
     python3 tools/fetch_eval.py [--per-dish 4]
 
@@ -75,7 +75,9 @@ def main():
         os.makedirs(folder, exist_ok=True)
         en_query = re.sub(r'\s*\(.*?\)', '', d['name_en'])
         seen, n = set(), len(os.listdir(folder))
-        for lang, query in (('en', en_query), ('ru', d['name_ru'])):
+        for lang, query in (('en', en_query), ('ru', d['name_ru']), ('de', d.get('name_de', ''))):
+            if not query:
+                continue
             title = article(lang, query)
             if not title:
                 continue
@@ -100,7 +102,7 @@ def main():
         return sources
 
     # A few dishes at a time: polite to Wikimedia, but not an hour-long run.
-    with concurrent.futures.ThreadPoolExecutor(max_workers=6) as pool:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
         sources = [row for rows in pool.map(fetch, read_dishes()) for row in rows]
     with open(os.path.join(OUT, 'sources.tsv'), 'a', encoding='utf-8') as f:
         for row in sources:

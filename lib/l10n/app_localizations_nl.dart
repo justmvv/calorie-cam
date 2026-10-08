@@ -225,6 +225,9 @@ class AppLocalizationsNl extends AppLocalizations {
   String get categoryDrink => 'Dranken';
 
   @override
+  String get categorySweets => 'Snoep';
+
+  @override
   String get backup => 'Back-up';
 
   @override
