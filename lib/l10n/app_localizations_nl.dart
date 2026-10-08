@@ -41,6 +41,9 @@ class AppLocalizationsNl extends AppLocalizations {
   String get dailyGoal => 'Dagdoel';
 
   @override
+  String get switchCamera => 'Camera wisselen';
+
+  @override
   String get cancel => 'Annuleren';
 
   @override

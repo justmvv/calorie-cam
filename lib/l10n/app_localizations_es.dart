@@ -41,6 +41,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get dailyGoal => 'Objetivo diario';
 
   @override
+  String get switchCamera => 'Cambiar cámara';
+
+  @override
   String get cancel => 'Cancelar';
 
   @override

@@ -154,6 +154,12 @@ abstract class AppLocalizations {
   /// **'Daily goal'**
   String get dailyGoal;
 
+  /// No description provided for @switchCamera.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch camera'**
+  String get switchCamera;
+
   /// No description provided for @cancel.
   ///
   /// In en, this message translates to:

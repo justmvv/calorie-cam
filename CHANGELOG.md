@@ -3,6 +3,13 @@
 Versions follow `version:` in `pubspec.yaml`; the build number is the GitHub Actions run that
 published it. The running version is shown at the bottom of Settings.
 
+## 1.6.2 — 2026-10-08
+
+- Fixed: the camera could open with the front lens. Android's camera app ignores the browser's
+  "back camera" hint and reopens the last-used lens, so the photo button now opens the app's own
+  viewfinder that asks for the back camera (with a button to switch). Without camera permission
+  it falls back to the system camera.
+
 ## 1.6.1 — 2026-10-08
 
 - Fixed: on some phones the GPU computed the model wrongly (invalid numbers), and the app showed

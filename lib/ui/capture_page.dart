@@ -12,6 +12,7 @@ import 'dish_search.dart';
 import 'format.dart';
 import 'nutrition_dialog.dart';
 import 'palette.dart';
+import 'take_photo.dart';
 
 /// An item on the plate. Nutrition is per 100 g and may be overridden by the user.
 class _PlateItem {
@@ -246,10 +247,8 @@ class _CapturePageState extends State<CapturePage> {
   }
 
   Future<void> _pickPhoto(ImageSource source) async {
-    final file = await ImagePicker().pickImage(source: source);
-    if (file == null) return;
-    final bytes = await file.readAsBytes();
-    if (mounted) _addPhoto(bytes);
+    final bytes = await takePhoto(context, source);
+    if (bytes != null && mounted) _addPhoto(bytes);
   }
 
   Future<void> _searchDish() async {

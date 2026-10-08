@@ -10,6 +10,7 @@ import 'day_share.dart';
 import 'format.dart';
 import 'palette.dart';
 import 'settings_page.dart';
+import 'take_photo.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -73,10 +74,8 @@ class HomePage extends StatelessWidget {
   }
 
   Future<void> _fromCamera(BuildContext context, ImageSource source) async {
-    final file = await ImagePicker().pickImage(source: source);
-    if (file == null || !context.mounted) return;
-    final bytes = await file.readAsBytes();
-    if (context.mounted) await openCapture(context, image: bytes);
+    final bytes = await takePhoto(context, source);
+    if (bytes != null && context.mounted) await openCapture(context, image: bytes);
   }
 }
 

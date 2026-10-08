@@ -17,6 +17,7 @@
     }
   },
   "dailyGoal": "Daily goal",
+  "switchCamera": "Switch camera",
   "cancel": "Cancel",
   "save": "Save",
   "add": "Add",

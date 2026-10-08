@@ -41,6 +41,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get dailyGoal => 'Дневная норма';
 
   @override
+  String get switchCamera => 'Сменить камеру';
+
+  @override
   String get cancel => 'Отмена';
 
   @override
