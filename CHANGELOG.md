@@ -3,6 +3,11 @@
 Versions follow `version:` in `pubspec.yaml`; the build number is the GitHub Actions run that
 published it. The running version is shown at the bottom of Settings.
 
+## 1.7.1 — 2026-10-08
+
+- The portion presets (½, ×1, ×1.5, ×2) moved to their own line under the amount field and the
+  g/kcal switch, which didn't fit next to each other on a phone screen.
+
 ## 1.7.0 — 2026-10-08
 
 - German UI (Deutsch); the catalog has German names for every dish.

@@ -618,25 +618,20 @@ class _CapturePageState extends State<CapturePage> {
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
                 ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        for (final (label, k) in const [('½', 0.5), ('×1', 1.0), ('×1.5', 1.5), ('×2', 2.0)])
-                          Padding(
-                            padding: const EdgeInsets.only(right: 4),
-                            child: ActionChip(
-                              label: Text(label),
-                              tooltip: l10n.grams(item.portion * k),
-                              onPressed: () => setState(() => item.setGrams(item.portion * k)),
-                            ),
-                          ),
-                      ],
-                    ),
+              ],
+            ),
+            const SizedBox(height: 4),
+            // Portion presets on their own line: next to the amount field and the g/kcal switch
+            // they didn't fit on a phone screen.
+            Wrap(
+              spacing: 4,
+              children: [
+                for (final (label, k) in const [('½', 0.5), ('×1', 1.0), ('×1.5', 1.5), ('×2', 2.0)])
+                  ActionChip(
+                    label: Text(label),
+                    tooltip: l10n.grams(item.portion * k),
+                    onPressed: () => setState(() => item.setGrams(item.portion * k)),
                   ),
-                ),
               ],
             ),
           ],
