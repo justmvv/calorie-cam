@@ -107,6 +107,7 @@ Add `lib/l10n/app_<code>.arb` (copy `app_en.arb`), a `name_<code>` column to the
 
 ```bash
 python3 tools/fetch_eval.py                 # ~900 photos of catalog dishes from Wikipedia articles
+python3 tools/fetch_commons.py apple "red apple" "sliced apple"   # more everyday photos of one dish (Commons search)
 cd tools && node eval_set.mjs               # accuracy (also per category; SHOW=sweets lists each photo), calibration, memory
 node eval_plate.mjs                         # plates with sides and set-lunch trays (testimg/combo)
 MODEL=Xenova/mobileclip_s0 node build_embeddings.mjs && MODEL=Xenova/mobileclip_s0 node eval_set.mjs  # compare models

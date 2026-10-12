@@ -3,6 +3,15 @@
 Versions follow `version:` in `pubspec.yaml`; the build number is the GitHub Actions run that
 published it. The running version is shown at the bottom of Settings.
 
+## 1.7.2 — 2026-10-12
+
+- New fruits: persimmon, pomegranate, plums, apricots, raspberries, grapefruit, figs, feijoa.
+- Apple and peach are told apart better: they were described to the model by one word each, now
+  by how they look (shiny skin with a stem vs. fuzzy skin with a crease; slices, halves, peeled
+  pieces). A nectarine is logged as "Peach / nectarine" — as a separate dish it drew apples and
+  peaches to itself, and its calories are the same as a peach's.
+- tools/fetch_commons.py adds everyday photos from Wikimedia Commons to the evaluation set.
+
 ## 1.7.1 — 2026-10-08
 
 - The portion presets (½, ×1, ×1.5, ×2) moved to their own line under the amount field and the

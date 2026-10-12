@@ -156,7 +156,7 @@ waffles	Вафли бельгийские	Belgian waffles	Gofres	Brusselse wafel
 sharlotka	Шарлотка	Sharlotka (apple cake)	Sharlotka (bizcocho de manzana)	Sjarlotka (appelcake)	Scharlotka (Apfelkuchen)	sharlotka, apple sponge cake	220	5.0	6.0	37.0	120	dessert
 cinnamon_roll	Булочка с корицей	Cinnamon roll	Rollo de canela	Kaneelbroodje	Zimtschnecke	cinnamon roll	360	6.0	15.0	50.0	100	dessert
 pryanik	Пряник	Pryanik (gingerbread)	Prianik (pan de jengibre)	Prjanik (peperkoek)	Prjanik (Lebkuchen)	pryanik, glazed russian gingerbread	360	5.0	4.5	75.0	50	dessert
-apple	Яблоко	Apple	Manzana	Appel	Apfel	apple	52	0.3	0.2	14.0	180	fruit
+apple	Яблоко	Apple	Manzana	Appel	Apfel	a whole apple with smooth shiny skin and a short stem in a dimple, red, green or yellow with a red blush | apple slices or wedges with crisp pale cream flesh | half an apple showing the core and seeds | peeled apple slices on a plate	52	0.3	0.2	14.0	180	fruit
 banana	Банан	Banana	Plátano	Banaan	Banane	banana	89	1.1	0.3	23.0	120	fruit
 orange	Апельсин	Orange	Naranja	Sinaasappel	Orange	orange	47	0.9	0.1	12.0	150	fruit
 mandarin	Мандарин	Tangerine	Mandarina	Mandarijn	Mandarine	tangerines	53	0.8	0.3	13.0	80	fruit
@@ -167,7 +167,7 @@ watermelon	Арбуз	Watermelon	Sandía	Watermeloen	Wassermelone	watermelon sli
 melon	Дыня	Melon	Melón	Meloen	Melone	melon slices	34	0.8	0.2	8.0	250	fruit
 pineapple	Ананас	Pineapple	Piña	Ananas	Ananas	pineapple	50	0.5	0.1	13.0	150	fruit
 kiwi	Киви	Kiwi	Kiwi	Kiwi	Kiwi	kiwi fruit	61	1.1	0.5	15.0	75	fruit
-peach	Персик	Peach	Melocotón	Perzik	Pfirsich	peach	39	0.9	0.3	9.5	150	fruit
+peach	Персик / нектарин	Peach / nectarine	Melocotón / nectarina	Perzik / nectarine	Pfirsich / Nektarine	a peach with fuzzy matte velvety skin, orange-yellow with a red blush and a seam crease | a peach cut in half showing juicy yellow-orange flesh and a large wrinkled pit	39	0.9	0.3	9.5	150	fruit
 mango	Манго	Mango	Mango	Mango	Mango	mango	60	0.8	0.4	15.0	200	fruit
 cherries	Черешня	Cherries	Cerezas	Kersen	Kirschen	cherries	63	1.1	0.2	16.0	150	fruit
 blueberries	Голубика	Blueberries	Arándanos	Blauwe bessen	Heidelbeeren	blueberries	57	0.7	0.3	14.0	100	fruit
@@ -335,3 +335,11 @@ rot_front	Батончик «Рот Фронт»	“Rot Front” praline bar	Bar
 lastochka	Конфеты «Ласточка»	“Lastochka” candy	Bombón Lastochka	Lastochka bonbon	Praline „Lastotschka“	russian chocolate candy wrapper with flying swallows on a blue background	470	3	22	66	15	sweets
 chocolate_candies	Шоколадные конфеты (ассорти)	Chocolate candies (assorted)	Bombones de chocolate	Bonbons	Pralinen	assorted chocolate candies in colorful wrappers in a bowl | chocolate pralines in a box	520	5	30	58	15	sweets
 hard_candies	Карамель (леденцы)	Hard candies	Caramelos	Zuurtjes	Bonbons (Hartkaramellen)	hard candies in clear twisted wrappers | colorful boiled sweets	380	0	0.5	93	5	sweets
+persimmon	Хурма	Persimmon	Caqui	Kaki (sharonfruit)	Kaki (Sharonfrucht)	a persimmon fruit with glossy smooth deep orange skin and a flat green four-leaf calyx on top | round orange persimmon slices with a star pattern in the middle | chunks of peeled soft orange persimmon in a bowl | flat round orange sharon fruit kaki	67	0.5	0.4	15.3	200	fruit
+pomegranate	Гранат	Pomegranate	Granada	Granaatappel	Granatapfel	a pomegranate with leathery red skin and a crown | pomegranate cut open showing many juicy ruby red seeds	72	0.7	0.6	14.5	200	fruit
+plum	Слива	Plums	Ciruelas	Pruimen	Pflaumen	dark purple plums with a dusty bloom | yellow or red plums | a plum cut in half showing yellow flesh and a pit	49	0.8	0.3	9.6	100	fruit
+apricot	Абрикос	Apricots	Albaricoques	Abrikozen	Aprikosen	small round orange apricots with smooth slightly velvety skin | apricot halves with a pit	44	0.9	0.1	9	100	fruit
+raspberries	Малина	Raspberries	Frambuesas	Frambozen	Himbeeren	fresh red raspberries, hollow berries made of small drupelets	46	0.8	0.5	8.3	100	fruit
+grapefruit	Грейпфрут	Grapefruit	Pomelo (toronja)	Grapefruit	Grapefruit	a grapefruit cut in half showing pink-red segments | a large round yellow grapefruit	35	0.7	0.2	6.5	200	fruit
+fig	Инжир	Figs	Higos	Vijgen	Feigen	fresh purple figs | a fig cut in half showing pink-red flesh full of tiny seeds	74	0.8	0.3	19	50	fruit
+feijoa	Фейхоа	Feijoa	Feijoa	Feijoa	Feijoa	feijoa, small oval green fruits with a matte skin | feijoa cut in half showing cream flesh with a jelly-like center	61	0.7	0.4	15	50	fruit
